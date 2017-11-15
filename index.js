@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import Inspector from './lib/Inspector';
+import DOMInspector from './lib/DOMInspector';
 
-
-ReactDom.render(
-    <Inspector>Test</Inspector>,
+ReactDOM.render(
+    <DOMInspector/>,
     document.getElementById('dom-inspector')
 );
