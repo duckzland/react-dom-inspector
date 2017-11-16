@@ -2,10 +2,10 @@
 @InspectorText: #d3f7ff;
 @InspectorElementBackground: #071c2a;
 @InspectorElementText: #d3f7ff;
-@InspectorElementMargin: 20px;
+@InspectorElementMargin: 15px;
 
-@ScrollerBackground: #071720;
-@ScrollerElement: #082739;
+@ScrollerBackground: #082739;
+@ScrollerElement: #051118;
 
 @EditorBackground: #081c27;
 @EditorText: #d3f7ff;
@@ -17,18 +17,18 @@
 @TabsBackground: #263a45;
 @TabsText: #d3f7ff;
 @TabsActiveBackground: #081c27;
-@TabsActiveText: #fef8c7;
+@TabsActiveText: #13a6d9;
 
 @ColorBlue: #195e8a;
 @ColorGreen: #4b9701;
 @ColorOrange: #7d3d05;
 
-body.stylizer-open {
-  padding-bottom: 340px;
+body[stylizer-active="false"] {
+  padding-bottom: 303px;
 }
 
-body.stylizer-closed {
-  padding-bottom: 40px;
+body[stylizer-active="true"] {
+  padding-bottom: 34px;
 }
 
 .stylizer-inspector {
@@ -38,10 +38,11 @@ body.stylizer-closed {
   z-index: 99999;
   background: @InspectorBackground;
   width: 100%;
-  height: 340px;
+  height: 300px;
   display: flex;
   flex-direction: row;
   flex-grow: 1;
+  border-bottom: 3px solid darken(@InspectorBackground, 20%);
 }
 
 .stylizer-inspector,
@@ -51,6 +52,16 @@ body.stylizer-closed {
   line-height: 140%;
   vertical-align: middle;
   box-sizing: border-box;
+}
+.stylizer-inspector.minimize {
+  height: 34px;
+}
+.stylizer-inspector.minimize .stylizer-dom-panel {
+  display: none;
+}
+
+.stylizer-inspector.minimize .stylizer-tabs-wrapper {
+  display: none;
 }
 
 .stylizer-panels {
@@ -62,6 +73,28 @@ body.stylizer-closed {
   flex-grow: 1;
 }
 
+.stylizer-panels.minimize {
+  max-width: 30px;
+}
+
+.stylizer-panels.minimize > :not(.stylizer-header) {
+  display: none;
+}
+
+.stylizer-panels.minimize .stylizer-header {
+  flex-direction: column-reverse;
+  flex-grow: 1;
+  padding: 8px;
+}
+
+.stylizer-panels.minimize .stylizer-header .stylizer-header-text {
+  transform: rotate(180deg);
+  writing-mode: vertical-rl;
+  text-align: right;
+  margin-top: 19px;
+  line-height: 14px;
+}
+
 .stylizer-editor-panel {
   background: @EditorBackground;
   color: @EditorText;
@@ -69,19 +102,32 @@ body.stylizer-closed {
 }
 
 .stylizer-header {
-  padding: 10px 20px;
+  padding: 8px 15px;
   background: darken(@InspectorBackground, 7%);
-  font-size: 17px;
+  font-size: 14px;
   font-weight: 300;
   text-transform: uppercase;
+  display: flex;
+  flex-direction: row;
 }
 
 .stylizer-editor-panel .stylizer-header {
   background: darken(@EditorBackground, 7%);
 }
+.stylizer-header-text {
+  flex-grow: 1;
+}
+.stylizer-header-actions svg {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.stylizer-header-actions svg:hover {
+  opacity: 1;
+}
 
 .stylizer-content {
-  padding: 20px;
+  padding: 15px;
 }
 
 .stylizer-iterator {
@@ -93,14 +139,15 @@ body.stylizer-closed {
 .stylizer-element {
   background: @InspectorElementBackground;
   color: @InspectorElementText;
-  padding: 10px 15px;
-  margin-bottom: 10px;
+  padding: 6px 10px;
+  margin-bottom: 8px;
   white-space: nowrap;
   cursor: pointer;
   width: fit-content;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 300;
   border-left: 5px solid @InspectorElementBackground;
+  min-width: 100%;
 }
 
 .stylizer-element.overridden {
@@ -116,11 +163,23 @@ body.stylizer-closed {
 }
 
 .stylizer-element.parents:not(.processed) {
-  border-left: 5px solid lighten(@InspectorElementBackground, 20%);
+  border-left: 3px solid lighten(@InspectorElementBackground, 25%);
 }
 
 .stylizer-element.parents.processed {
-  border-left: 5px solid lighten(@InspectorElementBackground, 3%);
+  border-left: 3px solid lighten(@InspectorElementBackground, 8%);
+}
+
+.stylizer-element.active {
+  border-left: 3px solid @ColorGreen !important;
+}
+
+.stylizer-element.changed {
+  border-left: 3px solid darken(@ColorBlue, 10%) !important;
+}
+
+.stylizer-element.overridden {
+  border-left: 3px solid darken(@ColorOrange, 10%) !important;
 }
 
 [data-depth] {
@@ -146,16 +205,17 @@ body.stylizer-closed {
   background: @FormElementBackground;
   border: 1px solid @FormElementBorder;
   color: @FormElementText;
-  padding: 10px;
+  padding: 8px 10px;
   line-height: 120%;
   min-height: 30px;
-  font-size: 14px;
+  height: auto;
+  font-size: 13px;
   border-radius: 0;
   margin: 0;
 }
 
 .stylizer-inspector label {
-  font-size: 13px;
+  font-size: 12px;
   margin-bottom: 3px;
   font-weight: 300;
   display: block;
@@ -170,9 +230,8 @@ body.stylizer-closed {
 .stylizer-tabs {
   background: @TabsBackground;
   color: @TabsText;
-  padding-top: 5px;
-  max-width: 180px;
-  min-width: 180px;
+  max-width: 150px;
+  min-width: 150px;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -184,10 +243,13 @@ body.stylizer-closed {
 }
 
 .stylizer-tab-element {
-  padding: 10px 20px;
-  font-size: 14px;
+  padding: 10px 15px;
+  font-size: 13px;
   display: block;
   cursor: pointer;
+  text-transform: capitalize;
+  flex-grow: 1;
+  border-bottom: 1px solid darken(@TabsBackground, 5%);
 }
 
 .stylizer-tab-element.active {
@@ -198,4 +260,36 @@ body.stylizer-closed {
 .scrollarea-content {
   width: auto;
   display: table;
+  min-width: 100%;
+}
+
+.scrollarea .scrollbar-container:hover,
+.scrollarea .scrollbar-container {
+  background: @ScrollerBackground;
+  opacity: 1 !important;
+}
+
+.scrollarea .scrollbar-container .scrollbar {
+  background: @ScrollerElement;
+  cursor: pointer;
+}
+
+.scrollarea .scrollbar-container.vertical {
+  width: 16px;
+}
+
+.scrollarea .scrollbar-container.vertical .scrollbar {
+  width: 16px;
+  margin: 0;
+  min-height: 20px !important;
+}
+
+.scrollarea .scrollbar-container.horizontal {
+  height: 16px;
+}
+
+.scrollarea .scrollbar-container.horizontal .scrollbar {
+  height: 16px;
+  margin: 0;
+  min-width: 20px !important;
 }

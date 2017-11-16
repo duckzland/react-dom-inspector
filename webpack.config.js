@@ -11,8 +11,12 @@ module.exports = {
         loaders: ['style-loader', 'css-loader', 'less-loader']
       },
       {
-        test: /\.(png|svg|jpg|woff|woff2|eot|ttf|otf)$/,
+        test: /\.(png|jpg|woff|woff2|eot|ttf|otf)$/,
         loaders: ['file-loader']
+      },
+      {
+        test: /\.(svg)$/,
+        loaders: ['svg-loader']
       },
       {
         test: /.js?$/,
