@@ -8,20 +8,23 @@
 @ScrollerElement: #051118;
 
 @EditorBackground: #081c27;
-@EditorText: #d3f7ff;
+@EditorText: #9abdc5;
 
-@FormElementBackground: #263a45;
+@FormElementBackground: #213946;
 @FormElementBorder: #040f15;
 @FormElementText: #d3f7ff;
 
-@TabsBackground: #263a45;
-@TabsText: #d3f7ff;
+@TabsBackground: #03141d;
+@TabsText: #6d8d95;
 @TabsActiveBackground: #081c27;
 @TabsActiveText: #13a6d9;
 
 @ColorBlue: #195e8a;
 @ColorGreen: #4b9701;
 @ColorOrange: #7d3d05;
+
+@ElementActiveBackground: rgba(17, 73, 116, 0.7);
+@ElementActiveBorder: 1px solid rgba(0,0,0,0.4);
 
 body[stylizer-active="false"] {
   padding-bottom: 303px;
@@ -109,6 +112,7 @@ body[stylizer-active="true"] {
   text-transform: uppercase;
   display: flex;
   flex-direction: row;
+  min-height: 35px;
 }
 
 .stylizer-editor-panel .stylizer-header {
@@ -293,3 +297,11 @@ body[stylizer-active="true"] {
   margin: 0;
   min-width: 20px !important;
 }
+
+html body .stylizer-element-active {
+  background: @ElementActiveBackground !important;
+  border: @ElementActiveBorder !important;
+  box-sizing: border-box !important;
+}
+
+
