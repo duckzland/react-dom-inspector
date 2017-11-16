@@ -1,0 +1,201 @@
+@InspectorBackground: #051017;
+@InspectorText: #d3f7ff;
+@InspectorElementBackground: #071c2a;
+@InspectorElementText: #d3f7ff;
+@InspectorElementMargin: 20px;
+
+@ScrollerBackground: #071720;
+@ScrollerElement: #082739;
+
+@EditorBackground: #081c27;
+@EditorText: #d3f7ff;
+
+@FormElementBackground: #263a45;
+@FormElementBorder: #040f15;
+@FormElementText: #d3f7ff;
+
+@TabsBackground: #263a45;
+@TabsText: #d3f7ff;
+@TabsActiveBackground: #081c27;
+@TabsActiveText: #fef8c7;
+
+@ColorBlue: #195e8a;
+@ColorGreen: #4b9701;
+@ColorOrange: #7d3d05;
+
+body.stylizer-open {
+  padding-bottom: 340px;
+}
+
+body.stylizer-closed {
+  padding-bottom: 40px;
+}
+
+.stylizer-inspector {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 99999;
+  background: @InspectorBackground;
+  width: 100%;
+  height: 340px;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+.stylizer-inspector,
+.stylizer-inspector * {
+  margin: 0;
+  padding: 0;
+  line-height: 140%;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.stylizer-panels {
+  width: 30%;
+  background: @InspectorBackground;
+  color: @InspectorText;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.stylizer-editor-panel {
+  background: @EditorBackground;
+  color: @EditorText;
+  width: 70%;
+}
+
+.stylizer-header {
+  padding: 10px 20px;
+  background: darken(@InspectorBackground, 7%);
+  font-size: 17px;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.stylizer-editor-panel .stylizer-header {
+  background: darken(@EditorBackground, 7%);
+}
+
+.stylizer-content {
+  padding: 20px;
+}
+
+.stylizer-iterator {
+  flex-grow: 1;
+  overflow: hidden;
+  display: block;
+}
+
+.stylizer-element {
+  background: @InspectorElementBackground;
+  color: @InspectorElementText;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  cursor: pointer;
+  width: fit-content;
+  font-size: 13px;
+  font-weight: 300;
+  border-left: 5px solid @InspectorElementBackground;
+}
+
+.stylizer-element.overridden {
+  background: darken(@ColorBlue, 40%);
+}
+
+.stylizer-element.active {
+  background: @ColorGreen;
+}
+
+.stylizer-element.changed {
+  background: @ColorOrange;
+}
+
+.stylizer-element.parents:not(.processed) {
+  border-left: 5px solid lighten(@InspectorElementBackground, 20%);
+}
+
+.stylizer-element.parents.processed {
+  border-left: 5px solid lighten(@InspectorElementBackground, 3%);
+}
+
+[data-depth] {
+  margin-left: (10 * @InspectorElementMargin);
+}
+
+.data-depth-margin( @depth-margin, @max-depth ) when ( @max-depth >= 0 ) {
+  .data-depth-margin( @depth-margin, @max-depth - 1 );
+
+  [data-depth="@{max-depth}"] {
+    margin-left: (@max-depth * @depth-margin);
+  }
+}
+
+.data-depth-margin(@InspectorElementMargin, 10);
+
+.stylizer-inspector input[type="text"],
+.stylizer-inspector input[type="url"],
+.stylizer-inspector input[type="number"],
+.stylizer-inspector input[type="tel"],
+.stylizer-inspector select,
+.stylizer-inspector textarea {
+  background: @FormElementBackground;
+  border: 1px solid @FormElementBorder;
+  color: @FormElementText;
+  padding: 10px;
+  line-height: 120%;
+  min-height: 30px;
+  font-size: 14px;
+  border-radius: 0;
+  margin: 0;
+}
+
+.stylizer-inspector label {
+  font-size: 13px;
+  margin-bottom: 3px;
+  font-weight: 300;
+  display: block;
+}
+
+.stylizer-tabs-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+.stylizer-tabs {
+  background: @TabsBackground;
+  color: @TabsText;
+  padding-top: 5px;
+  max-width: 180px;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.stylizer-tabs-contents {
+  background: @TabsActiveBackground;
+  flex-grow: 1;
+}
+
+.stylizer-tab-element {
+  padding: 10px 20px;
+  font-size: 14px;
+  display: block;
+  cursor: pointer;
+}
+
+.stylizer-tab-element.active {
+  background: @TabsActiveBackground;
+  color: @TabsActiveText;
+}
+
+.scrollarea-content {
+  width: auto;
+  display: table;
+}
