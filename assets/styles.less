@@ -19,12 +19,13 @@
 @TabsActiveBackground: #081c27;
 @TabsActiveText: #13a6d9;
 
+@OverlayMarginBackground: #ff3884;
+@OverlayPaddingBackground: #ffbf80;
+@OverlayContentBackground: #edff7b;
+
 @ColorBlue: #195e8a;
 @ColorGreen: #4b9701;
 @ColorOrange: #7d3d05;
-
-@ElementActiveBackground: rgba(17, 73, 116, 0.7);
-@ElementActiveBorder: 1px solid rgba(0,0,0,0.4);
 
 body[stylizer-active="false"] {
   padding-bottom: 303px;
@@ -298,10 +299,34 @@ body[stylizer-active="true"] {
   min-width: 20px !important;
 }
 
-html body .stylizer-element-active {
-  background: @ElementActiveBackground !important;
-  border: @ElementActiveBorder !important;
-  box-sizing: border-box !important;
+.stylizer-overlay-box {
+  position: fixed;
+  z-index: 9999999;
+  bottom: 0;
+  left: 0;
+  background: @OverlayMarginBackground;
+  display: flex;
+  flex-direction: column;
+  opacity: 0.4;
 }
 
+.stylizer-overlay-margin {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
 
+.stylizer-overlay-padding {
+  background: @OverlayPaddingBackground;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.stylizer-overlay-content {
+  background: @OverlayContentBackground;
+  width: 0;
+  height: 0;
+}
