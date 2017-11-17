@@ -1,23 +1,22 @@
 {
   "name": "@jxdev/react-dom-inspector",
   "version": "1.0.0",
-  "description": "Parsing DOM and create a list of structured Object",
+  "description": "Package for creating DOM Navigator with Form for changing the element style.",
   "main": "index.js",
   "directories": {
     "example": "examples",
     "test": "test"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
-    "chai": "^4.1.2",
     "lodash": "^4.17.4",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
     "react-icons": "^2.2.7",
-    "react-scrollbar": "^0.5.1",
-    "webpack-dev-server": "^2.9.4"
+    "react-scrollbar": "^0.5.1"
   },
   "devDependencies": {
+    "chai": "^4.1.2",
+    "babel-polyfill": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-syntax-class-properties": "^6.13.0",
@@ -37,7 +36,8 @@
     "style-loader": "^0.19.0",
     "svg-loader": "0.0.2",
     "transform-runtime": "0.0.0",
-    "webpack": "^3.8.1"
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.4"
   },
   "scripts": {
     "test": "mocha"
