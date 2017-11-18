@@ -17,15 +17,21 @@
 @FormElementBackground: #213946;
 @FormElementBorder: #040f15;
 @FormElementText: #d3f7ff;
+@FormElementHeaderText: #13a6d9;
 
 @TabsBackground: #03141d;
 @TabsText: #6d8d95;
 @TabsActiveBackground: #081c27;
 @TabsActiveText: #13a6d9;
 
-@OverlayMarginBackground: #ff3884;
+@OverlayMarginBackground: #ff929a;
 @OverlayPaddingBackground: #ffbf80;
 @OverlayContentBackground: #edff7b;
+
+@BadgesBackground: #040f15;
+@BadgesText: #6d8d95;
+@BadgesActiveBackground: #137fad;
+@BadgesActiveText: #d3f7ff;
 
 @ColorBlue: #195e8a;
 @ColorGreen: #4b9701;
@@ -42,7 +48,7 @@
   z-index: 99999;
   background: @InspectorBackground;
   width: 100%;
-  height: 300px;
+  height: 320px;
   display: flex;
   flex-direction: row;
   flex-grow: 1;
@@ -200,13 +206,17 @@
   background: @FormElementBackground;
   border: 1px solid @FormElementBorder;
   color: @FormElementText;
-  padding: 8px 10px;
+  padding: 5px 10px;
   line-height: 120%;
-  min-height: 30px;
+  min-height: none;
   height: auto;
   font-size: 13px;
   border-radius: 0;
   margin: 0;
+}
+
+.stylizer-form-item {
+  margin-bottom: 5px;
 }
 
 .stylizer-inspector label {
@@ -214,6 +224,36 @@
   margin-bottom: 3px;
   font-weight: 300;
   display: block;
+}
+
+.stylizer-form-header {
+  font-size: 12px;
+  margin-bottom: 5px;
+  color: @FormElementHeaderText;
+  font-weight: 300;
+}
+
+.stylizer-form-group {
+  margin-bottom: 7px;
+}
+
+.stylizer-form-row {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  flex-wrap: nowrap;
+}
+
+.stylizer-form-row > * {
+  padding: 0 7px;
+}
+
+.stylizer-form-row > *:first-child {
+  padding-left: 0;
+}
+
+.stylizer-form-row > *:last-child {
+  padding-right: 0;
 }
 
 .stylizer-tabs-wrapper {
@@ -314,6 +354,49 @@
   height: 0;
 }
 
+.stylizer-selector-empty {
+  font-size: 14px;
+  text-align: center;
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.stylizer-selector-badges {
+  font-size: 12px;
+  display: flex;
+  flex-direction: row;
+}
+
+.stylizer-selector-badge {
+  display: flex;
+  flex-direction: row;
+  margin: 5px 0;
+  cursor: pointer;
+  align-items: center;
+}
+
+.stylizer-selector-badges-text {
+  background: @BadgesBackground;
+  color: @BadgesText;
+  padding: 4px 8px;
+  border-radius: 4px;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stylizer-selector-badge.active .stylizer-selector-badges-text {
+  background: @BadgesActiveBackground;
+  color: @BadgesActiveText;
+}
+
+.stylizer-selector-badges-separator {
+  margin: 0 5px;
+}
+
 
 /**
   Vertical Overrides
@@ -394,7 +477,7 @@ body[stylizer-active="true"][stylizer-vertical="true"] {
   Horizontal Overrides
   **/
 body[stylizer-active="false"][stylizer-vertical="false"] {
-  padding-bottom: 303px;
+  padding-bottom: 323px;
 }
 
 body[stylizer-active="true"][stylizer-vertical="false"] {

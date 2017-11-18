@@ -1,11 +1,11 @@
 import React from 'react';
 import ScrollArea from 'react-scrollbar';
-import HamburgerIcon from 'react-icons/lib/io/navicon-round';
+import HamburgerIcon from '../../node_modules/react-icons/lib/io/navicon-round';
 import Iterator from '../modules/Iterator';
 import Items from './Items';
 
 
-class InspectorPanel extends React.Component {
+class Inspector extends React.Component {
 
     state = {
         active: false,
@@ -112,4 +112,4 @@ class InspectorPanel extends React.Component {
     };
 }
 
-export default InspectorPanel;
+export default Inspector;

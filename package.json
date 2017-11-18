@@ -4,6 +4,7 @@
   "description": "Package for creating DOM Navigator with Form for changing the element style.",
   "main": "index.js",
   "directories": {
+    "components": "components",
     "example": "examples",
     "test": "test"
   },

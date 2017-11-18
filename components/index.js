@@ -1,19 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Iterator from '../modules/Iterator';
-import InspectorPanel from './InspectorPanel';
-import EditorPanel from './EditorPanel';
-import Overlay from './Overlay';
+import Iterator from './modules/Iterator';
+import DOMHelper from './modules/DOMHelper';
+import InspectorPanel from './views/Inspector';
+import EditorPanel from './views/Editor';
+import Overlay from './views/Overlay';
 import { forEach } from 'lodash';
+import './../assets/styles.less';
 
-class Inspector extends React.Component {
+export default class Inspector extends React.Component {
 
     state = {
         minimize: false,
         activateNode: false,
         hover: false,
         saving: false,
-        vertical: true,
+        vertical: false,
         overlay: {}
     };
 
@@ -24,6 +26,7 @@ class Inspector extends React.Component {
 
     allowNavigator = true;
     iterator = false;
+    DOMHelper = false;
     hoverCache = false;
     originalData = null;
     storedData = {};
@@ -37,6 +40,7 @@ class Inspector extends React.Component {
             this.allowNavigator = props.allowNavigator;
         }
         this.iterator = new Iterator();
+        this.DOMHelper = new DOMHelper();
         this.storeData();
     };
 
@@ -105,23 +109,10 @@ class Inspector extends React.Component {
     };
 
     storeData = () => {
-
         if (this.originalData !== null) {
             return;
         }
-
-        let sheets = document.styleSheets, sheet = false;
-        for (var i in sheets) {
-            let styleNode = sheets[i].ownerNode;
-            if (styleNode && styleNode.getAttribute('id') === 'jxdev-stylizer') {
-                sheet = sheets[i];
-                break;
-            }
-        }
-
-        if (sheet) {
-            this.originalData = sheet.rules || sheet.cssRules;
-        }
+        this.originalData = this.DOMHelper.styleSheet({id: 'jxdev-stylizer'}, 'content');
     };
 
     // @todo expand this with css parser and iterator resets!
@@ -138,68 +129,20 @@ class Inspector extends React.Component {
         this.setState({ node: node });
     };
 
-    // @todo clean this mess up, maybe create a single function to track parents?
-    detectIfInsideStyllizer = (e) => {
-        let bailOut = false;
-
-        if (e.path) {
-            forEach(e.path, (parent) => {
-
-                if (parent.id && parent.id === 'dom-inspector') {
-                    bailOut = true;
-                }
-                else if (parent.className && parent.className.match) {
-                    let string = parent.className.match(/\bstylizer\b/);
-                    if (string && string.length !== -1) {
-                        bailOut = true;
-                    }
-                }
-                else if (parent.hasAttribute && parent.hasAttribute('stylizer-inspector')) {
-                    bailOut = true;
-                }
-
-                if (bailOut) {
-                    return false;
-                }
-            });
-        }
-        else {
-            let tracker = e;
-            while (tracker) {
-                if (tracker.hasAttribute && tracker.hasAttribute('stylizer-inspector')) {
-                    bailOut = true;
-                    break;
-                }
-                tracker = tracker.parentElement;
-            }
-        }
-
-        return bailOut;
+    detectIfInsideStylizer = (node) => {
+        return this.DOMHelper.closest(node, {id: 'dom-inspector', className: '\\bstylizer\\b', hasAttribute: 'stylizer-inspector'}, 'boolean');
     };
 
-    // @todo clean this mess up
     retrieveOrBuildStorage = (node) => {
-        let tracker = node, nodeToParentDepth = 1;
-        // @todo this is duplicate function, maybe merge with detectIfInsideStylizer?
-        while (tracker) {
-            if (tracker.hasAttribute && tracker.hasAttribute('stylizer-uuid')) {
-                break;
-            }
-            tracker = tracker.parentElement;
-            nodeToParentDepth++;
+        let tracker = this.DOMHelper.closest(node, {hasAttribute: 'stylizer-uuid'}, 'both');
+        if (tracker.depth > 1) {
+            let Store = this.iterator.findNode(tracker.node.getAttribute('stylizer-uuid'));
+            this.iterator.iterate(tracker.node, Store, Store.depth, Store.depth + tracker.depth, Store.tree);
         }
 
-        if (nodeToParentDepth > 1) {
-            let Store = this.iterator.findNode(tracker.getAttribute('stylizer-uuid'));
-            this.iterator.iterate(tracker, Store, Store.depth, Store.depth + nodeToParentDepth, Store.tree);
-        }
-
+        tracker = null;
         let targetNode = this.iterator.findNode(node.getAttribute('stylizer-uuid'));
-        if (targetNode) {
-            return targetNode;
-        }
-
-        return false;
+        return targetNode ? targetNode : false;
     };
 
     captureNode = (e) => {
@@ -208,7 +151,7 @@ class Inspector extends React.Component {
             e.preventDefault();
         }
 
-        if (this.detectIfInsideStyllizer(node) || node.nodeName.toLowerCase() === 'img') {
+        if (this.detectIfInsideStylizer(node) || node.nodeName.toLowerCase() === 'img') {
             return true;
         }
 
@@ -225,8 +168,10 @@ class Inspector extends React.Component {
     };
 
     moveOverlay = (e) => {
-        let node = e.target, nodeName = node.nodeName.toLowerCase();
-        if (this.detectIfInsideStyllizer(e)
+        let node = e.target,
+            nodeName = node.nodeName.toLowerCase();
+
+        if (this.detectIfInsideStylizer(node)
             || nodeName === 'img'
             || nodeName === 'html'
             || nodeName === 'body') {
@@ -240,8 +185,18 @@ class Inspector extends React.Component {
         }
 
         this.hoverCache = e;
-        this.setState({overlay: node});
-        this.captureNode(e);
+        this.state.overlay = node;
+
+        let StoreObject = this.retrieveOrBuildStorage(node);
+        if (StoreObject) {
+            if (!this.allowNavigator) {
+                this.setActiveNode(StoreObject);
+            }
+            else {
+                // Let navigator refresh their markup
+                this.setState({ activateNode: StoreObject });
+            }
+        }
     };
 
     render() {
@@ -268,5 +223,3 @@ class Inspector extends React.Component {
         )
     };
 }
-
-export default Inspector;
