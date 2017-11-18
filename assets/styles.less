@@ -36,6 +36,7 @@
 @ColorBlue: #195e8a;
 @ColorGreen: #4b9701;
 @ColorOrange: #7d3d05;
+@ColorRed: #c50313;
 
 
 /**
@@ -228,13 +229,15 @@
 
 .stylizer-form-header {
   font-size: 12px;
-  margin-bottom: 5px;
-  color: @FormElementHeaderText;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  color: @FormElementText;
   font-weight: 300;
+  border-bottom: 1px solid darken(@TabsActiveBackground, 5%);
 }
 
 .stylizer-form-group {
-  margin-bottom: 7px;
+  margin-bottom: 18px;
 }
 
 .stylizer-form-row {
@@ -254,6 +257,39 @@
 
 .stylizer-form-row > *:last-child {
   padding-right: 0;
+}
+
+.stylizer-form-label {
+  text-transform: capitalize;
+}
+
+.stylizer-has-error .stylizer-form-input {
+  border-color: @ColorRed !important;
+}
+
+.stylizer-error-bag {
+  font-size: 13px;
+  padding: 3px;
+  color: @ColorRed;
+}
+
+.stylizer-label-inline {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.stylizer-label-inline .stylizer-form-input {
+  max-width: 120px;
+}
+
+
+.stylizer-label-inline .stylizer-form-label {
+  margin-right: 20px;
+  flex-grow: 1;
+}
+
+.stylizer-label-inline .stylizer-error-bag {
+  margin-left: 10px;
 }
 
 .stylizer-tabs-wrapper {
@@ -284,7 +320,7 @@
   cursor: pointer;
   text-transform: capitalize;
   flex-grow: 1;
-  border-bottom: 1px solid darken(@TabsBackground, 5%);
+  border-bottom: 1px solid darken(@TabsActiveBackground, 5%);
 }
 
 .stylizer-tab-element.active {

@@ -61,7 +61,7 @@ class Store {
 
         let node = this.trackNode(), sheets = document.styleSheets;
 
-        this.styles = [];
+        this.styles = {};
 
         if (node) {
             for (let i in sheets) {
@@ -159,25 +159,13 @@ class Store {
         set(this, target, value);
     };
 
-    storeCSS = () => {
-        this.css = this.getStyling();
-    };
-
     getStyling = () => {
         let rules = [];
-        forEach(this.stored, (value, rule) => {
-            //if (!value.length || !rule.length) {
-                rules.push(rule + ': ' + value + ';');
-            //}
+        forEach(this.styles, (value, rule) => {
+            rules.push(rule + ': ' + value + ';');
         });
-
         return this.selector + ' {' + rules.join(' ') + '}';
     };
-
-    generateStyleSheet = () => {
-        Store.StyleSheet = (new DOMHelper()).styleSheet({id: 'jxdev-stylizer'}, 'all');
-    };
-
 
     generateSelector = () => {
         let keys = [], reversedSelector = this.tree.slice(0).reverse();

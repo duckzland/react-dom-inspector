@@ -20,12 +20,13 @@ class Selector extends React.Component {
     };
 
     trackBadgeSelector = () => {
-        const { node }  = this.state;
+        const { state } = this;
+        const { node }  = state;
 
-        this.state.activeBadges = [];
-        node.tree && node.tree.map((item, delta) => {
+        state.activeBadges = [];
+        node.tree && node.tree.map((item) => {
             if (item.indexOf(node.selector) !== -1) {
-                this.state.activeBadges.push(item);
+                state.activeBadges.push(item);
             }
         });
     };
@@ -42,16 +43,20 @@ class Selector extends React.Component {
     };
 
     toggleBadge = (selector) => {
-        let Index = this.state.activeBadges.indexOf(selector);
+
+        const { state } = this;
+        const { activeBadges } = state;
+
+        let Index = activeBadges.indexOf(selector);
         if (Index === -1) {
-            this.state.activeBadges.push(selector);
+            activeBadges.push(selector);
         }
         else {
-            this.state.activeBadges.splice(Index, 1);
+            activeBadges.splice(Index, 1);
         }
         this.buildBadgeSelector();
         this.setState({
-            activeBadges: this.state.activeBadges
+            activeBadges: activeBadges
         });
     };
 
@@ -65,11 +70,28 @@ class Selector extends React.Component {
         const { node } = state;
         const { root } = props;
 
+        let className = ['stylizer-form-item'];
+        if (root.hasError('selector')) {
+            className.push('stylizer-has-error');
+        }
+
         return (
             <div key="stylizer-tab-selector" className="stylizer-tab-content stylizer-content">
-                <div className="stylizer-form-item">
-                    <label>Selector</label>
-                    <input key={ 'input-selector-' + node.uuid + '-' + node.selector } type="text" defaultValue={ node.selector } name="selector" onChange={ (e) => root.rebuildStyling(e) } />
+                <div key={ 'selector-' + className.join('-') } className={ className.join(' ') }>
+                    <label className="stylizer-form-label">Selector</label>
+                    <input type="text"
+                           name="selector"
+                           className="stylizer-form-input"
+                           key={ 'input-selector-' + node.uuid + '-' + node.selector }
+                           defaultValue={ node.selector }
+                           onBlur={ (e) => root.rebuildStyling(e) } />
+                    {
+                        root.hasError('selector')
+                        && <div key={ 'input-selector-error-' + node.uuid + '-' + node.selector }
+                                className="stylizer-error-bag">
+                                    Invalid CSS Selector
+                            </div>
+                    }
                 </div>
                 <div className="stylizer-selector-badges">
                     {

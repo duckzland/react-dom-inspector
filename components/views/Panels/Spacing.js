@@ -4,14 +4,12 @@ import { get, forEach } from 'lodash';
 class Spacing extends React.Component {
 
     state = {
-        node: false,
-        stored: [],
+        node: false
     };
 
     constructor(props) {
         super(props);
         this.state.node = 'node' in props ?  props.node : false;
-        this.state.stored = get('node.stored.position');
     };
 
     componentWillReceiveProps(nextProps) {
@@ -40,7 +38,7 @@ class Spacing extends React.Component {
                     { title: 'top', target: 'margin-top' },
                     { title: 'left', target: 'margin-left' },
                     { title: 'right', target: 'margin-right' },
-                    { title: 'bottom', target: 'margin-bottom' },
+                    { title: 'bottom', target: 'margin-bottom' }
                 ]
             },
             {
@@ -50,7 +48,7 @@ class Spacing extends React.Component {
                     { title: 'top', target: 'padding-top' },
                     { title: 'left', target: 'padding-left' },
                     { title: 'right', target: 'padding-right' },
-                    { title: 'bottom', target: 'padding-bottom' },
+                    { title: 'bottom', target: 'padding-bottom' }
                 ]
             }
         ];
@@ -66,10 +64,26 @@ class Spacing extends React.Component {
                                 </h3>
                                 <div className="stylizer-form-row">
                                     { row.elements && row.elements.map( (el) => {
+                                        let className = ['stylizer-form-item', 'stylizer-label-inline'];
+                                        if (root.hasError('styles.' + el.target)) {
+                                            className.push('stylizer-has-error');
+                                        }
                                         return (
-                                            <div key={ el.target } className="stylizer-form-item">
-                                                <label>{ el.title }</label>
-                                                <input type="text" key={ 'input-' + el.target + '-' + node.uuid } defaultValue={ get(node, 'styles.' + el.target, '') } name={ 'stored.' + el.target } onChange={ (e) => root.rebuildStyling(e) } />
+                                            <div key={ el.target + '-' + className.join('-') } className={ className.join(' ') }>
+                                                <label className="stylizer-form-label">{ el.title }</label>
+                                                <input type="text"
+                                                       className="stylizer-form-input"
+                                                       name={ 'styles.' + el.target }
+                                                       key={ 'input-' + el.target + '-' + node.uuid }
+                                                       defaultValue={ get(node, 'styles.' + el.target) }
+                                                       onBlur={ (e) => root.rebuildStyling(e) } />
+                                                {
+                                                    root.hasError('styles.' + el.target)
+                                                    && <div key={ 'input-' + el.target + '-error-' + node.uuid + '-' + node.selector }
+                                                            className="stylizer-error-bag">
+                                                            Invalid CSS value
+                                                        </div>
+                                                }
                                             </div>
                                         )
                                     })}

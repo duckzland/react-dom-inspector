@@ -20,7 +20,8 @@ class Editor extends React.Component {
     state = {
         active: 'spacing',
         node: false,
-        root: false
+        root: false,
+        errors: {}
     };
 
     styleElement = false;
@@ -56,19 +57,62 @@ class Editor extends React.Component {
         this.state.node && 'generateStyling' in this.state.node && this.state.node.generateStyling();
     };
 
-    rebuildStyling = (e) => {
-        let sheet = this.styleElement;
-        for (var i=0; i< sheet.cssRules.length; i++) {
-            if (sheet.cssRules[i].selectorText === this.state.node.selector) {
-                sheet.deleteRule(i);
-            }
+    validateSelector = (selector) =>  {
+        let dummy = document.createElement('span'),
+            validated = true;
+
+        try {
+            dummy.querySelector(selector);
         }
 
-        this.state.node.storeStyling(e.target.name, e.target.value);
-        let updatedStyling = this.state.node.getStyling();
+        catch (error) {
+            validated = false;
+        }
 
-        this.styleElement.insertRule(updatedStyling);
+        return validated;
+    };
+
+    validateCSSRule = (directive, rule) => {
+        let dummy = document.createElement('span');
+        directive = directive.replace('stored.', '').replace('styles.', '');
+        dummy.style[directive] = rule;
+        return  dummy.style[directive] === rule;
+    };
+
+    rebuildStyling = (e) => {
+
+        const { name, value } = e.target;
+        const { validateSelector, validateCSSRule, styleElement, hasError, setError, state } = this;
+        const { node } = state;
+
+        setError(name, name === 'selector' ? !validateSelector(value) : !validateCSSRule(name, value), false);
+
+        if (!hasError(name)) {
+            for (var i = 0; i < styleElement.cssRules.length; i++) {
+                if (styleElement.cssRules[i].selectorText === node.selector) {
+                    styleElement.deleteRule(i);
+                }
+            }
+
+            node.storeStyling(name, value);
+            styleElement.insertRule(node.getStyling());
+
+        }
+
+        this.setState({ errors: this.state.errors });
+
         return this;
+    };
+
+    hasError = (key) => {
+        return this.state.errors[key] ? this.state.errors[key] : false;
+    };
+
+    setError = (key, value, update = true) => {
+        this.state.errors[key] = value;
+        if (update) {
+            this.setState({errors: this.state.errors});
+        }
     };
 
     onChangeTab = (tabKey) => {
@@ -77,28 +121,26 @@ class Editor extends React.Component {
 
     render() {
 
-        let { onChangeTab, state, props } = this;
-        const { root } = state;
-        const { node } = props;
+        let { onChangeTab, state } = this;
+        const { root, node } = state;
 
-        let ActivePanel = [];
+        let ActivePanel = [], nodeKey = node && node.uuid ? node.uuid : 'empty';
         switch (state.active) {
             case 'selector' :
-                ActivePanel.push(<SelectorPanel key="stylizer-active-panel" { ...state } root={ this } />);
+                ActivePanel.push(<SelectorPanel key={ 'stylizer-active-panel-' + nodeKey } { ...state } root={ this } />);
                 break;
             case 'border' :
-                ActivePanel.push(<BorderPanel key="stylizer-active-panel" { ...state } root={ this } />);
+                ActivePanel.push(<BorderPanel key={ 'stylizer-active-panel-' + nodeKey } { ...state } root={ this } />);
                 break;
             case 'spacing' :
-                ActivePanel.push(<SpacingPanel key="stylizer-active-panel" { ...state } root={ this } />);
+                ActivePanel.push(<SpacingPanel key={ 'stylizer-active-panel-' + nodeKey } { ...state } root={ this } />);
                 break;
             case 'styles' :
-                ActivePanel.push(<StylesPanel key="stylizer-active-panel" { ...state } root={ this } />);
+                ActivePanel.push(<StylesPanel key={ 'stylizer-active-panel-' + nodeKey } { ...state } root={ this } />);
                 break;
             case 'typography' :
-                ActivePanel.push(<TypographyPanel key="stylizer-active-panel" { ...state } root={ this } />);
+                ActivePanel.push(<TypographyPanel key={ 'stylizer-active-panel-' + nodeKey } { ...state } root={ this } />);
                 break;
-
         }
 
         return (
