@@ -33,7 +33,7 @@ class Editor extends React.Component {
     constructor(props) {
         super(props);
 
-        this.styleElement = (new DOMHelper()).styleSheet({id: 'jxdev-stylizer'}, 'style');
+        this.styleElement = (new DOMHelper()).styleSheet({id: 'stylizer-source'}, 'style');
 
         if ('config' in props)  {
             Object.assign(this.config, props.config);
@@ -49,6 +49,9 @@ class Editor extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
+        if ('refresh' in nextProps && nextProps.refresh) {
+            this.styleElement = (new DOMHelper()).styleSheet({id: 'stylizer-source'}, 'style');
+        }
         this.state.node = nextProps.node;
         this.getStyling();
     }

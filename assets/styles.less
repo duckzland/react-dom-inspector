@@ -463,7 +463,9 @@ body[stylizer-active="true"][stylizer-vertical="true"] {
 }
 
 [stylizer-vertical="true"] .stylizer-dom-panel {
-  max-height: 50%;
+  max-height: 40%;
+  height: 40%;
+  min-height: 40%;
 }
 
 [stylizer-vertical="true"] .stylizer-panels.minimize {
@@ -507,6 +509,25 @@ body[stylizer-active="true"][stylizer-vertical="true"] {
   border-bottom: none;
   padding: 10px 14px;
   font-size: 10px;
+}
+
+[stylizer-vertical="true"] .stylizer-selector-empty {
+  flex-direction: column;
+}
+
+[stylizer-vertical="true"] .stylizer-label-inline {
+  align-items: flex-start;
+  max-width: 25%;
+  flex-wrap: wrap;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 0 7px;
+  margin-bottom: 10px;
+}
+
+[stylizer-vertical="true"] .stylizer-form-row {
+  flex-wrap: wrap;
+  margin: 0 -7px;
 }
 
 /**

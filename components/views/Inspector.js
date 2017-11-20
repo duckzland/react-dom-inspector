@@ -1,9 +1,9 @@
 import React from 'react';
 import ScrollArea from 'react-scrollbar';
+import { get } from 'lodash';
 import HamburgerIcon from '../../node_modules/react-icons/lib/io/navicon-round';
 import Iterator from '../modules/Iterator';
 import Items from './Items';
-
 
 class Inspector extends React.Component {
 
@@ -27,14 +27,22 @@ class Inspector extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        // Parent force to refresh
-        if (nextProps.activateNode) {
-            this.activateNode(nextProps.activateNode);
+        if ('refresh' in nextProps && nextProps.refresh) {
+            this.resetNodeStatus();
+        }
+        if ('node' in nextProps && nextProps.node) {
+            this.activateNode(nextProps.node);
         }
     };
 
     componentDidUpdate() {
         this.refresh = false;
+    };
+
+    resetNodeStatus() {
+        this.getStorage().map((node) => {
+            node.reset();
+        });
     };
 
     /**
@@ -43,20 +51,22 @@ class Inspector extends React.Component {
      */
     activateNode = (node) => {
 
-        const { root } = this.props;
+        const { props, iterator, state } = this;
+        const { findNode, iterate } = iterator;
+        const { root } = props;
 
         if (node.hasChildren && !node.processed) {
 
-            this.iterator.iterate(node.trackNode(), node, node.depth, node.depth + 2, node.tree);
+            iterate(node.trackNode(), node, node.depth, node.depth + 2, node.tree);
             this.refresh = true;
 
-            let currentNode = this.iterator.findNode(node.uuid);
+            let currentNode = findNode(node.uuid);
             if (currentNode && currentNode.uuid) {
                 node = currentNode;
             }
         }
 
-        let prevActive = this.iterator.findNode(this.state.active);
+        let prevActive = findNode(state.active);
         if (prevActive && prevActive.uuid) {
             prevActive.refresh = true;
             prevActive.active = false;
@@ -66,45 +76,56 @@ class Inspector extends React.Component {
         node.active = true;
 
         this.setState({ active : node.uuid });
-
         root.setActiveNode(node);
-    };
-
-    toggleMinimize = () => {
-        this.setState({ minimize: !this.state.minimize });
     };
 
     render() {
 
-        const { iterator, toggleMinimize, state } = this;
-        let className = [
-            'stylizer-panels',
-            'stylizer-dom-panel'
-        ];
-        if (state.minimize) {
-            className.push('minimize');
-        }
+        const { iterator, toggleMinimize, state, config } = this;
 
-        className = className.join(' ');
+        const panelProps = get(config, 'panelProps', {
+            key: 'stylizer-iterator-panel',
+            className: [ 'stylizer-panels', 'stylizer-dom-panel', state.minimize ? 'minimize' : ''].join(' ')
+        });
+
+        const headerProps = get(config, 'headerProps', {
+            key: 'stylizer-iterator-header',
+            className: 'stylizer-header'
+        });
+
+        const headerTextProps = get(config, 'headerTextProps', {
+            key: 'stylizer-iterator-header-text',
+            className: 'stylizer-header-text'
+        });
+
+        const headerActionProps = get(config, 'headerActionProps', {
+            key: 'stylizer-iterator-header-actions',
+            className: 'stylizer-header-actions'
+        });
+
+        const hamburgerIconProps = get(config, 'hamburgerIconProps', {
+            size: 16,
+            onClick: () => { this.setState({ minimize: !this.state.minimize }); }
+        });
+
+        const scrollAreaProps = get(config, 'scrollAreaProps', {
+            key: 'stylizer-iterator',
+            speed: 0.8,
+            className: 'stylizer-content stylizer-iterator',
+            contentClassName: 'content',
+            horizontal: true
+        });
 
         return (
-            <div key="stylizer-iterator-panel" className={ className }>
-                <h3 key="stylizer-iterator-header" className="stylizer-header">
-                    <span key="stylizer-iterator-header-text" className="stylizer-header-text">
-                        { this.config.headerText }
-                    </span>
-                    <span key="stylizer-iterator-header-actions" className="stylizer-header-actions">
-                        <HamburgerIcon size="16" onClick={ () => { toggleMinimize(); } } />
-                    </span>
+            <div { ...panelProps }>
+                <h3 { ...headerProps }>
+                    <span { ...headerTextProps }>{ config.headerText }</span>
+                    <span { ...headerActionProps }><HamburgerIcon { ...hamburgerIconProps } /></span>
                 </h3>
-                <ScrollArea
-                    key="stylizer-iterator"
-                    speed={0.8}
-                    className="stylizer-content stylizer-iterator"
-                    contentClassName="content"
-                    horizontal={ true }>
+                <ScrollArea { ...scrollAreaProps }>
                     { iterator.getStorage().map((node, delta) => {
-                        return ( <Items key={ delta } root={ this } node={ node } /> );
+                        const itemProps = { key: delta, root: this, node: node };
+                        return ( <Items { ...itemProps } /> );
                     })}
                 </ScrollArea>
             </div>

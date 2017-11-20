@@ -1,6 +1,10 @@
 import { forEach, get, add, set, isNumber, pickBy} from 'lodash';
-import Parser from './Parser';
 
+/**
+ * Helper Class for emulating DOM parsing
+ *
+ * @author jason.xie@victheme.com
+ */
 class DOMHelper {
 
     constructor() {
@@ -101,6 +105,8 @@ class DOMHelper {
                             return sheets[i].ownerNode;
                         case 'content' :
                             return sheets[i].rules || sheets[i].cssRules;
+                        case 'text' :
+                            return sheets[i].cssText;
                         case 'both' :
                             return {
                                 node: sheets[i],

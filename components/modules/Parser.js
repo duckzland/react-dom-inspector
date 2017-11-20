@@ -6,7 +6,6 @@ class Parser {
         return this.parseCSS(style);
     }
 
-    /** Slow tune this! **/
     parseCSS = (source) => {
         this.styles = [];
         this.combinedCSSRegex = '((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})'; //to match css & media queries together

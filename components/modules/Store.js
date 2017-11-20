@@ -2,18 +2,31 @@ import { forEach, set} from 'lodash';
 import Parser from './Parser';
 import DOMHelper from './DOMHelper';
 
+/**
+ * Class for Linking between Node and Dom inspector
+ *
+ * @author jason.xie@victheme.com
+ */
 class Store {
 
-    constructor(node, depth, selectors) {
+    config = {
+        domID: 'dom-inspector',
+        sheetID: 'stylizer-source',
+        stylizerAttribute: 'stylizer-uuid'
+    };
 
+    constructor(node, depth, selectors, config = false) {
+
+        config && Object.assign(this.config, config);
+        
         node.matches = node.matches
             || node.webkitMatchesSelector
             || node.mozMatchesSelector
             || node.msMatchesSelector
             || node.oMatchesSelector;
 
-        if (!node.hasAttribute('stylizer-uuid')) {
-            node.setAttribute('stylizer-uuid', this.generateUUID());
+        if (!node.hasAttribute(this.config.stylizerAttribute)) {
+            node.setAttribute(this.config.stylizerAttribute, this.generateUUID());
         }
 
         this.key = selectors.join(' > ');
@@ -23,17 +36,18 @@ class Store {
         this.depth = depth;
         this.tree = selectors;
         this.unit = selectors.slice(-1)[0];
-        this.uuid = node.getAttribute('stylizer-uuid');
+        this.uuid = node.getAttribute(this.config.stylizerAttribute);
         this.hasChildren = this.detectChildElement(node);
         this.processed = false;
         this.refresh = false;
         this.active = false;
+        this.changed = false;
 
         this.generateSelector();
     };
 
     trackNode = () => {
-        let node = document.querySelectorAll('[stylizer-uuid="' + this.uuid + '"]');
+        let node = document.querySelectorAll('[' + this.config.stylizerAttribute + '="' + this.uuid + '"]');
         return node.length !== 0 ? node[0] : false ;
     };
 
@@ -63,78 +77,6 @@ class Store {
         )
     };
 
-    generateStylingFromAllStylesheets = () => {
-
-        let node = this.trackNode(), sheets = document.styleSheets;
-
-        this.styles = {};
-
-        if (node) {
-            for (let i in sheets) {
-                let sheet = sheets[i],
-                    rules = sheet.rules || sheet.cssRules;
-
-                for (let r in rules) {
-                    if (node.matches(rules[r].selectorText)) {
-                        let parsed = new Parser(rules[r].cssText);
-                        for (let x in parsed) {
-                            for (let y in parsed[x].rules) {
-
-                                let directive = parsed[x].rules[y].directive,
-                                    value = parsed[x].rules[y].value;
-
-                                elements.removeAttribute('style');
-                                elements.setAttribute('style', directive + ': ' + value);
-
-                                switch (directive) {
-                                    case 'border-radius' :
-                                    case 'padding' :
-                                    case 'margin' :
-                                        ['top', 'left', 'right', 'bottom'].map((dir) => {
-                                            let path = directive + '-' + dir;
-                                            set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
-                                        });
-                                        break;
-
-                                    case 'border-left' :
-                                    case 'border-right' :
-                                    case 'border-top' :
-                                    case 'border-bottom' :
-                                    case 'border' :
-                                        forEach((directive === 'border' ? [directive] : ['border-top', 'border-left', 'border-right', 'border-bottom']), (dir) => {
-                                            ['width', 'style', 'color'].map((type) => {
-                                                let path = dir + '-' + type;
-                                                set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
-                                            });
-                                        });
-
-                                        break;
-
-                                    case 'font' :
-                                        ['style', 'variant', 'weight', 'stretch', 'size', 'family', 'height'].map((type) => {
-                                            let path = 'font-' + type;
-                                            set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
-                                        });
-                                        break;
-
-                                    case 'background' :
-                                        ['color', 'image', 'position', 'repeat', 'attachment', 'size', 'clip', 'origin'].map((type) => {
-                                            let path = 'background-' + type;
-                                            set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
-                                        });
-                                        break;
-
-                                    default :
-                                        set(this.styles, parsed[x].rules[y].directive, parsed[x].rules[y].value);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    };
-
     generateStyling = () => {
 
         let node = this.trackNode();
@@ -144,7 +86,7 @@ class Store {
             return;
         }
 
-        let rules = (new DOMHelper()).styleSheet({id: 'jxdev-stylizer'}, 'content'),
+        let rules = (new DOMHelper()).styleSheet({ id: this.config.sheetID }, 'content'),
             elements = document.createElement('span');
 
         for (let r in rules) {
@@ -174,13 +116,12 @@ class Store {
                             case 'border-top' :
                             case 'border-bottom' :
                             case 'border' :
-                                forEach((directive === 'border' ? [directive] : ['border-top', 'border-left', 'border-right', 'border-bottom']), (dir) => {
+                                forEach((directive !== 'border' ? [directive] : ['border-top', 'border-left', 'border-right', 'border-bottom']), (dir) => {
                                     ['width', 'style', 'color'].map((type) => {
                                         let path = dir + '-' + type;
                                         set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
                                     });
                                 });
-
                                 break;
 
                             case 'font' :
@@ -206,22 +147,6 @@ class Store {
 
     };
 
-    storeSelector = (value) => {
-        this.selector = value;
-    };
-
-    storeStyling = (target, value) => {
-        set(this.styles, target, value);
-    };
-
-    getStyling = () => {
-        let rules = [];
-        forEach(this.styles, (value, rule) => {
-            rules.push(rule + ': ' + value + ';');
-        });
-        return this.selector + ' {' + rules.join(' ') + '}';
-    };
-
     generateSelector = () => {
         let keys = [], reversedSelector = this.tree.slice(0).reverse();
         forEach(reversedSelector, (selector) => {
@@ -233,6 +158,29 @@ class Store {
 
         this.selector = keys.reverse().join(' > ');
     };
+
+    storeSelector = (value) => {
+        this.selector = value;
+        this.changed = true;
+    };
+
+    storeStyling = (target, value) => {
+        set(this.styles, target, value);
+        this.changed = true;
+    };
+
+    getStyling = () => {
+        let rules = [];
+        forEach(this.styles, (value, rule) => {
+            rules.push(rule + ': ' + value + ';');
+        });
+        return this.selector + ' {' + rules.join(' ') + '}';
+    };
+
+    reset = () => {
+        this.generateStyling();
+        this.changed = false;
+    }
 
 }
 

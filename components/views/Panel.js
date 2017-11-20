@@ -2,16 +2,9 @@ import React from 'react';
 import { get, forEach } from 'lodash';
 
 /**
- * example variables that must be initialized in child class
-    state = {
-        node: false,
-            errors: {},
-            values: {}
-        };
-
-    testerNode = false;
-    fields = [];
-    config = {};
+ * Base Class for Panels
+ *
+ * @author jason.xie@victheme.com
  */
 export default class Panel extends React.Component {
 
@@ -19,7 +12,6 @@ export default class Panel extends React.Component {
         super(props);
     };
 
-    // @note Call this after injecting the state, config, fields via constructor
     initialize(props) {
         this.testerNode = document.createElement('span');
 
@@ -31,6 +23,14 @@ export default class Panel extends React.Component {
 
         if ('config' in props && props.config) {
             this.config = props.config;
+        }
+
+        if (!'config' in this) {
+            this.config = {};
+        }
+
+        if (!'fields' in this) {
+            this.fields = [];
         }
     }
 
@@ -48,11 +48,6 @@ export default class Panel extends React.Component {
             });
         }
     };
-
-    getFields() {
-        console.log(this.fields);
-        return this.fields;
-    }
 
     validate = (directive, rule) => {
         this.testerNode.style[directive] = rule;
@@ -116,8 +111,7 @@ export default class Panel extends React.Component {
         this.setState(refresh);
     };
 
-    // @todo expand the field type into more element like select, textarea, colorpicker
-    // and or special element items
+    // @todo expand the field type into more element like select, textarea, colorpicker and or special element items
     generateElement = (element) => {
         const { submit, state, hasError } = this;
         const elementProps = {

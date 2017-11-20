@@ -1,24 +1,28 @@
 import React from 'react';
-import Iterator from '../modules/Iterator';
-import Parser from '../modules/Parser';
+import { get } from 'lodash';
 
-
+/**
+ * Class for building the Inspector single items
+ *
+ * @author jason.xie@victheme.com
+ */
 class Items extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.config = get(props, 'config', {});
+    };
 
     shouldComponentUpdate(nextProps) {
-        if (nextProps.node.refresh || nextProps.root.refresh) {
-            return true;
-        }
-        return false;
+        return !(nextProps.node.refresh || nextProps.root.refresh) ? false : true;
     }
 
     componentDidUpdate() {
         this.props.node.refresh = false;
     }
 
-    isOverridden = (node) => {
-        return 'stored' in node && node.store && node.store.length !== 0;
+    isLoaded = (node) => {
+        return 'styles' in node && node.styles && node.styles.length !== 0;
     };
 
     isActive = (node) => {
@@ -26,7 +30,7 @@ class Items extends React.Component {
     };
 
     isChanged = (node) => {
-        return 'changes' in node && node.changes && node.changes.length !== 0;
+        return node.changed;
     };
 
     isParent = (node) => {
@@ -39,37 +43,24 @@ class Items extends React.Component {
 
     render() {
 
-        const { isParent, isProcessed, isChanged, isOverridden, isActive, props } = this;
+        const { isParent, isProcessed, isChanged, isLoaded, isActive, props, config } = this;
         const { node, root } = props;
-
-        let className = ['stylizer-element'];
-
-        if (isOverridden(node)) {
-            className.push('overridden');
-        }
-
-        if (isActive(node)) {
-            className.push('active');
-        }
-
-        if (isChanged(node)) {
-            className.push('changed');
-        }
-
-        if (isParent(node)) {
-            className.push('parents');
-        }
-
-        if (isProcessed(node)) {
-            className.push('processed');
-        }
-
-        className = className.join(' ');
+        const itemProps = get(config, 'itemProps', {
+            key: 'item-' + node.uuid,
+            className: [
+                'stylizer-element',
+                isLoaded(node) ? 'loaded' : '',
+                isActive(node) ? 'active' : '',
+                isChanged(node) ? 'changed' : '',
+                isParent(node) ? 'parents' : '',
+                isProcessed(node) ? 'processed' : ''
+            ].join(' '),
+            'data-depth' : node.depth,
+            onClick: () => { root.activateNode(node) }
+        });
 
         return (
-            <div key={ 'item-' + node.uuid } className={ className } data-depth={ node.depth } onClick={ () => { root.activateNode(node) } }>
-                { node.unit }
-            </div>
+            <div { ...itemProps }>{ node.unit }</div>
         )
     };
 }
