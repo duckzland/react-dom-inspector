@@ -1,28 +1,60 @@
-import React from 'react';
+import BasePanel from '../Panel';
 
-class Typography extends React.Component {
+class Typography extends BasePanel {
 
     constructor(props) {
         super(props);
-    };
+        this.state = {
+            node: false,
+            errors: {},
+            values: {}
+        };
 
-    changeSelector = (e) => {
-
-    };
-
-    render() {
-
-        const { changeSelector } = this;
-
-        return (
-            <div key="stylizer-tab-typography" className="stylizer-tab-content stylizer-content">
-                <div className="form-item">
-                    <label>Typography</label>
-                    <input type="text" value="tester" name="stylizer[selector]" onChange={ (e) => changeSelector(e) } />
-                </div>
-            </div>
-        )
-    };
+        this.config = {
+            type: 'typography',
+            empty: null
+        };
+        this.fields = [
+            {
+                key: 'font',
+                title: 'Font',
+                type: 'group',
+                elements: [
+                    {title: 'color', target: 'color', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'style', target: 'font-style', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'weight', target: 'font-weight', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'size', target: 'font-size', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'family', target: 'font-family', type: 'element', field: 'text', default: '', inline: true}
+                ]
+            },
+            {
+                key: 'advanced',
+                title: false,
+                type: 'group',
+                elements: [
+                    {title: 'variant', target: 'font-variant', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'stretch', target: 'font-stretch', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'line height', target: 'line-height', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'vertical align', target: 'vertical-align', type: 'element', field: 'text', default: '', inline: true}
+                ]
+            },
+            {
+                key: 'text-align',
+                title: 'Text',
+                type: 'group',
+                elements: [
+                    {title: 'align', target: 'text-align', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'overflow', target: 'text-overflow', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'justify', target: 'text-justify', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'align last', target: 'text-align-last', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'wrap', target: 'word-wrap', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'break', target: 'word-break', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'white space', target: 'white-space', type: 'element', field: 'text', default: '', inline: true}
+                ]
+            }
+        ];
+        this.initialize(props);
+    }
 }
 
 

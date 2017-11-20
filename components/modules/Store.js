@@ -4,8 +4,6 @@ import DOMHelper from './DOMHelper';
 
 class Store {
 
-    static StyleSheet = null;
-
     constructor(node, depth, selectors) {
 
         node.matches = node.matches
@@ -39,7 +37,7 @@ class Store {
         return node.length !== 0 ? node[0] : false ;
     };
 
-    detectChildElement(node) {
+    detectChildElement = (node) => {
         var child, rv = false;
 
         for (child = node.firstChild; !rv && child; child = child.nextSibling) {
@@ -49,7 +47,15 @@ class Store {
         }
 
         return rv;
-    }
+    };
+
+    validateSelector = (selector, node = false) => {
+        if (!node) {
+            node = this.trackNode();
+        }
+
+        return node ? node.matches(selector) : false;
+    };
 
     generateUUID = () => {
         return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -57,7 +63,7 @@ class Store {
         )
     };
 
-    generateStyling = () => {
+    generateStylingFromAllStylesheets = () => {
 
         let node = this.trackNode(), sheets = document.styleSheets;
 
@@ -75,26 +81,18 @@ class Store {
                             for (let y in parsed[x].rules) {
 
                                 let directive = parsed[x].rules[y].directive,
-                                    value = parsed[x].rules[y].value,
-                                    parts = false,
-                                    values = false,
-                                    direction = false,
-                                    elements = document.createElement('span');
+                                    value = parsed[x].rules[y].value;
+
+                                elements.removeAttribute('style');
+                                elements.setAttribute('style', directive + ': ' + value);
 
                                 switch (directive) {
                                     case 'border-radius' :
                                     case 'padding' :
                                     case 'margin' :
-                                        parts = value.replace(/ +(?= )/g,'').split(' ');
-                                        values = {
-                                            top: parts[0],
-                                            right: parts[1] ? parts[1] : parts[0],
-                                            bottom: parts[2] ? parts[2] : parts[0],
-                                            left: parts[4] ? parts[4] : parts[1] ? parts[1] : parts[0]
-                                        };
-
                                         ['top', 'left', 'right', 'bottom'].map((dir) => {
-                                            set(this.styles, directive + '-' + dir, values[dir]);
+                                            let path = directive + '-' + dir;
+                                            set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
                                         });
                                         break;
 
@@ -103,47 +101,29 @@ class Store {
                                     case 'border-top' :
                                     case 'border-bottom' :
                                     case 'border' :
-                                        parts = value.replace(/ +(?= )/g,'').split(' ');
-                                        values = {
-                                            size: parts[0] ? parts[0] : '',
-                                            style: parts[1] ? parts[1] : '',
-                                            color: parts[2] ? parts[2] : ''
-                                        };
-                                        direction = [directive];
-                                        if (directive === 'border') {
-                                            direction = ['border-top', 'border-left', 'border-right', 'border-bottom'];
-                                        }
-
-                                        direction.map((dir) => {
-                                            ['size', 'style', 'color'].map((type) => {
-                                                set(this.styles, dir + '-' + type, values[type]);
+                                        forEach((directive === 'border' ? [directive] : ['border-top', 'border-left', 'border-right', 'border-bottom']), (dir) => {
+                                            ['width', 'style', 'color'].map((type) => {
+                                                let path = dir + '-' + type;
+                                                set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
                                             });
                                         });
 
                                         break;
+
                                     case 'font' :
-                                        elements.removeAttribute('style');
-                                        elements.setAttribute('style', 'font: ' + value);
-                                        set(this.styles, 'font-style', elements.style['fontStyle']);
-                                        set(this.styles, 'font-variant', elements.style['fontVariant']);
-                                        set(this.styles, 'font-weight', elements.style['fontWeight']);
-                                        set(this.styles, 'font-stretch', elements.style['fontStretch']);
-                                        set(this.styles, 'font-size', elements.style['fontSize']);
-                                        set(this.styles, 'font-family', elements.style['fontFamily']);
-                                        set(this.styles, 'line-height', elements.style['lineHeight']);
+                                        ['style', 'variant', 'weight', 'stretch', 'size', 'family', 'height'].map((type) => {
+                                            let path = 'font-' + type;
+                                            set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
+                                        });
                                         break;
+
                                     case 'background' :
-                                        elements.removeAttribute('style');
-                                        elements.setAttribute('style', 'background: ' + value);
-                                        set(this.styles, 'background-color', elements.style['backgroundColor']);
-                                        set(this.styles, 'background-image', elements.style['backgroundImage']);
-                                        set(this.styles, 'background-position', elements.style['backgroundPosition']);
-                                        set(this.styles, 'background-repeat', elements.style['backgroundRepeat']);
-                                        set(this.styles, 'background-attachment', elements.style['backgroundAttachment']);
-                                        set(this.styles, 'background-size', elements.style['backgroundSize']);
-                                        set(this.styles, 'background-clip', elements.style['backgroundClip']);
-                                        set(this.styles, 'background-origin', elements.style['backgroundOrigin']);
+                                        ['color', 'image', 'position', 'repeat', 'attachment', 'size', 'clip', 'origin'].map((type) => {
+                                            let path = 'background-' + type;
+                                            set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
+                                        });
                                         break;
+
                                     default :
                                         set(this.styles, parsed[x].rules[y].directive, parsed[x].rules[y].value);
                                 }
@@ -155,8 +135,83 @@ class Store {
         }
     };
 
+    generateStyling = () => {
+
+        let node = this.trackNode();
+
+        this.styles = {};
+        if (!node) {
+            return;
+        }
+
+        let rules = (new DOMHelper()).styleSheet({id: 'jxdev-stylizer'}, 'content'),
+            elements = document.createElement('span');
+
+        for (let r in rules) {
+            if (this.validateSelector(rules[r].selectorText, node)) {
+                let parsed = new Parser(rules[r].cssText);
+                for (let x in parsed) {
+                    for (let y in parsed[x].rules) {
+
+                        let directive = parsed[x].rules[y].directive,
+                            value = parsed[x].rules[y].value;
+
+                        elements.removeAttribute('style');
+                        elements.setAttribute('style', directive + ': ' + value);
+
+                        switch (directive) {
+                            case 'border-radius' :
+                            case 'padding' :
+                            case 'margin' :
+                                ['top', 'left', 'right', 'bottom'].map((dir) => {
+                                    let path = directive + '-' + dir;
+                                    set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
+                                });
+                                break;
+
+                            case 'border-left' :
+                            case 'border-right' :
+                            case 'border-top' :
+                            case 'border-bottom' :
+                            case 'border' :
+                                forEach((directive === 'border' ? [directive] : ['border-top', 'border-left', 'border-right', 'border-bottom']), (dir) => {
+                                    ['width', 'style', 'color'].map((type) => {
+                                        let path = dir + '-' + type;
+                                        set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
+                                    });
+                                });
+
+                                break;
+
+                            case 'font' :
+                                ['font-style', 'font-variant', 'font-weight', 'font-stretch', 'font-size', 'font-family', 'line-height'].map((type) => {
+                                    set(this.styles, type, elements.style[type.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
+                                });
+                                break;
+
+                            case 'background' :
+                                ['color', 'image', 'position', 'repeat', 'attachment', 'size', 'clip', 'origin'].map((type) => {
+                                    let path = 'background-' + type;
+                                    set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
+                                });
+                                break;
+
+                            default :
+                                set(this.styles, parsed[x].rules[y].directive, parsed[x].rules[y].value);
+                        }
+                    }
+                }
+            }
+        }
+
+    };
+
+    storeSelector = (value) => {
+        this.selector = value;
+    };
+
     storeStyling = (target, value) => {
-        set(this, target, value);
+        set(this.styles, target, value);
     };
 
     getStyling = () => {

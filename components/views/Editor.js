@@ -57,62 +57,23 @@ class Editor extends React.Component {
         this.state.node && 'generateStyling' in this.state.node && this.state.node.generateStyling();
     };
 
-    validateSelector = (selector) =>  {
-        let dummy = document.createElement('span'),
-            validated = true;
-
-        try {
-            dummy.querySelector(selector);
-        }
-
-        catch (error) {
-            validated = false;
-        }
-
-        return validated;
-    };
-
-    validateCSSRule = (directive, rule) => {
-        let dummy = document.createElement('span');
-        directive = directive.replace('stored.', '').replace('styles.', '');
-        dummy.style[directive] = rule;
-        return  dummy.style[directive] === rule;
-    };
-
     rebuildStyling = (e) => {
 
         const { name, value } = e.target;
-        const { validateSelector, validateCSSRule, styleElement, hasError, setError, state } = this;
+        const { styleElement, state } = this;
         const { node } = state;
 
-        setError(name, name === 'selector' ? !validateSelector(value) : !validateCSSRule(name, value), false);
-
-        if (!hasError(name)) {
-            for (var i = 0; i < styleElement.cssRules.length; i++) {
-                if (styleElement.cssRules[i].selectorText === node.selector) {
-                    styleElement.deleteRule(i);
-                }
+        for (var i = 0; i < styleElement.cssRules.length; i++) {
+            if (styleElement.cssRules[i].selectorText === node.selector) {
+                styleElement.deleteRule(i);
             }
-
-            node.storeStyling(name, value);
-            styleElement.insertRule(node.getStyling());
-
         }
 
-        this.setState({ errors: this.state.errors });
+        (name !== 'selector') ? node.storeStyling(name, value) : node.storeSelector(value);
+
+        styleElement.insertRule(node.getStyling());
 
         return this;
-    };
-
-    hasError = (key) => {
-        return this.state.errors[key] ? this.state.errors[key] : false;
-    };
-
-    setError = (key, value, update = true) => {
-        this.state.errors[key] = value;
-        if (update) {
-            this.setState({errors: this.state.errors});
-        }
     };
 
     onChangeTab = (tabKey) => {

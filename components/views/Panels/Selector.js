@@ -1,119 +1,203 @@
 import React from 'react';
 import ArrowIcon from '../../../node_modules/react-icons/lib/io/chevron-right';
 
-class Selector extends React.Component {
+export default class Selector extends React.Component {
 
     state = {
         node: false,
-        activeBadges: []
+        selector: '',
+        badges: [],
+        error: false
+    };
+
+    testerNode = false;
+    config = {
+        label: 'Selector',
+        error: 'Invalid CSS selector',
     };
 
     constructor(props) {
         super(props);
-        this.state.node = 'node' in props ?  props.node : false;
-        this.trackBadgeSelector();
+
+        if ('node' in props && props.node) {
+            this.state.node = props.node;
+            this.state.selector = props.node.selector;
+            this.state.badges = this.selectorToBadges();
+        }
+
+        if ('config' in props && props.config) {
+            this.config = props.config;
+        }
     };
 
     componentWillReceiveProps(nextProps) {
-        this.state.node = nextProps.node;
-        this.trackBadgeSelector();
+        if ('node' in nextProps && nextProps.node) {
+            this.setState({
+                node: nextProps.node,
+                selector: nextProps.node.selector,
+                error: this.validate(nextProps.node.selector),
+                badges: this.selectorToBadges()
+            })
+        }
     };
 
-    trackBadgeSelector = () => {
+    selectorToBadges = () => {
         const { state } = this;
         const { node }  = state;
 
-        state.activeBadges = [];
+        state.badges = [];
         node.tree && node.tree.map((item) => {
-            if (item.indexOf(node.selector) !== -1) {
-                state.activeBadges.push(item);
+            if (state.selector.trim().indexOf(item.trim()) !== -1) {
+                state.badges.push(item.trim());
             }
         });
+        return state.badges;
     };
-    
-    buildBadgeSelector = () => {
-        const { activeBadges, node } = this.state;
+
+    badgesToSelector = () => {
+        const { badges, node } = this.state;
         let Badges = [];
         node.tree && node.tree.map((selector, delta) => {
-            if (activeBadges.indexOf(selector) !== -1) {
+            if (badges.indexOf(selector) !== -1) {
                 Badges.push(selector);
             }
         });
-        node.selector = Badges.join(' > ');
+        return Badges.join(' > ').trim();
     };
 
-    toggleBadge = (selector) => {
+    toggle = (selector) => {
 
         const { state } = this;
-        const { activeBadges } = state;
+        const { badges } = state;
 
-        let Index = activeBadges.indexOf(selector);
+        let Index = badges.indexOf(selector);
         if (Index === -1) {
-            activeBadges.push(selector);
+            badges.push(selector);
         }
         else {
-            activeBadges.splice(Index, 1);
+            badges.splice(Index, 1);
         }
-        this.buildBadgeSelector();
-        this.setState({
-            activeBadges: activeBadges
-        });
+
+        let refresh = {
+            selector: this.badgesToSelector(),
+            badges: badges
+        };
+
+        refresh.error = !this.validate(refresh.selector);
+
+        if (!refresh.error) {
+            this.props.root.rebuildStyling({
+                target: {
+                    name: 'selector',
+                    value: refresh.selector
+                }
+            });
+        }
+
+        this.setState(refresh);
     };
 
-    isBadgeActive = (selector) => {
-        return this.state.activeBadges.indexOf(selector) !== -1;
+    isActive = (selector) => {
+        return this.state.badges.indexOf(selector) !== -1;
+    };
+
+    validate = (selector) => {
+        let validate = false;
+        try {
+            validate = this.state.node.validateSelector(selector);
+        }
+        catch (error) {
+            validate = false;
+        }
+        return validate;
+    };
+
+    submit = (e) => {
+        const { value } = e.target;
+        let refresh = {
+            selector: value,
+            error: !this.validate(value),
+            badges: this.selectorToBadges()
+        };
+
+        if (!refresh.error) {
+            this.props.root.rebuildStyling(e);
+        }
+
+        this.setState(refresh);
     };
 
     render() {
 
-        const { props, state, isBadgeActive, toggleBadge } = this;
-        const { node } = state;
-        const { root } = props;
+        const { config, state, isActive, toggle, submit } = this;
+        const tabProps = {
+            key: 'stylizer-tab-selector-' + state.node.uuid,
+            className: 'stylizer-tab-content stylizer-content'
+        };
 
-        let className = ['stylizer-form-item'];
-        if (root.hasError('selector')) {
-            className.push('stylizer-has-error');
-        }
+        const selectorProps = {
+            key: 'selector-form-' + state.node.uuid,
+            className: ['stylizer-form-item', state.error ? 'stylizer-has-error' : ' '].join(' ')
+        };
+
+        const labelProps = {
+            className: 'stylizer-form-label'
+        };
+
+        const inputProps = {
+            key: 'input-selector-' + state.node.uuid,
+            className: 'stylizer-form-input',
+            type: 'text',
+            name: 'selector',
+            value: state.selector,
+            onChange: submit
+        };
+
+        const errorProps = {
+            key: 'input-selector-error-' + state.node.uuid,
+            className: 'stylizer-error-bag'
+        };
+
+        const badgesProps = {
+            key: 'selector-badges-' + state.node.uuid,
+            className: 'stylizer-selector-badges'
+        };
+
+        const badgeItemProps = {
+            className: 'stylizer-selector-badges-text'
+        };
+
+        const badgeIconProps = {
+            className: 'stylizer-selector-badges-separator'
+        };
 
         return (
-            <div key="stylizer-tab-selector" className="stylizer-tab-content stylizer-content">
-                <div key={ 'selector-' + className.join('-') } className={ className.join(' ') }>
-                    <label className="stylizer-form-label">Selector</label>
-                    <input type="text"
-                           name="selector"
-                           className="stylizer-form-input"
-                           key={ 'input-selector-' + node.uuid + '-' + node.selector }
-                           defaultValue={ node.selector }
-                           onBlur={ (e) => root.rebuildStyling(e) } />
-                    {
-                        root.hasError('selector')
-                        && <div key={ 'input-selector-error-' + node.uuid + '-' + node.selector }
-                                className="stylizer-error-bag">
-                                    Invalid CSS Selector
-                            </div>
-                    }
+            <div { ...tabProps }>
+                <div { ...selectorProps }>
+                    <label { ...labelProps }>{ config.label }</label>
+                    <input { ...inputProps } />
+                    { state.error && <div { ...errorProps }>{ config.error }</div> }
                 </div>
-                <div className="stylizer-selector-badges">
-                    {
-                        node && node.tree && node.tree.map((item, delta) => {
-                         
-                            let className = ['stylizer-selector-badge'];
-                            if (isBadgeActive(item)) {
-                                className.push('active');
-                            }
+                <div { ...badgesProps }>
+                    { state.node && state.node.tree && state.node.tree.map((item, delta) => {
+                        const badgeProps = {
+                            key: 'badges-' + delta,
+                            onClick: () => { toggle(item) },
+                            className: ['stylizer-selector-badge', isActive(item) ? 'active' : ' '].join(' ')
+                        };
 
-                            return (
-                                <span key={ 'badges-' + delta } className={ className.join(' ') } onClick={ () => { toggleBadge(item) } }>
-                                    <span className="stylizer-selector-badges-text">{ item }</span>
-                                    { node.tree[delta + 1] && <ArrowIcon className="stylizer-selector-badges-separator" /> }
-                                </span>
-                            )
-                        })
-                    }
+                        return (
+                            <span { ...badgeProps }>
+                                <span { ...badgeItemProps }>{ item }</span>
+                                { state.node
+                                    && state.node.tree
+                                    && state.node.tree[delta + 1]
+                                    && <ArrowIcon { ...badgeIconProps } /> }
+                            </span>
+                        )
+                    }) }
                 </div>
             </div>
         )
     };
 }
-
-export default Selector;
