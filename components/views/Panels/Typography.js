@@ -20,7 +20,7 @@ class Typography extends BasePanel {
                 title: 'Font',
                 type: 'group',
                 elements: [
-                    {title: 'color', target: 'color', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'color', target: 'color', type: 'element', field: 'color', default: '', inline: true},
                     {title: 'style', target: 'font-style', type: 'element', field: 'text', default: '', inline: true},
                     {title: 'weight', target: 'font-weight', type: 'element', field: 'text', default: '', inline: true},
                     {title: 'size', target: 'font-size', type: 'element', field: 'text', default: '', inline: true},

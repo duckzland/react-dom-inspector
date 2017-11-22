@@ -9,7 +9,6 @@ import { findIndex, find } from 'lodash';
  *
  * @author jason.xie@victheme.com
  * @todo Browser Compatibility test
- * @todo Move selector method to Store Object?
  */
 class Iterator {
 
@@ -82,11 +81,11 @@ class Iterator {
         selectors.push(selector.join(''));
     };
 
-    getStorage = () => {
+    get = () => {
         return this.storage;
     };
 
-    findNode = (uuid) => {
+    find = (uuid) => {
         return find(this.storage, { uuid: uuid});
     };
     

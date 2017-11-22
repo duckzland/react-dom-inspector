@@ -1,5 +1,8 @@
-
-
+/**
+ * Class for parsing CSS styles into object
+ *
+ * @author jason.xie@victheme.com
+ */
 class Parser {
 
     constructor(style) {

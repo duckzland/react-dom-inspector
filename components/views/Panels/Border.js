@@ -16,6 +16,17 @@ class Border extends BasePanel {
         };
         this.fields = [
             {
+                key: 'color',
+                title: 'Border Color',
+                type: 'group',
+                elements: [
+                    {title: 'top', target: 'border-top-color', type: 'element', field: 'color', default: '', inline: true},
+                    {title: 'left', target: 'border-left-color', type: 'element', field: 'color', default: '', inline: true},
+                    {title: 'right', target: 'border-right-color', type: 'element', field: 'color', default: '', inline: true},
+                    {title: 'bottom', target: 'border-bottom-color', type: 'element', field: 'color', default: '', inline: true}
+                ]
+            },
+            {
                 key: 'width',
                 title: 'Border Width',
                 type: 'group',
@@ -35,17 +46,6 @@ class Border extends BasePanel {
                     {title: 'left', target: 'border-left-style', type: 'element', field: 'text', default: '', inline: true},
                     {title: 'right', target: 'border-right-style', type: 'element', field: 'text', default: '', inline: true},
                     {title: 'bottom', target: 'border-bottom-style', type: 'element', field: 'text', default: '', inline: true}
-                ]
-            },
-            {
-                key: 'color',
-                title: 'Border Color',
-                type: 'group',
-                elements: [
-                    {title: 'top', target: 'border-top-color', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'left', target: 'border-left-color', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'right', target: 'border-right-color', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'bottom', target: 'border-bottom-color', type: 'element', field: 'text', default: '', inline: true}
                 ]
             },
             {

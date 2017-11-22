@@ -5,9 +5,14 @@ import DOMHelper from './modules/DOMHelper';
 import InspectorPanel from './views/Inspector';
 import EditorPanel from './views/Editor';
 import Overlay from './views/Overlay';
-import { forEach } from 'lodash';
+import { forEach, get } from 'lodash';
 import './../assets/styles.less';
 
+/**
+ * Main Inspector Component for generating the inspector and editor element
+ *
+ * @author jason.xie@victheme.com
+ */
 export default class Inspector extends React.Component {
 
     state = {
@@ -25,6 +30,7 @@ export default class Inspector extends React.Component {
         mousemove: false
     };
 
+    config = {};
     allowNavigator = true;
     iterator = false;
     DOMHelper = false;
@@ -37,6 +43,9 @@ export default class Inspector extends React.Component {
         }
         if ('allowNavigator' in props) {
             this.allowNavigator = props.allowNavigator;
+        }
+        if ('config' in props) {
+            this.config = props.config;
         }
         this.iterator = new Iterator();
         this.DOMHelper = new DOMHelper();
@@ -141,12 +150,12 @@ export default class Inspector extends React.Component {
     retrieveOrBuildStorage = (node) => {
         let tracker = this.DOMHelper.closest(node, {hasAttribute: 'stylizer-uuid'}, 'both');
         if (tracker.depth > 1) {
-            let Store = this.iterator.findNode(tracker.node.getAttribute('stylizer-uuid'));
+            let Store = this.iterator.find(tracker.node.getAttribute('stylizer-uuid'));
             this.iterator.iterate(tracker.node, Store, Store.depth, Store.depth + tracker.depth, Store.tree);
         }
 
         tracker = null;
-        let targetNode = this.iterator.findNode(node.getAttribute('stylizer-uuid'));
+        let targetNode = this.iterator.find(node.getAttribute('stylizer-uuid'));
         return targetNode ? targetNode : false;
     };
 
@@ -197,25 +206,41 @@ export default class Inspector extends React.Component {
     };
 
     render() {
-        const { state, props, allowNavigator } = this;
+        const { config, state, props, allowNavigator } = this;
         const { iterator, editor } = props;
-        let className = [
-            'stylizer-inspector'
-        ];
-        if (state.minimize) {
-            className.push('minimize');
-        }
-        if (!allowNavigator) {
-            className.push('no-navigator');
-        }
 
-        className = className.join(' ');
+        const inspectorProps = get(config, 'inspectorProps', {
+            key: 'stylizer-inspector',
+            className: [ 'stylizer-inspector', state.minimize ? 'minimize' : null, !allowNavigator ? 'no-navigator' : null ].join(' '),
+            'stylizer-inspector': "true"
+        });
+
+        const inspectorPanelProps = get(config, 'inspectorPanelProps', {
+            key: 'stylizer-inspector-element',
+            config: iterator,
+            root: this,
+            iterator: this.iterator,
+            node: state.activateNode,
+            refresh: state.refresh
+        });
+
+        const editorPanelProps = get(config, 'editorPanelProps', {
+            key: 'stylizer-editor-element',
+            config: editor,
+            root: this,
+            node: state.node,
+            refresh: state.refresh
+        });
+
+        const overlayProps = get(config, 'overlayProps', {
+            node: state.overlay
+        });
 
         return (
-            <div key="stylizer-inspector" className={ className } stylizer-inspector="true">
-                { allowNavigator && <InspectorPanel key="stylizer-iterator-element" config={ iterator } root={ this } iterator={ this.iterator } node={ state.activateNode } refresh={ state.refresh }/> }
-                <EditorPanel key="stylizer-editor-element" config={ editor } root={ this } node={ state.node } refresh={ state.refresh } />
-                <Overlay node={ state.overlay } />
+            <div { ...inspectorProps }>
+                { allowNavigator && <InspectorPanel { ...inspectorPanelProps }/> }
+                <EditorPanel { ...editorPanelProps } />
+                <Overlay { ...overlayProps } />
             </div>
         )
     };

@@ -132,6 +132,15 @@
   padding: 15px;
 }
 
+.stylizer-content-flex {
+  display: flex;
+  flex-direction: row;
+}
+
+.stylizer-content-flex > * {
+  padding: 15px;
+}
+
 .stylizer-iterator {
   flex-grow: 1;
   overflow: hidden;
@@ -198,6 +207,7 @@
 
 .data-depth-margin(@InspectorElementMargin, 10);
 
+.stylizer-inspector .chrome-picker input,
 .stylizer-inspector input[type="text"],
 .stylizer-inspector input[type="url"],
 .stylizer-inspector input[type="number"],
@@ -209,7 +219,7 @@
   color: @FormElementText;
   padding: 5px 10px;
   line-height: 120%;
-  min-height: none;
+  min-height: 0;
   height: auto;
   font-size: 13px;
   border-radius: 0;
@@ -431,6 +441,30 @@
 
 .stylizer-selector-badges-separator {
   margin: 0 5px;
+}
+
+.stylizer-inspector .chrome-picker svg {
+  background:  @TabsText !important
+}
+
+.stylizer-inspector .chrome-picker span {
+  color: @TabsText !important;
+}
+
+.stylizer-inspector .chrome-picker {
+  background: lighten(@TabsBackground, 3%) !important;
+  color: @TabsText;
+  border: 1px solid @FormElementBorder;
+  box-shadow: none !important;
+}
+
+.stylizer-inspector .chrome-picker input {
+  background: @FormElementBackground;
+  border: 1px solid @FormElementBorder !important;
+  color: @FormElementText !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+  height: auto !important;
 }
 
 

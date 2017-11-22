@@ -67,7 +67,6 @@ class Store {
         if (!node) {
             node = this.trackNode();
         }
-
         return node ? node.matches(selector) : false;
     };
 

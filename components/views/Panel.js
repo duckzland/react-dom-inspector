@@ -1,4 +1,5 @@
 import React from 'react';
+import ColorPicker  from './Elements/ColorPicker';
 import { get, forEach } from 'lodash';
 
 /**
@@ -7,6 +8,16 @@ import { get, forEach } from 'lodash';
  * @author jason.xie@victheme.com
  */
 export default class Panel extends React.Component {
+
+    leftSpace = {
+        ownerKey: null,
+        content: null
+    };
+
+    rightSpace = {
+        ownerKey: null,
+        content: null
+    };
 
     constructor(props) {
         super(props);
@@ -125,10 +136,12 @@ export default class Panel extends React.Component {
 
         const inputProps = {
             key: 'input-' + element.target + '-' + state.node.uuid,
+            uuid: 'input-' + element.target + '-' + state.node.uuid,
             className: 'stylizer-form-input',
             type: element.field,
             name: element.target,
             value: get(state, 'values.' + element.target, element.default),
+            root: this,
             onChange: submit
         };
 
@@ -137,10 +150,21 @@ export default class Panel extends React.Component {
             className: 'stylizer-error-bag'
         };
 
+        let InputElement = [];
+        switch (element.field) {
+            case 'text' :
+                InputElement.push( <input { ...inputProps } /> );
+                break;
+            case 'color' :
+                InputElement.push( <ColorPicker { ...inputProps } /> );
+                break;
+        }
+
+
         return (
             <div { ...elementProps }>
                 <label { ...labelProps }>{ element.title }</label>
-                <input { ...inputProps } />
+                { InputElement }
                 { hasError(element.target) && element.error && <div { ...errorProps }>{ element.error }</div> }
             </div>
         )
@@ -175,25 +199,68 @@ export default class Panel extends React.Component {
     };
 
 
+    mutateSpace(direction, content, ownerKey, wipe = false) {
+
+        const Space = this[direction + 'Space'];
+
+        // OwnerKey is to prevent infinite loops since child component will invoke the mutation
+        if (Space.ownerKey === ownerKey) {
+            return;
+        }
+
+        if (wipe) {
+            Space.ownerKey = null;
+            Space.content = null;
+        }
+        else {
+            if ( Space.content !== content) {
+                Space.content = content;
+            }
+        }
+
+        this.setState({ updateSpace: true });
+        Space.ownerKey = ownerKey;
+    }
+
+
     render() {
 
-        const { fields, config, state, generateGroup, generateElement } = this;
+        const { leftSpace, rightSpace, fields, config, state, generateGroup, generateElement } = this;
 
         const tabProps = {
             key: 'stylizer-tab-' + config.type + '-' + state.node.uuid,
-            className: 'stylizer-tab-content stylizer-content'
+            className: 'stylizer-tab-content stylizer-content-flex'
+        };
+
+        const leftSpaceProps = {
+            key: 'stylizer-panel-left-space',
+            className: 'stylizer-panel-left-space'
+        };
+
+        const centerSpaceProps = {
+            key: 'stylizer-panel-center-space',
+            className: 'stylizer-panel-center-space'
+        };
+
+        const rightSpaceProps = {
+            key: 'stylizer-panel-right-space',
+            className: 'stylizer-panel-right-space'
         };
 
         return (
             <div { ...tabProps }>
-                { fields.map( (element) => {
-                    switch (element.type) {
-                        case 'group' :
-                            return generateGroup(element);
-                        case 'element' :
-                            return generateElement(element);
-                    }
-                })}
+                { leftSpace.content && <div { ...leftSpaceProps }>{ leftSpace.content }</div> }
+                <div { ...centerSpaceProps}>
+                    { fields.map( (element) => {
+                        switch (element.type) {
+                            case 'group' :
+                                return generateGroup(element);
+                            case 'element' :
+                                return generateElement(element);
+                        }
+                    })}
+                </div>
+                { rightSpace.content && <div { ...rightSpaceProps}>{ rightSpace.content }</div> }
             </div>
         )
     };

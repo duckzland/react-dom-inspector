@@ -1,5 +1,12 @@
 import React from 'react';
+import { get } from 'lodash';
 
+/**
+ * Component for building an overlay for hovered DOM Element
+ *
+ * @author jason.xie@victheme.com
+ * @todo Refactor this for more speed!
+ */
 class Overlay extends React.Component {
 
     state = {
@@ -32,6 +39,8 @@ class Overlay extends React.Component {
         }
     };
 
+    config = {};
+
     detectSize = (node) => {
         const result = {};
         const requiredValue = [
@@ -54,7 +63,6 @@ class Overlay extends React.Component {
         requiredValue.forEach(item => {
             result[item] = parseFloat(computedStyle[item]) || 0;
         });
-
 
         Object.assign(result, {
             width: node.offsetWidth - result['border-left-width'] - result['border-right-width'] - result['padding-left'] - result['padding-right'],
@@ -109,7 +117,6 @@ class Overlay extends React.Component {
         return result;
     };
 
-
     componentWillReceiveProps(props) {
         if ('node' in props && props.node && props.node instanceof HTMLElement) {
             this.detectSize(props.node);
@@ -152,11 +159,37 @@ class Overlay extends React.Component {
     };
 
     render() {
+
+        const { state, config } = this;
+        const overlayBoxProps = get(config, 'overlayProps', {
+            key: 'overlay-box',
+            className: 'stylizer-overlay-box',
+            style: state.position
+        });
+
+        const overlayMarginProps = get(config, 'overlayMarginProps', {
+            key: 'overlay-margin',
+            className: 'stylizer-overlay-margin',
+            style: state.margin
+        });
+
+        const overlayPaddingProps = get(config, 'overlayPaddingProps', {
+            key: 'overlay-padding',
+            className: 'stylizer-overlay-padding',
+            style: Object.assign({}, state.padding, state.border)
+        });
+
+        const overlayContentProps = get(config, 'overlayContentProps', {
+            key: 'overlay-content',
+            className: 'stylizer-overlay-content',
+            style: state.size
+        });
+
         return (
-            <div key="overlay-box" className="stylizer-overlay-box" style={ this.state.position }>
-                <div key="overlay-margin" className="stylizer-overlay-margin" style={ this.state.margin }>
-                    <div key="overlay-padding" className="stylizer-overlay-padding" style={ Object.assign({}, this.state.padding, this.state.border) }>
-                        <div key="overlay-content" className="stylizer-overlay-content" style={ this.state.size }>
+            <div { ...overlayBoxProps } >
+                <div { ...overlayMarginProps }>
+                    <div { ...overlayPaddingProps }>
+                        <div { ...overlayContentProps }>
                             { null }
                         </div>
                     </div>

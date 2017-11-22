@@ -1,5 +1,6 @@
 import React from 'react';
 import ScrollArea from 'react-scrollbar';
+import { get } from 'lodash';
 import HamburgerIcon from '../../node_modules/react-icons/lib/io/navicon-round';
 import HoverIcon from '../../node_modules/react-icons/lib/io/compose';
 import RevertIcon from '../../node_modules/react-icons/lib/io/trash-b';
@@ -18,7 +19,7 @@ import TypographyPanel from './Panels/Typography';
 class Editor extends React.Component {
 
     state = {
-        active: 'spacing',
+        active: 'styles',
         node: false,
         root: false,
         errors: {}
@@ -27,7 +28,8 @@ class Editor extends React.Component {
     styleElement = false;
 
     config = {
-        headerText: 'Editor'
+        headerText: 'Editor',
+        emptyText: 'No Element Selected'
     };
 
     constructor(props) {
@@ -85,80 +87,142 @@ class Editor extends React.Component {
 
     render() {
 
-        let { onChangeTab, state } = this;
+        let { onChangeTab, state, config } = this;
         const { root, node } = state;
 
-        let ActivePanel = [], nodeKey = node && node.uuid ? node.uuid : 'empty';
+        const editorProps = get(config, 'editorProps', {
+            key: 'stylizer-editor-panel',
+            className: 'stylizer-panels stylizer-editor-panel'
+        });
+
+        const headerProps = get(config, 'headerProps', {
+            key: 'stylizer-editor-header',
+            className: 'stylizer-header'
+        });
+
+        const headerTextProps = get(config, 'headerTextProps', {
+            key: 'stylizer-editor-header-text',
+            className: 'stylizer-header-text'
+        });
+
+        const headerActionProps = get(config, 'headerActionProps', {
+            key: 'stylizer-editor-header-actions',
+            className: 'stylizer-header-actions'
+        });
+
+        const layoutIconProps = get(config, 'layoutIconProps', {
+            size: 16,
+            transform: root.state.vertical === false ? 'rotate(90)' : '',
+            onClick: () => root.toggleLayout()
+        });
+
+        const hoverIconProps = get(config, 'hoverIconProps', {
+            size: 16,
+            color: root.state.hover ? '#13a6d9' : '',
+            onClick: () => root.toggleHoverInspector()
+        });
+
+        const revertIconProps = get(config, 'revertIconProps', {
+            size: 16,
+            onClick: () => root.revertData()
+        });
+
+        const saveIconProps = get(config, 'saveIconProps', {
+            size: 16,
+            onClick: () => root.saveData()
+        });
+
+        const closeIconProps = get(config, 'closeIconProps', {
+            size: 16,
+            onClick: () => root.killApp()
+        });
+
+        const hamburgerIconProps = get(config, 'hamburgerIconProps', {
+            size: 16,
+            onClick: () => root.toggleMinimize()
+        });
+
+        const tabsWrapperProps = get(config, 'tabsWrapperProps', {
+            key: 'stylizer-tabs-wrapper',
+            className: 'stylizer-tabs-wrapper'
+        });
+
+        const tabsProps = get(config, 'tabsProps', {
+            key: 'stylizer-tabs',
+            className: 'stylizer-tabs'
+        });
+
+        const scrollAreaProps = get(config, 'scrollAreaProps', {
+            key: "stylizer-tab-contents",
+            speed: 0.8,
+            className: "stylizer-tabs-contents",
+            contentClassName: "content",
+            horizontal: true
+        });
+
+        const emptyProps = get(config, 'emptyProps', {
+            className: 'stylizer-selector-empty'
+        });
+
+        let panelProps = get(config, 'panelProps', {
+            key: 'stylizer-active-panel-' + (node && node.uuid ? node.uuid : 'empty'),
+            root: this
+        });
+
+        let ActivePanel = [];
         switch (state.active) {
             case 'selector' :
-                ActivePanel.push(<SelectorPanel key={ 'stylizer-active-panel-' + nodeKey } { ...state } root={ this } />);
+                ActivePanel.push(<SelectorPanel { ...state } { ...panelProps }/>);
                 break;
             case 'border' :
-                ActivePanel.push(<BorderPanel key={ 'stylizer-active-panel-' + nodeKey } { ...state } root={ this } />);
+                ActivePanel.push(<BorderPanel { ...state } { ...panelProps } />);
                 break;
             case 'spacing' :
-                ActivePanel.push(<SpacingPanel key={ 'stylizer-active-panel-' + nodeKey } { ...state } root={ this } />);
+                ActivePanel.push(<SpacingPanel { ...state } { ...panelProps } />);
                 break;
             case 'styles' :
-                ActivePanel.push(<StylesPanel key={ 'stylizer-active-panel-' + nodeKey } { ...state } root={ this } />);
+                ActivePanel.push(<StylesPanel { ...state } { ...panelProps } />);
                 break;
             case 'typography' :
-                ActivePanel.push(<TypographyPanel key={ 'stylizer-active-panel-' + nodeKey } { ...state } root={ this } />);
+                ActivePanel.push(<TypographyPanel { ...state } { ...panelProps } />);
                 break;
         }
 
         return (
-            <div key="stylizer-editor-panel" className="stylizer-panels stylizer-editor-panel">
-                <h3 key="stylizer-editor-header" className="stylizer-header">
-                    <span key="stylizer-editor-header-text" className="stylizer-header-text">
-                        { this.config.headerText }
+            <div { ...editorProps }>
+                <h3 { ...headerProps }>
+                    <span { ...headerTextProps }>
+                        { config.headerText }
                     </span>
-                    <span key="stylizer-editor-header-actions" className="stylizer-header-actions">
-                        { !root.state.minimize && <LayoutIcon size="16" transform={ root.state.vertical === false ? 'rotate(90)' : '' } onClick={ () => root.toggleLayout() } /> }
-                        { !root.state.minimize && <HoverIcon size="16" color={ root.state.hover ? '#13a6d9' : '' } onClick={ () => root.toggleHoverInspector() } /> }
-                        { !root.state.minimize && <RevertIcon size="16" onClick={ () => root.revertData() } /> }
-                        { !root.state.minimize && <SaveIcon size="16" onClick={ () => root.saveData() } /> }
-                        { !root.state.minimize && <CloseIcon size="16" onClick={ () => root.killApp() } /> }
-                        <HamburgerIcon size="16" onClick={ () => root.toggleMinimize() } />
+                    <span { ...headerActionProps }>
+                        { !root.state.minimize && <LayoutIcon { ...layoutIconProps } /> }
+                        { !root.state.minimize && <HoverIcon { ...hoverIconProps } /> }
+                        { !root.state.minimize && <RevertIcon { ...revertIconProps } /> }
+                        { !root.state.minimize && <SaveIcon { ...saveIconProps } /> }
+                        { !root.state.minimize && <CloseIcon { ...closeIconProps } /> }
+                        <HamburgerIcon { ...hamburgerIconProps } />
                     </span>
                 </h3>
 
-                {
-                    node
-                        ?   <div key="stylizer-tabs-wrapper" className="stylizer-tabs-wrapper">
-                                <div key="stylizer-tabs" className="stylizer-tabs">
-                                    {
-                                        ['selector', 'spacing', 'border', 'styles', 'typography'].map((TabKey) => {
-                                            let className = ['stylizer-tab-element'];
-                                            if (state.active === TabKey) {
-                                                className.push('active');
-                                            }
-                                            className = className.join(' ');
-                                            return (
-                                                <div key={ 'stylizer-tabs-' + TabKey }
-                                                     className={ className }
-                                                     onClick={ () => onChangeTab(TabKey) }>
-                                                    { TabKey }
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                </div>
-                                <ScrollArea
-                                    key="stylizer-tab-contents"
-                                    speed={ 0.8 }
-                                    className="stylizer-tabs-contents"
-                                    contentClassName="content"
-                                    horizontal={ true }>
-                                    { ActivePanel }
-                                </ScrollArea>
-                            </div>
+                { node
+                    ? <div { ...tabsWrapperProps }>
+                        <div { ...tabsProps }>
+                            { ['selector', 'spacing', 'border', 'styles', 'typography'].map((TabKey) => {
+                                const selectorItemProps = {
+                                    key: get(config, 'panelItemPrefix', 'stylizer-tab-') + TabKey,
+                                    className: [ get(config, 'panelItemPrefix', 'stylizer-tab-') + 'element', state.active === TabKey ? 'active' : null ].join(' '),
+                                    onClick: () => onChangeTab(TabKey)
+                                };
 
-                        :   <div key="stylizer-tabs-wrapper" className="stylizer-tabs-wrapper">
-                                <div className="stylizer-selector-empty">
-                                    No Element Selected
-                                </div>
-                            </div>
+                                return ( <div { ...selectorItemProps }>{ TabKey }</div> )
+                            }) }
+                        </div>
+                        <ScrollArea { ...scrollAreaProps }>{ ActivePanel }</ScrollArea>
+                    </div>
+
+                    : <div { ...tabsWrapperProps }>
+                        <div { ...emptyProps }>{ config.emptyText }</div>
+                    </div>
                 }
             </div>
         )

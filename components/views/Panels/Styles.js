@@ -20,7 +20,7 @@ class Styles extends BasePanel {
                 title: 'Background',
                 type: 'group',
                 elements: [
-                    {title: 'color', target: 'background-color', type: 'element', field: 'text', default: '', inline: true},
+                    {title: 'color', target: 'background-color', type: 'element', field: 'color', default: '', inline: true},
                     {title: 'image', target: 'background-image', type: 'element', field: 'text', default: '', inline: true},
                     {title: 'position', target: 'background-position', type: 'element', field: 'text', default: '', inline: true},
                     {title: 'repeat', target: 'background-repeat', type: 'element', field: 'text', default: '', inline: true}

@@ -40,7 +40,7 @@ class Inspector extends React.Component {
     };
 
     resetNodeStatus() {
-        this.getStorage().map((node) => {
+        this.iterator.get().map((node) => {
             node.reset();
         });
     };
@@ -52,7 +52,7 @@ class Inspector extends React.Component {
     activateNode = (node) => {
 
         const { props, iterator, state } = this;
-        const { findNode, iterate } = iterator;
+        const { find, iterate } = iterator;
         const { root } = props;
 
         if (node.hasChildren && !node.processed) {
@@ -60,13 +60,13 @@ class Inspector extends React.Component {
             iterate(node.trackNode(), node, node.depth, node.depth + 2, node.tree);
             this.refresh = true;
 
-            let currentNode = findNode(node.uuid);
+            let currentNode = find(node.uuid);
             if (currentNode && currentNode.uuid) {
                 node = currentNode;
             }
         }
 
-        let prevActive = findNode(state.active);
+        let prevActive = find(state.active);
         if (prevActive && prevActive.uuid) {
             prevActive.refresh = true;
             prevActive.active = false;
@@ -75,13 +75,13 @@ class Inspector extends React.Component {
         node.refresh = true;
         node.active = true;
 
-        this.setState({ active : node.uuid });
         root.setActiveNode(node);
+        this.setState({ active : node.uuid });
     };
 
     render() {
 
-        const { iterator, toggleMinimize, state, config } = this;
+        const { iterator, state, config } = this;
 
         const panelProps = get(config, 'panelProps', {
             key: 'stylizer-iterator-panel',
@@ -123,7 +123,7 @@ class Inspector extends React.Component {
                     <span { ...headerActionProps }><HamburgerIcon { ...hamburgerIconProps } /></span>
                 </h3>
                 <ScrollArea { ...scrollAreaProps }>
-                    { iterator.getStorage().map((node, delta) => {
+                    { iterator.get().map((node, delta) => {
                         const itemProps = { key: delta, root: this, node: node };
                         return ( <Items { ...itemProps } /> );
                     })}

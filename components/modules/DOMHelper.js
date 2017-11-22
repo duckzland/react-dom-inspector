@@ -1,4 +1,4 @@
-import { forEach, get, add, set, isNumber, pickBy} from 'lodash';
+import { forEach } from 'lodash';
 
 /**
  * Helper Class for emulating DOM parsing
