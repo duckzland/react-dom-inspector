@@ -16,10 +16,10 @@ import StylesPanel from './Panels/Styles';
 import TypographyPanel from './Panels/Typography';
 
 
-class Editor extends React.Component {
+export default class Editor extends React.Component {
 
     state = {
-        active: 'styles',
+        active: 'spacing',
         node: false,
         root: false,
         errors: {}
@@ -85,10 +85,18 @@ class Editor extends React.Component {
         this.setState({ active: tabKey });
     };
 
+    onScroll = (value) => {
+        this.setState({ scroll: value});
+    };
+
     render() {
 
-        let { onChangeTab, state, config } = this;
+        let { onScroll, onChangeTab, state, config } = this;
+        let ActivePanel = [];
+
         const { root, node } = state;
+        const { minimize } = root.state;
+        const AllowedTabs = ['selector', 'spacing', 'border', 'styles', 'typography'];
 
         const editorProps = get(config, 'editorProps', {
             key: 'stylizer-editor-panel',
@@ -157,19 +165,20 @@ class Editor extends React.Component {
             speed: 0.8,
             className: "stylizer-tabs-contents",
             contentClassName: "content",
-            horizontal: true
+            horizontal: true,
+            onScroll: onScroll,
         });
 
         const emptyProps = get(config, 'emptyProps', {
             className: 'stylizer-selector-empty'
         });
 
-        let panelProps = get(config, 'panelProps', {
+        const panelProps = get(config, 'panelProps', {
             key: 'stylizer-active-panel-' + (node && node.uuid ? node.uuid : 'empty'),
-            root: this
+            root: this,
+            scroll: state.scroll
         });
 
-        let ActivePanel = [];
         switch (state.active) {
             case 'selector' :
                 ActivePanel.push(<SelectorPanel { ...state } { ...panelProps }/>);
@@ -195,11 +204,11 @@ class Editor extends React.Component {
                         { config.headerText }
                     </span>
                     <span { ...headerActionProps }>
-                        { !root.state.minimize && <LayoutIcon { ...layoutIconProps } /> }
-                        { !root.state.minimize && <HoverIcon { ...hoverIconProps } /> }
-                        { !root.state.minimize && <RevertIcon { ...revertIconProps } /> }
-                        { !root.state.minimize && <SaveIcon { ...saveIconProps } /> }
-                        { !root.state.minimize && <CloseIcon { ...closeIconProps } /> }
+                        { !minimize && <LayoutIcon { ...layoutIconProps } /> }
+                        { !minimize && <HoverIcon { ...hoverIconProps } /> }
+                        { !minimize && <RevertIcon { ...revertIconProps } /> }
+                        { !minimize && <SaveIcon { ...saveIconProps } /> }
+                        { !minimize && <CloseIcon { ...closeIconProps } /> }
                         <HamburgerIcon { ...hamburgerIconProps } />
                     </span>
                 </h3>
@@ -207,12 +216,12 @@ class Editor extends React.Component {
                 { node
                     ? <div { ...tabsWrapperProps }>
                         <div { ...tabsProps }>
-                            { ['selector', 'spacing', 'border', 'styles', 'typography'].map((TabKey) => {
-                                const selectorItemProps = {
+                            { AllowedTabs.map((TabKey) => {
+                                const selectorItemProps = get(config, 'selectorItemProps', {
                                     key: get(config, 'panelItemPrefix', 'stylizer-tab-') + TabKey,
                                     className: [ get(config, 'panelItemPrefix', 'stylizer-tab-') + 'element', state.active === TabKey ? 'active' : null ].join(' '),
                                     onClick: () => onChangeTab(TabKey)
-                                };
+                                });
 
                                 return ( <div { ...selectorItemProps }>{ TabKey }</div> )
                             }) }
@@ -228,5 +237,3 @@ class Editor extends React.Component {
         )
     };
 }
-
-export default Editor;

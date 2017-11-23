@@ -12,10 +12,11 @@ class Store {
     config = {
         domID: 'dom-inspector',
         sheetID: 'stylizer-source',
-        stylizerAttribute: 'stylizer-uuid'
+        stylizerAttribute: 'stylizer-uuid',
+        disallowNodeName: 'img|script|style|link'
     };
 
-    constructor(node, depth, selectors, config = false) {
+    constructor(node, depth, tree, config = false) {
 
         config && Object.assign(this.config, config);
         
@@ -29,13 +30,13 @@ class Store {
             node.setAttribute(this.config.stylizerAttribute, this.generateUUID());
         }
 
-        this.key = selectors.join(' > ');
+        this.key = tree.join(' > ');
         this.id = node.id;
         this.className = node.className && node.className.length ? node.className.split(' ') : [];
         this.tagName = node.nodeName.toLowerCase();
         this.depth = depth;
-        this.tree = selectors;
-        this.unit = selectors.slice(-1)[0];
+        this.tree = tree;
+        this.unit = tree.slice(-1)[0];
         this.uuid = node.getAttribute(this.config.stylizerAttribute);
         this.hasChildren = this.detectChildElement(node);
         this.processed = false;
@@ -55,7 +56,8 @@ class Store {
         var child, rv = false;
 
         for (child = node.firstChild; !rv && child; child = child.nextSibling) {
-            if (child.nodeType === node.ELEMENT_NODE && child.nodeName.toLowerCase() !== 'img') {
+            if (child.nodeType === node.ELEMENT_NODE
+                && !child.nodeName.toLowerCase().match(new RegExp('(' + this.config.disallowNodeName + ')', 'g'))) {
                 rv = true;
             }
         }
@@ -101,7 +103,14 @@ class Store {
                         elements.setAttribute('style', directive + ': ' + value);
 
                         switch (directive) {
+
                             case 'border-radius' :
+                                ['border-top-left-radius', 'bottom-top-right-radius', 'border-bottom-left-radius', 'border-bottom-right-radius'].map((path) => {
+                                    set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
+                                });
+                                break;
+
+
                             case 'padding' :
                             case 'margin' :
                                 ['top', 'left', 'right', 'bottom'].map((dir) => {
@@ -120,6 +129,13 @@ class Store {
                                         let path = dir + '-' + type;
                                         set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
                                     });
+                                });
+                                break;
+
+                            case 'outline' :
+                                ['width', 'style', 'color'].map((type) => {
+                                    let path = 'outline-' + type;
+                                    set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
                                 });
                                 break;
 

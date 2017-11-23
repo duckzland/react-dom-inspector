@@ -16,36 +16,87 @@ class Border extends BasePanel {
         };
         this.fields = [
             {
-                key: 'color',
-                title: 'Border Color',
+                key: 'border-top',
+                title: 'Border Top',
                 type: 'group',
                 elements: [
-                    {title: 'top', target: 'border-top-color', type: 'element', field: 'color', default: '', inline: true},
-                    {title: 'left', target: 'border-left-color', type: 'element', field: 'color', default: '', inline: true},
-                    {title: 'right', target: 'border-right-color', type: 'element', field: 'color', default: '', inline: true},
-                    {title: 'bottom', target: 'border-bottom-color', type: 'element', field: 'color', default: '', inline: true}
+                    {title: 'color', target: 'border-top-color', type: 'element', field: 'color', default: '', inline: false },
+                    {title: 'width', target: 'border-top-width', type: 'element', field: 'text', default: '', inline: false },
+                    {title: 'style', target: 'border-top-style', type: 'element', field: 'select', options: {
+                        none: 'None',
+                        hidden: 'Hidden',
+                        dotted: 'Dotted',
+                        dashed: 'Dashed',
+                        solid: 'Solid',
+                        double: 'Double',
+                        groove: 'Groove',
+                        ridge: 'Ridge',
+                        inset: 'Inset',
+                        outset: 'Outset'
+                    }, default: '', inline: false },
                 ]
             },
             {
-                key: 'width',
-                title: 'Border Width',
+                key: 'border-left',
+                title: 'Border Left',
                 type: 'group',
                 elements: [
-                    {title: 'top', target: 'border-top-width', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'left', target: 'border-left-width', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'right', target: 'border-right-width', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'bottom', target: 'border-bottom-width', type: 'element', field: 'text', default: '', inline: true}
+                    {title: 'color', target: 'border-left-color', type: 'element', field: 'color', default: '', inline: false },
+                    {title: 'width', target: 'border-left-width', type: 'element', field: 'text', default: '', inline: false },
+                    {title: 'style', target: 'border-left-style', type: 'element', field: 'select', options: {
+                        none: 'None',
+                        hidden: 'Hidden',
+                        dotted: 'Dotted',
+                        dashed: 'Dashed',
+                        solid: 'Solid',
+                        double: 'Double',
+                        groove: 'Groove',
+                        ridge: 'Ridge',
+                        inset: 'Inset',
+                        outset: 'Outset'
+                    }, default: '', inline: false },
                 ]
             },
             {
-                key: 'style',
-                title: 'Border Style',
+                key: 'border-right',
+                title: 'Border Right',
                 type: 'group',
                 elements: [
-                    {title: 'top', target: 'border-top-style', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'left', target: 'border-left-style', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'right', target: 'border-right-style', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'bottom', target: 'border-bottom-style', type: 'element', field: 'text', default: '', inline: true}
+                    {title: 'color', target: 'border-right-color', type: 'element', field: 'color', default: '', inline: false },
+                    {title: 'width', target: 'border-right-width', type: 'element', field: 'text', default: '', inline: false },
+                    {title: 'style', target: 'border-right-style', type: 'element', field: 'select', options: {
+                        none: 'None',
+                        hidden: 'Hidden',
+                        dotted: 'Dotted',
+                        dashed: 'Dashed',
+                        solid: 'Solid',
+                        double: 'Double',
+                        groove: 'Groove',
+                        ridge: 'Ridge',
+                        inset: 'Inset',
+                        outset: 'Outset'
+                    }, default: '', inline: false },
+                ]
+            },
+            {
+                key: 'border-bottom',
+                title: 'Border Bottom',
+                type: 'group',
+                elements: [
+                    {title: 'color', target: 'border-bottom-color', type: 'element', field: 'color', default: '', inline: false },
+                    {title: 'width', target: 'border-bottom-width', type: 'element', field: 'text', default: '', inline: false },
+                    {title: 'style', target: 'border-bottom-style', type: 'element', field: 'select', options: {
+                        none: 'None',
+                        hidden: 'Hidden',
+                        dotted: 'Dotted',
+                        dashed: 'Dashed',
+                        solid: 'Solid',
+                        double: 'Double',
+                        groove: 'Groove',
+                        ridge: 'Ridge',
+                        inset: 'Inset',
+                        outset: 'Outset'
+                    }, default: '', inline: false },
                 ]
             },
             {
@@ -53,10 +104,32 @@ class Border extends BasePanel {
                 title: 'Border Radius',
                 type: 'group',
                 elements: [
-                    {title: 'top', target: 'border-top-radius', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'left', target: 'border-left-radius', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'right', target: 'border-right-radius', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'bottom', target: 'border-bottom-radius', type: 'element', field: 'text', default: '', inline: true}
+                    {title: 'top left', target: 'border-top-left-radius', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'top right', target: 'border-top-right-radius', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'bottom left', target: 'border-bottom-left-radius', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'bottom right', target: 'border-bottom-right-radius', type: 'element', field: 'text', default: '', inline: false}
+                ]
+            },
+            {
+                key: 'outline',
+                title: 'Outline',
+                type: 'group',
+                elements: [
+                    {title: 'color', target: 'outline-color', type: 'element', field: 'color', default: '', inline: false},
+                    {title: 'width', target: 'outline-width', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'offset', target: 'outline-offset', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'style', target: 'outline-style', type: 'element', field: 'select', options: {
+                        none: 'None',
+                        hidden: 'Hidden',
+                        dotted: 'Dotted',
+                        dashed: 'Dashed',
+                        solid: 'Solid',
+                        double: 'Double',
+                        groove: 'Groove',
+                        ridge: 'Ridge',
+                        inset: 'Inset',
+                        outset: 'Outset'
+                    }, default: '', inline: false}
                 ]
             },
         ];

@@ -30,7 +30,9 @@ export default class Inspector extends React.Component {
         mousemove: false
     };
 
-    config = {};
+    config = {
+        domID: 'dom-inspector'
+    };
     allowNavigator = true;
     iterator = false;
     DOMHelper = false;
@@ -106,9 +108,7 @@ export default class Inspector extends React.Component {
     };
 
     killApp = () => {
-
-        // @todo make the id as props / config
-        let mountNode = ReactDOM.findDOMNode(document.getElementById('dom-inspector'));
+        let mountNode = ReactDOM.findDOMNode(document.getElementById(this.config.domID));
         let unmount = ReactDOM.unmountComponentAtNode(mountNode);
         if (unmount) {
             this.destroyEvent();
@@ -166,7 +166,7 @@ export default class Inspector extends React.Component {
         }
 
         if (this.detectIfInsideStylizer(node)
-            || node.nodeName.toLowerCase().match(/(img|style|script|link)/g)) {
+            || node.nodeName.toLowerCase().match(new RegExp('(img|style|script|link)', 'g'))) {
             return true;
         }
 
@@ -184,7 +184,7 @@ export default class Inspector extends React.Component {
         let node = e.target;
 
         if (this.detectIfInsideStylizer(node)
-            || node.nodeName.toLowerCase().match(/(img|style|script|link|html|body)/g)) {
+            || node.nodeName.toLowerCase().match(new RegExp('(img|style|script|link|html|body)', 'g'))) {
             this.hoverCache = false;
             this.setState({overlay: false});
             return true;

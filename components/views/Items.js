@@ -6,38 +6,30 @@ import { get } from 'lodash';
  *
  * @author jason.xie@victheme.com
  */
-class Items extends React.Component {
+export default class Items extends React.Component {
 
     constructor(props) {
         super(props);
         this.config = get(props, 'config', {});
     };
 
-    shouldComponentUpdate(nextProps) {
-        return !(nextProps.node.refresh || nextProps.root.refresh) ? false : true;
-    }
-
-    componentDidUpdate() {
-        this.props.node.refresh = false;
-    }
-
-    isLoaded = (node) => {
+    isLoaded(node) {
         return 'styles' in node && node.styles && node.styles.length !== 0;
-    };
+    }
 
-    isActive = (node) => {
+    isActive(node) {
         return node.active;
     };
 
-    isChanged = (node) => {
+    isChanged(node) {
         return node.changed;
     };
 
-    isParent = (node) => {
+    isParent(node) {
         return node.hasChildren;
     };
 
-    isProcessed = (node) => {
+    isProcessed(node) {
         return node.processed;
     };
 
@@ -64,5 +56,3 @@ class Items extends React.Component {
         )
     };
 }
-
-export default Items;

@@ -10,25 +10,26 @@ import { findIndex, find } from 'lodash';
  * @author jason.xie@victheme.com
  * @todo Browser Compatibility test
  */
-class Iterator {
+export default class Iterator {
 
     storage = [];
     crawled = [];
     config = {
         domID: 'dom-inspector',
         sheetID: 'stylizer-source',
-        stylizerAttribute: 'stylizer-uuid'
+        stylizerAttribute: 'stylizer-uuid',
+        disallowNodeName: 'img|script|style|link'
     };
 
     constructor(config) {
         config && Object.assign(this.config, config);
     }
 
-    iterate = (node, parent, depth, maxDepth, selectors) => {
+    iterate = (node, parent, depth, maxDepth, tree) => {
 
         this.crawled = [];
 
-        this.crawl(node, parent, depth, maxDepth, selectors);
+        this.crawl(node, parent, depth, maxDepth, tree);
         let ParentIndex = parent ? findIndex(this.storage, { uuid: parent.uuid }) : this.storage.length;
         Array.prototype.splice.apply(this.storage, [ParentIndex, 1].concat(this.crawled));
 
@@ -36,49 +37,48 @@ class Iterator {
 
     };
 
-    crawl = (node, parent, depth, maxDepth, selectors) => {
+    crawl = (node, parent, depth, maxDepth, tree) => {
 
-        let nodeName = node.nodeName.toLowerCase();
+        let nodeName = node.nodeName.toLowerCase(),
+            currentNode = [];
+
         if (depth === maxDepth
             || node.nodeType !== node.ELEMENT_NODE
             || node.id === this.config.domID
-            || nodeName.match(/(img|script|style|link)/g)) {
+            || nodeName.match(new RegExp('(' + this.config.disallowNodeName + ')', 'g'))) {
             return;
         }
 
-        selectors = selectors.slice(0, depth);
-        this.selector(node, selectors);
-
-        let Storage = new Store(node, depth, selectors, this.config);
-        this.crawled.push(Storage);
-        if (parent) {
-            parent.processed = true;
-        }
-        for (let x=0; x < node.childNodes.length; x++) {
-            let childNode = node.childNodes[x];
-            if ( childNode.childNodes.length > 0) {
-                this.crawl(childNode, Storage, depth + 1, maxDepth, selectors);
-            }
-        }
-
-    };
-
-    selector = (node, selectors) => {
-        let selector = [];
-
+        // Generate the right tree structure
+        tree = tree.slice(0, depth);
         'nodeName' in node
             && node.nodeName.length
-            && selector.push(node.nodeName.toLowerCase());
+            && currentNode.push(node.nodeName.toLowerCase());
 
         'id' in node
             && node.id.length
-            && selector.push('#' + node.id);
+            && currentNode.push('#' + node.id);
 
         'className' in node
             && node.className.length
-            && selector.push('.' + node.className.replace(/\s+/g,"."));
+            && currentNode.push('.' + node.className.replace(/\s+/g,"."));
 
-        selectors.push(selector.join(''));
+        tree.push(currentNode.join(''));
+
+        let Storage = new Store(node, depth, tree, this.config);
+        this.crawled.push(Storage);
+
+        if (parent) {
+            parent.processed = true;
+        }
+
+        for (let x=0; x < node.childNodes.length; x++) {
+            let childNode = node.childNodes[x];
+            if ( childNode.childNodes.length > 0) {
+                this.crawl(childNode, Storage, depth + 1, maxDepth, tree);
+            }
+        }
+
     };
 
     get = () => {
@@ -104,5 +104,3 @@ class Iterator {
         });
     };
 }
-
-export default Iterator;

@@ -1,6 +1,12 @@
 import React from 'react';
 import ArrowIcon from '../../../node_modules/react-icons/lib/io/chevron-right';
+import { get } from 'lodash';
 
+/**
+ * Component for building the stylizer selector form item markup
+ *
+ * @author jason.xie@victheme.com
+ */
 export default class Selector extends React.Component {
 
     state = {
@@ -13,7 +19,7 @@ export default class Selector extends React.Component {
     testerNode = false;
     config = {
         label: 'Selector',
-        error: 'Invalid CSS selector',
+        error: 'Invalid CSS selector'
     };
 
     constructor(props) {
@@ -23,6 +29,7 @@ export default class Selector extends React.Component {
             this.state.node = props.node;
             this.state.selector = props.node.selector;
             this.state.badges = this.selectorToBadges();
+            this.state.error = !this.validate(props.node.selector);
         }
 
         if ('config' in props && props.config) {
@@ -35,7 +42,7 @@ export default class Selector extends React.Component {
             this.setState({
                 node: nextProps.node,
                 selector: nextProps.node.selector,
-                error: this.validate(nextProps.node.selector),
+                error: !this.validate(nextProps.node.selector),
                 badges: this.selectorToBadges()
             })
         }
@@ -130,61 +137,61 @@ export default class Selector extends React.Component {
     render() {
 
         const { config, state, isActive, toggle, submit } = this;
-        const tabProps = {
+        const tabProps = get(config, 'tabProps', {
             key: 'stylizer-tab-selector-' + state.node.uuid,
             className: 'stylizer-tab-content stylizer-content'
-        };
+        });
 
-        const selectorProps = {
+        const selectorProps = get(config, 'selectorProps', {
             key: 'selector-form-' + state.node.uuid,
             className: ['stylizer-form-item', state.error ? 'stylizer-has-error' : ' '].join(' ')
-        };
+        });
 
-        const labelProps = {
+        const labelProps = get(config, 'labelProps', {
             className: 'stylizer-form-label'
-        };
+        });
 
-        const inputProps = {
+        const inputProps = get(config, 'inputProps', {
             key: 'input-selector-' + state.node.uuid,
             className: 'stylizer-form-input',
             type: 'text',
             name: 'selector',
             value: state.selector,
             onChange: submit
-        };
+        });
 
-        const errorProps = {
+        const errorProps = get(config, 'errorProps', {
             key: 'input-selector-error-' + state.node.uuid,
             className: 'stylizer-error-bag'
-        };
+        });
 
-        const badgesProps = {
+        const badgesProps = get(config, 'badgesProps', {
             key: 'selector-badges-' + state.node.uuid,
             className: 'stylizer-selector-badges'
-        };
+        });
 
-        const badgeItemProps = {
+        const badgeItemProps = get(config, 'badgeItemProps', {
             className: 'stylizer-selector-badges-text'
-        };
+        });
 
-        const badgeIconProps = {
+        const badgeIconProps = get(config, 'badgeIconPorps', {
             className: 'stylizer-selector-badges-separator'
-        };
+        });
 
         return (
             <div { ...tabProps }>
                 <div { ...selectorProps }>
                     <label { ...labelProps }>{ config.label }</label>
                     <input { ...inputProps } />
-                    { state.error && <div { ...errorProps }>{ config.error }</div> }
+                    { state.error && config.error && <div { ...errorProps }>{ config.error }</div> }
                 </div>
                 <div { ...badgesProps }>
                     { state.node && state.node.tree && state.node.tree.map((item, delta) => {
-                        const badgeProps = {
+                        const badgeProps = get(config, 'badgeProps', {
                             key: 'badges-' + delta,
                             onClick: () => { toggle(item) },
                             className: ['stylizer-selector-badge', isActive(item) ? 'active' : ' '].join(' ')
-                        };
+                        });
 
                         return (
                             <span { ...badgeProps }>

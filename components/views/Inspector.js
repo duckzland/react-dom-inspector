@@ -5,7 +5,7 @@ import HamburgerIcon from '../../node_modules/react-icons/lib/io/navicon-round';
 import Iterator from '../modules/Iterator';
 import Items from './Items';
 
-class Inspector extends React.Component {
+export default class Inspector extends React.Component {
 
     state = {
         active: false,
@@ -45,10 +45,10 @@ class Inspector extends React.Component {
         });
     };
 
-    /**
-     * @todo Scroll to activated item
-     * @param node
-     */
+    scrollToItem = (node) => {
+
+    };
+
     activateNode = (node) => {
 
         const { props, iterator, state } = this;
@@ -56,7 +56,6 @@ class Inspector extends React.Component {
         const { root } = props;
 
         if (node.hasChildren && !node.processed) {
-
             iterate(node.trackNode(), node, node.depth, node.depth + 2, node.tree);
             this.refresh = true;
 
@@ -76,6 +75,7 @@ class Inspector extends React.Component {
         node.active = true;
 
         root.setActiveNode(node);
+        this.scrollToItem(node);
         this.setState({ active : node.uuid });
     };
 
@@ -132,5 +132,3 @@ class Inspector extends React.Component {
         )
     };
 }
-
-export default Inspector;

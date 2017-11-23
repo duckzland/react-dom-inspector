@@ -16,23 +16,23 @@ class Spacing extends BasePanel {
         };
         this.fields = [
             {
-                key: 'size',
-                title: 'Size',
+                key: 'width',
+                title: 'Width',
                 type: 'group',
                 elements: [
-                    {title: 'Width', target: 'width', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'Height', target: 'height', type: 'element', field: 'text', default: '', inline: true}
+                    {title: 'Min Width', target: 'min-width', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'Width', target: 'width', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'Max Width', target: 'max-width', type: 'element', field: 'text', default: '', inline: false}
                 ]
             },
             {
-                key: 'margin',
-                title: 'Margin',
+                key: 'height',
+                title: 'Height',
                 type: 'group',
                 elements: [
-                    {title: 'top', target: 'margin-top', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'left', target: 'margin-left', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'right', target: 'margin-right', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'bottom', target: 'margin-bottom', type: 'element', field: 'text', default: '', inline: true}
+                    {title: 'Min Height', target: 'min-height', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'Height', target: 'height', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'Max Height', target: 'max-height', type: 'element', field: 'text', default: '', inline: false}
                 ]
             },
             {
@@ -40,10 +40,21 @@ class Spacing extends BasePanel {
                 title: 'Padding',
                 type: 'group',
                 elements: [
-                    {title: 'top', target: 'padding-top', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'left', target: 'padding-left', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'right', target: 'padding-right', type: 'element', field: 'text', default: '', inline: true},
-                    {title: 'bottom', target: 'padding-bottom', type: 'element', field: 'text', default: '', inline: true}
+                    {title: 'top', target: 'padding-top', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'left', target: 'padding-left', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'right', target: 'padding-right', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'bottom', target: 'padding-bottom', type: 'element', field: 'text', default: '', inline: false}
+                ]
+            },
+            {
+                key: 'margin',
+                title: 'Margin',
+                type: 'group',
+                elements: [
+                    {title: 'top', target: 'margin-top', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'left', target: 'margin-left', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'right', target: 'margin-right', type: 'element', field: 'text', default: '', inline: false},
+                    {title: 'bottom', target: 'margin-bottom', type: 'element', field: 'text', default: '', inline: false}
                 ]
             }
         ];

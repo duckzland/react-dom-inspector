@@ -50,14 +50,21 @@ export default class Panel extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        let refresh = {};
         if ('node' in nextProps && nextProps.node) {
             this.state.node = nextProps.node;
-            this.setState({
+            refresh = {
                 node: nextProps.node,
                 values: this.getValues(),
                 errors: this.validateValues()
-            });
+            };
         }
+
+        if ('scroll' in nextProps) {
+            refresh.scroll = nextProps.scroll;
+        }
+
+        this.setState(refresh);
     };
 
     validate = (directive, rule) => {
@@ -122,12 +129,33 @@ export default class Panel extends React.Component {
         this.setState(refresh);
     };
 
-    // @todo expand the field type into more element like select, textarea, colorpicker and or special element items
+    onKeypress = (e) => {
+        let maybeNumber = e.target.value.match(/-?\d*(\d+)/g);
+        if (maybeNumber && maybeNumber[0]) {
+            let oldValue = maybeNumber[0], newNumber = parseFloat(maybeNumber[0]);
+            switch (e.key) {
+                case 'ArrowUp':
+                    newNumber++;
+                    break;
+                case 'ArrowDown':
+                    newNumber--;
+                    break;
+            }
+
+            e.target.value = e.target.value.replace(oldValue, newNumber);
+            this.submit(e);
+        }
+    };
+
     generateElement = (element) => {
-        const { submit, state, hasError } = this;
+        const { onKeypress, submit, state, hasError, config } = this;
         const elementProps = {
             key: 'stylizer-element-' + element.target + '-' + state.node.uuid,
-            className: ['stylizer-form-item', element.inline ? 'stylizer-label-inline' : '', hasError(element.target) ? 'stylizer-has-error' : ''].join(' ')
+            className: [
+                'stylizer-form-item',
+                'stylizer-field--' + element.target.replace(' ', '-'),
+                element.inline ? 'stylizer-label-inline' : '', hasError(element.target) ? 'stylizer-has-error' : ''
+            ].join(' ')
         };
 
         const labelProps = {
@@ -153,10 +181,30 @@ export default class Panel extends React.Component {
         let InputElement = [];
         switch (element.field) {
             case 'text' :
+                inputProps.onKeyDown = onKeypress;
                 InputElement.push( <input { ...inputProps } /> );
                 break;
+
             case 'color' :
                 InputElement.push( <ColorPicker { ...inputProps } /> );
+                break;
+
+            case 'select' :
+                let options = [];
+                if (element.options) {
+                    forEach(element.options, (text, value) => {
+                        const optionProps = get(config, 'optionProps', {
+                            key: 'stylizer-option-' + element.target + text.replace(' ', '-'),
+                            value: value
+                        });
+                        options.push(<option { ...optionProps }>{ text }</option>);
+                    });
+                }
+                InputElement.push(
+                    <select { ...inputProps }>
+                        { options }
+                    </select>
+                );
                 break;
         }
 
@@ -174,7 +222,7 @@ export default class Panel extends React.Component {
         const { state, config, generateElement } = this;
         const elementProps = {
             key: 'stylizer-group-' + element.title + '-' + state.node.uuid,
-            className: ['stylizer-form-group', element.inline ? 'stylizer-label-inline' : ''].join(' ')
+            className: ['stylizer-form-group', 'stylizer-group--' + element.key.replace(' ', '-'), element.inline ? 'stylizer-label-inline' : ''].join(' ')
         };
 
         const headingProps = {
@@ -222,19 +270,19 @@ export default class Panel extends React.Component {
         Space.ownerKey = ownerKey;
     }
 
-
     render() {
 
         const { leftSpace, rightSpace, fields, config, state, generateGroup, generateElement } = this;
 
         const tabProps = {
             key: 'stylizer-tab-' + config.type + '-' + state.node.uuid,
-            className: 'stylizer-tab-content stylizer-content-flex'
+            className: 'stylizer-tab-content stylizer-content-flex stylizer-tab-panel--' + config.type
         };
 
         const leftSpaceProps = {
             key: 'stylizer-panel-left-space',
-            className: 'stylizer-panel-left-space'
+            className: 'stylizer-panel-left-space',
+            style: { paddingTop: (state.scroll && state.scroll.topPosition ? state.scroll.topPosition : 0) + 15 + 'px'}
         };
 
         const centerSpaceProps = {
