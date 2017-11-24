@@ -18,8 +18,8 @@ export default class Selector extends React.Component {
 
     testerNode = false;
     config = {
-        label: 'Selector',
-        error: 'Invalid CSS selector'
+        PanelSelectorFieldLabel: 'Selector',
+        PanelSelectorFieldError: 'Invalid CSS selector'
     };
 
     constructor(props) {
@@ -137,21 +137,21 @@ export default class Selector extends React.Component {
     render() {
 
         const { config, state, isActive, toggle, submit } = this;
-        const tabProps = get(config, 'tabProps', {
+        const tabProps = get(config, 'PanelSelectorFieldTabProps', {
             key: 'stylizer-tab-selector-' + state.node.uuid,
             className: 'stylizer-tab-content stylizer-content'
         });
 
-        const selectorProps = get(config, 'selectorProps', {
+        const selectorProps = get(config, 'PanelSelectorFieldSelectorProps', {
             key: 'selector-form-' + state.node.uuid,
             className: ['stylizer-form-item', state.error ? 'stylizer-has-error' : ' '].join(' ')
         });
 
-        const labelProps = get(config, 'labelProps', {
+        const labelProps = get(config, 'PanelSelectorFieldLabelProps', {
             className: 'stylizer-form-label'
         });
 
-        const inputProps = get(config, 'inputProps', {
+        const inputProps = get(config, 'PanelSelectorFieldInputProps', {
             key: 'input-selector-' + state.node.uuid,
             className: 'stylizer-form-input',
             type: 'text',
@@ -160,34 +160,34 @@ export default class Selector extends React.Component {
             onChange: submit
         });
 
-        const errorProps = get(config, 'errorProps', {
+        const errorProps = get(config, 'PanelSelectorFieldErrorProps', {
             key: 'input-selector-error-' + state.node.uuid,
             className: 'stylizer-error-bag'
         });
 
-        const badgesProps = get(config, 'badgesProps', {
+        const badgesProps = get(config, 'PanelSelectorFieldBadgesProps', {
             key: 'selector-badges-' + state.node.uuid,
             className: 'stylizer-selector-badges'
         });
 
-        const badgeItemProps = get(config, 'badgeItemProps', {
+        const badgeItemProps = get(config, 'PanelSelectorFieldBadgeItemProps', {
             className: 'stylizer-selector-badges-text'
         });
 
-        const badgeIconProps = get(config, 'badgeIconPorps', {
+        const badgeIconProps = get(config, 'PanelSelectorFieldBadgeIconProps', {
             className: 'stylizer-selector-badges-separator'
         });
 
         return (
             <div { ...tabProps }>
                 <div { ...selectorProps }>
-                    <label { ...labelProps }>{ config.label }</label>
+                    <label { ...labelProps }>{ config.PanelSelectorFieldLabel }</label>
                     <input { ...inputProps } />
-                    { state.error && config.error && <div { ...errorProps }>{ config.error }</div> }
+                    { state.error && config.PanelSelectorFieldError && <div { ...errorProps }>{ config.PanelSelectorFieldError }</div> }
                 </div>
                 <div { ...badgesProps }>
                     { state.node && state.node.tree && state.node.tree.map((item, delta) => {
-                        const badgeProps = get(config, 'badgeProps', {
+                        const badgeProps = get(config, 'PanelSelectorFieldBadgeProps', {
                             key: 'badges-' + delta,
                             onClick: () => { toggle(item) },
                             className: ['stylizer-selector-badge', isActive(item) ? 'active' : ' '].join(' ')

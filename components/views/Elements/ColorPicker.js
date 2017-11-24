@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChromePicker } from 'react-color';
+import CloseIcon from '../../../node_modules/react-icons/lib/io/close-circled';
 import { get } from 'lodash';
 
 /**
@@ -34,19 +35,20 @@ class ColorPicker extends React.Component {
         if ('value' in nextProps && nextProps.value !== this.state.value) {
             this.state.value = nextProps.value;
         }
+        this.reset();
     }
 
     show = () => {
-        const { props, state, config, change } = this;
-        if (!state.displayColorPicker) {
-            const chromeProps = get(config, 'chromeProps', {
+        const { props, state, config, change, isOpen } = this;
+        if (!isOpen()) {
+            const chromeProps = get(config, 'ElementsColorPickerChromeProps', {
                 color: state.color,
                 onChange: change
             });
 
             props.root.mutateSpace('left', <ChromePicker { ...chromeProps } />, props.uuid);
         }
-        this.setState({ displayColorPicker: !state.displayColorPicker })
+        this.setState({ displayColorPicker: !state.displayColorPicker });
     };
 
     close = () => {
@@ -68,6 +70,11 @@ class ColorPicker extends React.Component {
         });
     };
 
+    toggle = () => {
+        const { isOpen, show, close } = this;
+        !isOpen() ? show() : close();
+    };
+
     convert = (color) => {
         if (color.rgb.a === 1 || color.rgb.a === 0) {
             return color.hex;
@@ -75,23 +82,56 @@ class ColorPicker extends React.Component {
         return 'rgba(' + color.rgb.r + ', ' + color.rgb.g + ', ' + color.rgb.b + ', ' + color.rgb.a + ')';
     };
 
-    render() {
-        const { props, state, config, close, show } = this;
-        const mainProps = {
-            className: props.className
-        };
+    reset = () => {
+        const { props } = this;
+        if (props.uuid !== get(props, 'root.leftSpace.ownerKey')) {
+            this.state.displayColorPicker = false;
+        }
+    };
 
-        const inputProps = get(config, 'inputProps', {
+    isOpen = () => {
+        return this.state.displayColorPicker;
+    };
+
+    render() {
+        const { props, state, config, toggle, show, close, isOpen } = this;
+        const mainProps = get(config, 'ElementColorPickerMainProps', {
+            className: props.className + ' stylizer-color-element'
+        });
+
+        const inputProps = get(config, 'ElementColorPickerInputProps', {
             type: 'text',
             value: state.value,
             onChange: props.onChange,
-            onFocus: show,
-            onBlur: close
+            onFocus: show
+        });
+
+        const spanPickerConst = get(config, 'ElementColorPickerSpanPickerConst', {
+            className: 'stylizer-color-preview',
+            onClick: toggle
+        });
+
+        const spanPickerContentConst = get(config, 'ElementColorPickerSpanPickerConst', {
+            style: {
+                backgroundColor: state.value
+            },
+            className: 'stylizer-color-preview-content'
+        });
+
+        const spanCloserConst = get(config, 'ElementColorPickerSpanCloserConst', {
+            className: 'stylizer-color-closer',
+            onClick: close
+        });
+
+        const closeIconProps = get(config, 'ElementColorPickerCloseIconProps', {
+            size: 13
         });
 
         return (
             <div { ...mainProps } >
+                <span { ...spanPickerConst }><span { ...spanPickerContentConst } /></span>
                 <input { ...inputProps } />
+                { isOpen() && <span { ...spanCloserConst } ><CloseIcon {...closeIconProps }/></span> }
             </div>
         )
     }

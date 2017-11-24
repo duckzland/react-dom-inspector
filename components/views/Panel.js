@@ -1,6 +1,7 @@
 import React from 'react';
 import ColorPicker  from './Elements/ColorPicker';
-import { get, forEach } from 'lodash';
+import FontPicker from './Elements/FontPicker';
+import { get, forEach, camelCase } from 'lodash';
 
 /**
  * Base Class for Panels
@@ -19,6 +20,10 @@ export default class Panel extends React.Component {
         content: null
     };
 
+    config = {
+        PanelGroupEmpty: null
+    };
+
     constructor(props) {
         super(props);
     };
@@ -33,7 +38,7 @@ export default class Panel extends React.Component {
         }
 
         if ('config' in props && props.config) {
-            this.config = props.config;
+            Object.assign(this.config, props.config);
         }
 
         if (!'config' in this) {
@@ -149,20 +154,20 @@ export default class Panel extends React.Component {
 
     generateElement = (element) => {
         const { onKeypress, submit, state, hasError, config } = this;
-        const elementProps = {
+        const elementProps = get(config, camelCase('PanelFieldElementProps_'  + element.target), {
             key: 'stylizer-element-' + element.target + '-' + state.node.uuid,
             className: [
                 'stylizer-form-item',
                 'stylizer-field--' + element.target.replace(' ', '-'),
                 element.inline ? 'stylizer-label-inline' : '', hasError(element.target) ? 'stylizer-has-error' : ''
             ].join(' ')
-        };
+        });
 
-        const labelProps = {
+        const labelProps = get(config, camelCase('PanelFieldLabelProps_' + element.target), {
             className: 'stylizer-form-label'
-        };
+        });
 
-        const inputProps = {
+        const inputProps = get(config, camelCase('PanelFieldInputProps_' + element.target), {
             key: 'input-' + element.target + '-' + state.node.uuid,
             uuid: 'input-' + element.target + '-' + state.node.uuid,
             className: 'stylizer-form-input',
@@ -170,13 +175,14 @@ export default class Panel extends React.Component {
             name: element.target,
             value: get(state, 'values.' + element.target, element.default),
             root: this,
-            onChange: submit
-        };
+            onChange: submit,
+            config: config
+        });
 
-        const errorProps = {
+        const errorProps = get(config, camelCase('PanelFieldErrorProps_' + element.target), {
             key: 'input-' + element.target + '-error-' + state.node.uuid,
             className: 'stylizer-error-bag'
-        };
+        });
 
         let InputElement = [];
         switch (element.field) {
@@ -189,11 +195,17 @@ export default class Panel extends React.Component {
                 InputElement.push( <ColorPicker { ...inputProps } /> );
                 break;
 
+            case 'font' :
+                inputProps.mode = element.mode;
+                inputProps.family = get(state, 'values.font-family');
+                InputElement.push( <FontPicker { ...inputProps } />);
+                break;
+
             case 'select' :
                 let options = [];
                 if (element.options) {
                     forEach(element.options, (text, value) => {
-                        const optionProps = get(config, 'optionProps', {
+                        const optionProps = get(config, camelCase('PanelFieldSelectOptionProps ' + element.target), {
                             key: 'stylizer-option-' + element.target + text.replace(' ', '-'),
                             value: value
                         });
@@ -220,18 +232,18 @@ export default class Panel extends React.Component {
 
     generateGroup = (element) => {
         const { state, config, generateElement } = this;
-        const elementProps = {
+        const elementProps = get(config, camelCase('PanelGroupElementProps ' + element.key), {
             key: 'stylizer-group-' + element.title + '-' + state.node.uuid,
             className: ['stylizer-form-group', 'stylizer-group--' + element.key.replace(' ', '-'), element.inline ? 'stylizer-label-inline' : ''].join(' ')
-        };
+        });
 
-        const headingProps = {
+        const headingProps = get(config, camelCase('PanelGroupHeadingProps ' + element.key), {
             className: 'stylizer-form-header'
-        };
+        });
 
-        const wrapperProps = {
+        const wrapperProps = get(config, camelCase('PanelGroupWrapperProps ' + element.key), {
             className: 'stylizer-form-row'
-        };
+        });
 
         return (
             <div { ...elementProps }>
@@ -239,7 +251,7 @@ export default class Panel extends React.Component {
                 <div { ...wrapperProps }>
                     { element.elements
                         ? element.elements.map( (child) => { return generateElement(child) })
-                        : config.empty
+                        : config.PanelGroupEmpty
                     }
                 </div>
             </div>
@@ -274,26 +286,26 @@ export default class Panel extends React.Component {
 
         const { leftSpace, rightSpace, fields, config, state, generateGroup, generateElement } = this;
 
-        const tabProps = {
+        const tabProps = get(config, 'PanelTabProps', {
             key: 'stylizer-tab-' + config.type + '-' + state.node.uuid,
             className: 'stylizer-tab-content stylizer-content-flex stylizer-tab-panel--' + config.type
-        };
+        });
 
-        const leftSpaceProps = {
+        const leftSpaceProps = get(config, 'PanelLeftSpaceProps', {
             key: 'stylizer-panel-left-space',
             className: 'stylizer-panel-left-space',
             style: { paddingTop: (state.scroll && state.scroll.topPosition ? state.scroll.topPosition : 0) + 15 + 'px'}
-        };
+        });
 
-        const centerSpaceProps = {
+        const centerSpaceProps = get(config, 'PanelCenterSpaceProps', {
             key: 'stylizer-panel-center-space',
             className: 'stylizer-panel-center-space'
-        };
+        });
 
-        const rightSpaceProps = {
+        const rightSpaceProps = get(config, 'PanelRightSpaceProps', {
             key: 'stylizer-panel-right-space',
             className: 'stylizer-panel-right-space'
-        };
+        });
 
         return (
             <div { ...tabProps }>

@@ -189,6 +189,12 @@
   min-width: 80px;
 }
 
+
+.stylizer-tab-panel--border .stylizer-form-item:not(:last-child) select,
+.stylizer-tab-panel--border .stylizer-form-item:not(:last-child) input {
+  border-right-color: transparent;
+}
+
 /**
   Spacing Panel
   **/
@@ -209,8 +215,60 @@
 
 .stylizer-tab-panel--spacing .stylizer-form-group {
   padding: 0 15px;
-  width: 50%;
-  min-width: 330px;
+  width: 25%;
+  min-width: 260px;
+}
+
+
+.stylizer-tab-panel--spacing .stylizer-form-item:not(:last-child) select,
+.stylizer-tab-panel--spacing .stylizer-form-item:not(:last-child) input {
+  border-right-color: transparent;
+}
+
+/**
+  Styles Panel
+  **/
+.stylizer-tab-panel--styles .stylizer-panel-center-space {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.stylizer-tab-panel--styles .stylizer-form-item {
+  padding: 0;
+}
+
+.stylizer-tab-panel--styles input[type="text"] {
+  padding: 6px 7px !important;
+}
+
+.stylizer-tab-panel--styles .stylizer-form-group {
+  padding: 0 15px;
+  width: 25%;
+  min-width: 350px;
+}
+
+.stylizer-tab-panel--styles .stylizer-group--background {
+  padding: 0 15px;
+  width: 46%;
+  min-width: 400px;
+}
+
+.stylizer-tab-panel--styles .stylizer-form-item:not(:last-child) select,
+.stylizer-tab-panel--styles .stylizer-form-item:not(:last-child) input {
+  border-right-color: transparent;
+}
+
+.stylizer-tab-panel--styles .stylizer-field--background-image input {
+  max-width: 100px;
+}
+
+.stylizer-tab-panel--styles .stylizer-field--display input,
+.stylizer-tab-panel--styles .stylizer-field--opacity input,
+.stylizer-tab-panel--styles .stylizer-field--background-position input,
+.stylizer-tab-panel--styles .stylizer-field--background-size input{
+  max-width: 70px;
 }
 
 .stylizer-iterator {
@@ -348,6 +406,51 @@
 .stylizer-has-error .stylizer-form-input {
   border-color: @ColorRed !important;
 }
+
+.stylizer-color-element {
+  display: flex;
+  flex-direction: row;
+}
+
+.stylizer-color-preview {
+  width: 30px;
+  height: 29px;
+  background-color: @FormElementBackground;
+  border: 1px solid @FormElementBorder;
+  border-right: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.stylizer-color-preview > .stylizer-color-preview-content {
+  border-radius: 100%;
+  width: 10px;
+  height: 10px;
+}
+
+.stylizer-color-closer {
+  max-width: 39px;
+  height: 29px;
+  width: 39px;
+  background-color: @FormElementBackground;
+  border: 1px solid @FormElementBorder;
+  border-left: none;
+  margin-left: -1px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.stylizer-color-element input[type="text"] {
+  border-left: none;
+  padding-left: 2px !important;
+}
+
 
 .stylizer-error-bag {
   font-size: 13px;

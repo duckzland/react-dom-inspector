@@ -161,7 +161,7 @@ class Overlay extends React.Component {
     render() {
 
         const { state, config } = this;
-        const overlayBoxProps = get(config, 'overlayProps', {
+        const overlayBoxProps = get(config, 'overlayBoxProps', {
             key: 'overlay-box',
             className: 'stylizer-overlay-box',
             style: state.position

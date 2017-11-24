@@ -7,7 +7,7 @@ import DOMHelper from './DOMHelper';
  *
  * @author jason.xie@victheme.com
  */
-class Store {
+export default class Store {
 
     config = {
         domID: 'dom-inspector',
@@ -88,7 +88,8 @@ class Store {
         }
 
         let rules = (new DOMHelper()).styleSheet({ id: this.config.sheetID }, 'content'),
-            elements = document.createElement('span');
+            elements = document.createElement('span'),
+            skippedRule = new RegExp('(initial|inherit)', 'g');
 
         for (let r in rules) {
             if (this.validateSelector(rules[r].selectorText, node)) {
@@ -106,7 +107,10 @@ class Store {
 
                             case 'border-radius' :
                                 ['border-top-left-radius', 'bottom-top-right-radius', 'border-bottom-left-radius', 'border-bottom-right-radius'].map((path) => {
-                                    set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
+                                    let style = elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })];
+                                    if (!style.match(skippedRule)) {
+                                        set(this.styles, path, style);
+                                    }
                                 });
                                 break;
 
@@ -114,8 +118,11 @@ class Store {
                             case 'padding' :
                             case 'margin' :
                                 ['top', 'left', 'right', 'bottom'].map((dir) => {
-                                    let path = directive + '-' + dir;
-                                    set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
+                                    let path = directive + '-' + dir,
+                                        style = elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })];
+                                    if (!style.match(skippedRule)) {
+                                        set(this.styles, path, style);
+                                    }
                                 });
                                 break;
 
@@ -126,34 +133,49 @@ class Store {
                             case 'border' :
                                 forEach((directive !== 'border' ? [directive] : ['border-top', 'border-left', 'border-right', 'border-bottom']), (dir) => {
                                     ['width', 'style', 'color'].map((type) => {
-                                        let path = dir + '-' + type;
-                                        set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
+                                        let path = dir + '-' + type,
+                                            style = elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })];
+                                        if (!style.match(skippedRule)) {
+                                            set(this.styles, path, style);
+                                        }
                                     });
                                 });
                                 break;
 
                             case 'outline' :
                                 ['width', 'style', 'color'].map((type) => {
-                                    let path = 'outline-' + type;
-                                    set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
+                                    let path = 'outline-' + type,
+                                        style = elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })];
+                                    if (!style.match(skippedRule)) {
+                                        set(this.styles, path, style);
+                                    }
                                 });
                                 break;
 
                             case 'font' :
-                                ['font-style', 'font-variant', 'font-weight', 'font-stretch', 'font-size', 'font-family', 'line-height'].map((type) => {
-                                    set(this.styles, type, elements.style[type.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
+                                ['font-style', 'font-variant', 'font-weight', 'font-stretch', 'font-size', 'font-family', 'line-height'].map((path) => {
+                                    let style = elements.style[type.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })];
+                                    if (!style.match(skippedRule)) {
+                                        set(this.styles, path, style);
+                                    }
                                 });
                                 break;
 
                             case 'background' :
                                 ['color', 'image', 'position', 'repeat', 'attachment', 'size', 'clip', 'origin'].map((type) => {
-                                    let path = 'background-' + type;
-                                    set(this.styles, path, elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })]);
+                                    let path = 'background-' + type,
+                                        style = elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })];
+                                    if (!style.match(skippedRule)) {
+                                        set(this.styles, path, style);
+                                    }
                                 });
                                 break;
 
                             default :
-                                set(this.styles, parsed[x].rules[y].directive, parsed[x].rules[y].value);
+                                let style = parsed[x].rules[y].value;
+                                if (!style.match(skippedRule)) {
+                                    set(this.styles, parsed[x].rules[y].directive, style);
+                                }
                         }
                     }
                 }
@@ -198,5 +220,3 @@ class Store {
     }
 
 }
-
-export default Store;

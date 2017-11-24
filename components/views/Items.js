@@ -37,7 +37,7 @@ export default class Items extends React.Component {
 
         const { isParent, isProcessed, isChanged, isLoaded, isActive, props, config } = this;
         const { node, root } = props;
-        const itemProps = get(config, 'itemProps', {
+        const itemProps = get(config, 'InspectorItemsItemProps', {
             key: 'item-' + node.uuid,
             className: [
                 'stylizer-element',
