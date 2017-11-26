@@ -12,7 +12,10 @@ export default class FontPicker extends React.Component {
 
     state = {
         value: null,
-        options: []
+        options: [],
+        family: false,
+        weight: false,
+        style: false
     };
 
     config = {};
@@ -21,35 +24,61 @@ export default class FontPicker extends React.Component {
 
     constructor(props) {
         super(props);
+
         if ('value' in props) {
             this.state.value = props.value;
         }
 
         if ('config' in props)  {
             Object.assign(this.config, props.config);
+            this.loader = new FontLoader(get(this.config, 'googleFontAPI'));
         }
 
         if ('root' in props) {
             this.state.root = props.root;
         }
-
-        if ('mode' in props) {
-            this.mode = props.mode;
+        
+        if ('family' in props) {
+            this.state.family = props.family;
+        }
+        
+        if ('style' in props) {
+            this.state.style = props.style;
+        }
+        
+        if ('weight' in props) {
+            this.state.weight = props.weight;
         }
 
-        this.loader = new FontLoader(get(this.config, 'googleFontAPI'));
+        if ('mode' in props && this.loader) {
+            this.mode = props.mode;
+            this.generateOptions(props.mode, get(props, 'family', ''), get(props, 'style', ''), get(props, 'weight', ''));
+        }
     };
 
     componentWillReceiveProps(nextProps) {
         if ('value' in nextProps && nextProps.value !== this.state.value) {
             this.state.value = nextProps.value;
         }
+
+        if ('family' in nextProps) {
+            this.state.family = nextProps.family;
+        }
+
+        if ('style' in nextProps) {
+            this.state.style = nextProps.style;
+        }
+
+        if ('weight' in nextProps) {
+            this.state.weight = nextProps.weight;
+        }
+        
         if ('mode' in nextProps) {
-            this.generateOptions(nextProps.mode, get(nextProps, 'family', ''));
+            this.generateOptions(nextProps.mode, get(nextProps, 'family', ''), get(nextProps, 'style', ''), get(nextProps, 'weight', ''));
         }
     }
 
-    generateOptions = (mode, family = false) => {
+    generateOptions = (mode, family = false, style = false, weight = false) => {
         let options = {};
         switch (mode) {
             case 'family' :
@@ -82,7 +111,7 @@ export default class FontPicker extends React.Component {
                 break;
 
             case 'weight' :
-                options = this.loader.getWeight(family, {
+                options = this.loader.getWeight(family, style, weight, {
                     100: '100',
                     200: '200',
                     300: '300',
@@ -96,7 +125,7 @@ export default class FontPicker extends React.Component {
                 break;
 
             case 'style' :
-                options = this.loader.getStyle(family, {
+                options = this.loader.getStyle(family, style, weight,  {
                     normal: 'Normal',
                     italic: 'Italic',
                     oblique: 'Oblique'
@@ -108,7 +137,10 @@ export default class FontPicker extends React.Component {
     };
 
     change = (e) => {
+        const { props, state } = this;
+        this.generateOptions(props.mode, get(state, 'family', ''), get(state, 'style', ''), get(state, 'weight', ''));
         this.setState({
+            options: this.state.options,
             value: e.target.value
         });
 
@@ -127,6 +159,7 @@ export default class FontPicker extends React.Component {
         });
 
         let inputProps = get(config, 'ElementFontPickerInputProps', {
+            name: 'font-' + mode,
             value: state.value,
             onChange: change
         });
@@ -135,6 +168,7 @@ export default class FontPicker extends React.Component {
         switch (mode) {
             case 'family' :
 
+                mainProps.className += ' stylizer-font-element-autocomplete';
                 inputProps.items = [];
                 forEach(state.options, (text, value) => {
                     inputProps.items.push({label: text});
@@ -144,13 +178,20 @@ export default class FontPicker extends React.Component {
                 };
                 inputProps.getItemValue = (item) => item.label;
                 inputProps.shouldItemRender = (item, value) => item.label.toLowerCase().indexOf(value.toLowerCase()) !== -1;
+                inputProps.renderMenu = (items, value, style) => {
+                    const menuProps = get(config, 'ElementFontPickerDropdownMenuProps', {
+                        className: 'stylizer-font-element-dropdown',
+                        children: items
+                    });
+                    return ( <div { ...menuProps } /> )
+                };
                 inputProps.renderItem = (item, isHighlighted) => {
                     const optionProps = get(config, 'ElementFontPickerAutoCompleteProps', {
                         key: 'stylizer-option-' + props.name + '-' + item.label,
-                        className: isHighlighted ? 'active' : ''
+                        className:  'stylizer-font-element-dropdown-item ' +  isHighlighted ? 'active' : ''
                     });
                     return (
-                        <div { ...optionProps } style={{ background: isHighlighted ? 'lightgray' : 'white' }}> {item.label}</div>
+                        <div { ...optionProps }> {item.label}</div>
                     );
                 };
                 break;
@@ -169,11 +210,7 @@ export default class FontPicker extends React.Component {
 
         return (
             <div { ...mainProps } >
-                {
-                    mode === 'family'
-                        ? <Autocomplete { ...inputProps } />
-                        : <select { ...inputProps }>{ options }</select>
-                }
+                { mode === 'family' ? <Autocomplete { ...inputProps } /> : <select { ...inputProps }>{ options }</select> }
             </div>
         )
     }

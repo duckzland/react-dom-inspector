@@ -18,6 +18,7 @@
 @FormElementBorder: #040f15;
 @FormElementText: #d3f7ff;
 @FormElementHeaderText: #13a6d9;
+@FormElementActiveText: #13a6d9;
 
 @TabsBackground: #03141d;
 @TabsText: #6d8d95;
@@ -233,10 +234,12 @@
   flex-wrap: wrap;
   padding-left: 0;
   padding-right: 0;
+  flex-grow: 1;
 }
 
 .stylizer-tab-panel--styles .stylizer-form-item {
   padding: 0;
+  flex-grow: 1;
 }
 
 .stylizer-tab-panel--styles input[type="text"] {
@@ -246,12 +249,12 @@
 .stylizer-tab-panel--styles .stylizer-form-group {
   padding: 0 15px;
   width: 25%;
-  min-width: 350px;
+  min-width: 320px;
 }
 
 .stylizer-tab-panel--styles .stylizer-group--background {
   padding: 0 15px;
-  width: 46%;
+  width: 50%;
   min-width: 400px;
 }
 
@@ -261,15 +264,64 @@
 }
 
 .stylizer-tab-panel--styles .stylizer-field--background-image input {
-  max-width: 100px;
+  min-width: 100px;
 }
 
 .stylizer-tab-panel--styles .stylizer-field--display input,
 .stylizer-tab-panel--styles .stylizer-field--opacity input,
 .stylizer-tab-panel--styles .stylizer-field--background-position input,
 .stylizer-tab-panel--styles .stylizer-field--background-size input{
-  max-width: 70px;
+  min-width: 60px;
 }
+
+.stylizer-tab-panel--styles .stylizer-field--background-color input,
+.stylizer-tab-panel--styles .stylizer-field--background-repeat select,
+.stylizer-tab-panel--styles .stylizer-field--visibility select,
+.stylizer-tab-panel--styles .stylizer-field--overflow select {
+  min-width: 100px;
+}
+
+/**
+  Typography Panel
+  **/
+.stylizer-tab-panel--typography .stylizer-panel-center-space {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.stylizer-tab-panel--typography .stylizer-form-item {
+  padding: 0;
+  flex-grow: 1;
+}
+
+.stylizer-tab-panel--typography input[role="combobox"],
+.stylizer-tab-panel--typography input[type="text"] {
+  padding: 6px 7px !important;
+}
+
+.stylizer-tab-panel--typography .stylizer-form-group {
+  padding: 0 15px;
+  width: 50%;
+  min-width: 350px;
+}
+
+.stylizer-tab-panel--typography .stylizer-form-item:not(:last-child) select,
+.stylizer-tab-panel--typography .stylizer-form-item:not(:last-child) input {
+  border-right-color: transparent;
+}
+
+.stylizer-tab-panel--typography .stylizer-field--font-size input {
+  max-width: 60px;
+}
+
+.stylizer-tab-panel--typography .stylizer-field--font-weight select,
+.stylizer-tab-panel--typography .stylizer-field--font-style select,
+.stylizer-tab-panel--typography .stylizer-field--font-variant select {
+  min-width: 100px;
+}
+
 
 .stylizer-iterator {
   flex-grow: 1;
@@ -337,7 +389,10 @@
 
 .data-depth-margin(@InspectorElementMargin, 10);
 
+.stylizer-inspector .stylizer-font-element-dropdown-item,
+.stylizer-inspector .stylizer-font-element-dropdown,
 .stylizer-inspector .chrome-picker input,
+.stylizer-inspector input[role="combobox"],
 .stylizer-inspector input[type="text"],
 .stylizer-inspector input[type="url"],
 .stylizer-inspector input[type="number"],
@@ -354,6 +409,31 @@
   font-size: 13px;
   border-radius: 0;
   margin: 0;
+}
+
+.stylizer-font-element-autocomplete {
+  position: relative;
+}
+
+.stylizer-inspector .stylizer-font-element-dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.stylizer-inspector .stylizer-font-element-dropdown-item {
+  cursor: pointer;
+}
+
+.stylizer-inspector .stylizer-font-element-dropdown-item:hover {
+  color: darken(@FormElementActiveText, 10%) !important;
+}
+
+.stylizer-inspector .stylizer-font-element-dropdown {
+  border: 1px solid @FormElementBorder !important;
 }
 
 .stylizer-form-item {

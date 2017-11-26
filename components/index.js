@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Iterator from './modules/Iterator';
 import DOMHelper from './modules/DOMHelper';
+import FontLoader from './modules/FontLoader';
 import InspectorPanel from './views/Inspector';
 import EditorPanel from './views/Editor';
 import Overlay from './views/Overlay';
@@ -51,6 +52,11 @@ export default class Inspector extends React.Component {
         }
         this.iterator = new Iterator();
         this.DOMHelper = new DOMHelper();
+
+        if (this.config.googleFontAPI) {
+            this.fontLoader = new FontLoader(this.config.googleFontApi);
+        }
+
         this.cloneSheet();
     };
 

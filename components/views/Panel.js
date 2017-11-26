@@ -198,6 +198,8 @@ export default class Panel extends React.Component {
             case 'font' :
                 inputProps.mode = element.mode;
                 inputProps.family = get(state, 'values.font-family');
+                inputProps.weight = get(state, 'values.font-weight');
+                inputProps.style = get(state, 'values.font-style');
                 InputElement.push( <FontPicker { ...inputProps } />);
                 break;
 

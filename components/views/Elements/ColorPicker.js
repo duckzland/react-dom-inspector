@@ -48,7 +48,7 @@ class ColorPicker extends React.Component {
 
             props.root.mutateSpace('left', <ChromePicker { ...chromeProps } />, props.uuid);
         }
-        this.setState({ displayColorPicker: !state.displayColorPicker });
+        this.setState({ displayColorPicker: true });
     };
 
     close = () => {
