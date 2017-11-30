@@ -131,6 +131,7 @@
 
 .stylizer-content {
   padding: 15px;
+  width: 100%;
 }
 
 .stylizer-content-flex {
@@ -142,16 +143,41 @@
   padding: 15px;
 }
 
+.stylizer-tab-content .stylizer-panel-left-space,
+.stylizer-tab-content .stylizer-panel-right-space {
+  background: @EditorBackground;
+}
+
+.stylizer-tab-content .stylizer-panel-center-space {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  padding: 15px 0;
+}
+
+.stylizer-tab-content .stylizer-form-item {
+  padding: 0;
+  flex-grow: 1;
+}
+
+.stylizer-tab-content .stylizer-form-group {
+  padding: 0 15px;
+  flex-grow: 1;
+}
+
+.stylizer-tab-content .stylizer-form-item:not(:last-child) select,
+.stylizer-tab-content .stylizer-form-item:not(:last-child) input {
+  border-right-color: transparent;
+}
+
+.stylizer-tab-content .stylizer-panel-center-space input[role="combobox"],
+.stylizer-tab-content .stylizer-panel-center-space input[type="text"] {
+  padding: 6px 7px !important;
+}
+
 /**
   Border Panel
   **/
-.stylizer-tab-panel--border .stylizer-panel-center-space {
-  display: flex;
-  flex-wrap: wrap;
-  padding-left: 0;
-  padding-right: 0;
-}
-
 .stylizer-tab-panel--border .stylizer-group--radius,
 .stylizer-tab-panel--border .stylizer-group--outline {
   width: 50%;
@@ -160,15 +186,7 @@
 
 .stylizer-tab-panel--border [class*="stylizer-group--border-"] {
   width: 25%;
-  min-width: 230px;
-}
-
-.stylizer-tab-panel--border .stylizer-form-group {
-  padding: 0 15px;
-}
-
-.stylizer-tab-panel--border .stylizer-form-item {
-  padding: 0;
+  min-width: 260px;
 }
 
 .stylizer-tab-panel--border input[type="text"] {
@@ -190,77 +208,25 @@
   min-width: 80px;
 }
 
-
-.stylizer-tab-panel--border .stylizer-form-item:not(:last-child) select,
-.stylizer-tab-panel--border .stylizer-form-item:not(:last-child) input {
-  border-right-color: transparent;
-}
-
 /**
   Spacing Panel
   **/
-.stylizer-tab-panel--spacing .stylizer-panel-center-space {
-  display: flex;
-  flex-wrap: wrap;
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.stylizer-tab-panel--spacing .stylizer-form-item {
-  padding: 0;
-}
-
-.stylizer-tab-panel--spacing input[type="text"] {
-  padding: 6px 7px !important;
-}
-
 .stylizer-tab-panel--spacing .stylizer-form-group {
-  padding: 0 15px;
   width: 25%;
   min-width: 260px;
-}
-
-
-.stylizer-tab-panel--spacing .stylizer-form-item:not(:last-child) select,
-.stylizer-tab-panel--spacing .stylizer-form-item:not(:last-child) input {
-  border-right-color: transparent;
 }
 
 /**
   Styles Panel
   **/
-.stylizer-tab-panel--styles .stylizer-panel-center-space {
-  display: flex;
-  flex-wrap: wrap;
-  padding-left: 0;
-  padding-right: 0;
-  flex-grow: 1;
-}
-
-.stylizer-tab-panel--styles .stylizer-form-item {
-  padding: 0;
-  flex-grow: 1;
-}
-
-.stylizer-tab-panel--styles input[type="text"] {
-  padding: 6px 7px !important;
-}
-
 .stylizer-tab-panel--styles .stylizer-form-group {
-  padding: 0 15px;
   width: 25%;
   min-width: 320px;
 }
 
 .stylizer-tab-panel--styles .stylizer-group--background {
-  padding: 0 15px;
   width: 50%;
-  min-width: 400px;
-}
-
-.stylizer-tab-panel--styles .stylizer-form-item:not(:last-child) select,
-.stylizer-tab-panel--styles .stylizer-form-item:not(:last-child) input {
-  border-right-color: transparent;
+  min-width: 490px;
 }
 
 .stylizer-tab-panel--styles .stylizer-field--background-image input {
@@ -284,38 +250,28 @@
 /**
   Typography Panel
   **/
-.stylizer-tab-panel--typography .stylizer-panel-center-space {
-  display: flex;
-  flex-wrap: wrap;
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.stylizer-tab-panel--typography .stylizer-form-item {
-  padding: 0;
-  flex-grow: 1;
-}
-
-.stylizer-tab-panel--typography input[role="combobox"],
-.stylizer-tab-panel--typography input[type="text"] {
-  padding: 6px 7px !important;
-}
-
 .stylizer-tab-panel--typography .stylizer-form-group {
-  padding: 0 15px;
   width: 50%;
   min-width: 350px;
 }
 
-.stylizer-tab-panel--typography .stylizer-form-item:not(:last-child) select,
-.stylizer-tab-panel--typography .stylizer-form-item:not(:last-child) input {
-  border-right-color: transparent;
+.stylizer-tab-panel--typography .stylizer-group--font {
+  min-width: 590px;
+}
+
+.stylizer-tab-panel--typography .stylizer-field--font-family input {
+  min-width: 100px;
+  width: 100%;
 }
 
 .stylizer-tab-panel--typography .stylizer-field--font-size input {
-  max-width: 60px;
+  min-width: 60px;
 }
 
+.stylizer-tab-panel--typography .stylizer-field--white-space select,
+.stylizer-tab-panel--typography .stylizer-field--letter-spacing input,
+.stylizer-tab-panel--typography .stylizer-field--vertical-align select,
+.stylizer-tab-panel--typography .stylizer-field--font-weight input,
 .stylizer-tab-panel--typography .stylizer-field--font-weight select,
 .stylizer-tab-panel--typography .stylizer-field--font-style select,
 .stylizer-tab-panel--typography .stylizer-field--font-variant select {
@@ -415,6 +371,10 @@
   position: relative;
 }
 
+.stylizer-font-element-autocomplete > * {
+  display: block !important;
+}
+
 .stylizer-inspector .stylizer-font-element-dropdown {
   position: absolute;
   left: 0;
@@ -483,6 +443,7 @@
   text-transform: capitalize;
 }
 
+.stylizer-has-error input[role="combobox"],
 .stylizer-has-error .stylizer-form-input {
   border-color: @ColorRed !important;
 }
@@ -576,6 +537,13 @@
 .stylizer-tabs-contents {
   background: @TabsActiveBackground;
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.stylizer-tabs-contents.has-vertical-scrollbar {
+  padding-right: 15px;
 }
 
 .stylizer-tab-element {
@@ -792,6 +760,7 @@ body[stylizer-active="true"][stylizer-vertical="true"] {
   flex-direction: row;
   max-width: 100%;
   min-width: 100%;
+  min-height: 35px;
 }
 
 [stylizer-vertical="true"] .stylizer-tab-element {
@@ -817,6 +786,31 @@ body[stylizer-active="true"][stylizer-vertical="true"] {
 [stylizer-vertical="true"] .stylizer-form-row {
   flex-wrap: wrap;
   margin: 0 -7px;
+}
+
+[stylizer-vertical="true"] .stylizer-tab-content {
+  flex-direction: column;
+  position: relative;
+}
+
+[stylizer-vertical="true"] .stylizer-panel-center-space .stylizer-form-row {
+  margin: 0;
+}
+
+[stylizer-vertical="true"] .stylizer-panel-center-space .stylizer-form-group {
+  width: 100%;
+  min-width: 1px;
+}
+
+[stylizer-vertical="true"] .stylizer-panel-center-space .stylizer-form-item {
+  margin-bottom: 20px;
+}
+
+[stylizer-vertical="true"] .stylizer-panel-left-space {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  bottom: 0;
 }
 
 /**

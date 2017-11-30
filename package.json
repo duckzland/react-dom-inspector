@@ -15,7 +15,8 @@
     "react-color": "^2.13.8",
     "react-dom": "^16.1.1",
     "react-icons": "^2.2.7",
-    "react-scrollbar": "^0.5.1"
+    "react-scrollbar": "^0.5.1",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "chai": "^4.1.2",

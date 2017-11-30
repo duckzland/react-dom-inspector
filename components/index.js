@@ -100,7 +100,6 @@ export default class Inspector extends React.Component {
         }
     };
 
-    // @todo merge all of this toggle mess into a single unified method or inject them to jsx directly.
     toggleMinimize = () => {
         this.setState({ minimize: !this.state.minimize });
     };
@@ -144,9 +143,7 @@ export default class Inspector extends React.Component {
     };
 
     setActiveNode = (node) => {
-        this.setState({
-            node: node
-        });
+        this.setState({ node: node });
     };
 
     detectIfInsideStylizer = (node) => {
@@ -166,7 +163,7 @@ export default class Inspector extends React.Component {
     };
 
     captureNode = (e) => {
-        let node = e.target;
+        const node = e.target;
         if (node.nodeName.toLowerCase() === 'a') {
             e.preventDefault();
         }
@@ -176,23 +173,21 @@ export default class Inspector extends React.Component {
             return true;
         }
 
-        let StoreObject = this.retrieveOrBuildStorage(node);
-        if (StoreObject) {
-            this.setState({
-                node: StoreObject,
-                hover: false,
-                overlay: false
-            });
-        }
+        const StoreObject = this.retrieveOrBuildStorage(node);
+        StoreObject && this.setState({
+            node: StoreObject,
+            hover: false,
+            overlay: false
+        });
     };
 
     moveOverlay = (e) => {
-        let node = e.target;
+        const node = e.target;
 
         if (this.detectIfInsideStylizer(node)
             || node.nodeName.toLowerCase().match(new RegExp('(img|style|script|link|html|body)', 'g'))) {
             this.hoverCache = false;
-            this.setState({overlay: false});
+            this.setState({ overlay: false });
             return true;
         }
 
@@ -203,12 +198,10 @@ export default class Inspector extends React.Component {
         this.hoverCache = e;
         this.state.overlay = node;
 
-        let StoreObject = this.retrieveOrBuildStorage(node);
-        if (StoreObject) {
-            this.setState({
-                node: StoreObject
-            });
-        }
+        const StoreObject = this.retrieveOrBuildStorage(node);
+        StoreObject && this.setState({
+            node: StoreObject
+        });
     };
 
     render() {
@@ -226,7 +219,7 @@ export default class Inspector extends React.Component {
             config: iterator,
             root: this,
             iterator: this.iterator,
-            node: state.activateNode,
+            node: state.node,
             refresh: state.refresh
         });
 

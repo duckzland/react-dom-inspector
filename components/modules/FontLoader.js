@@ -1,4 +1,5 @@
-import { forEach, set, find} from 'lodash';
+import { forEach, set, find, get, isEqual} from 'lodash';
+import WebFontLoader from 'webfontloader';
 
 
 export default class FontLoader {
@@ -8,9 +9,9 @@ export default class FontLoader {
     static families = null;
 
     constructor(API = false) {
+        FontLoader.googleAPI = API;
         if (API && FontLoader.library === null && !FontLoader.isFetching) {
             FontLoader.isFetching = true;
-            FontLoader.googleAPI = 'AIzaSyBGkmctzcaXne1HFbZKYz6iq9i6ROrVeaE';
             setTimeout(() => {
                 this.load();
             }, 1);
@@ -43,84 +44,144 @@ export default class FontLoader {
     getFamily(defaultFamily = {}) {
 
         if (FontLoader.families === null) {
-            if (FontLoader.library && FontLoader.library.items) {
-                FontLoader.families = defaultFamily;
-                forEach(FontLoader.library.items, (font) => {
-                    FontLoader.families[font.family] = font.family;
-                });
-            }
-            else {
-                return defaultFamily;
-            }
+            FontLoader.families = defaultFamily;
+        }
+
+        if (isEqual(FontLoader.families, defaultFamily) && FontLoader.library && FontLoader.library.items) {
+            FontLoader.families = defaultFamily;
+            forEach(FontLoader.library.items, (font) => {
+                FontLoader.families[font.family] = font.family;
+            });
         }
 
         return FontLoader.families;
     }
 
-    // @todo refactor this. this is messy
     getWeight(family = false, style = false, weight =  false, defaultWeight = {}) {
 
+
         if (FontLoader.library && FontLoader.library.items) {
-            let TargetFamily = find(FontLoader.library.items, ['family', family])
-            if (TargetFamily) {
-                let TrackedWeight = {};
-                forEach(TargetFamily.variants, (rule) => {
-                    if (style) {
-                        if (style === 'regular') {
-                            let maybeRule = rule.match(/\d+/g),
-                                maybeStyle = rule.match(/[a-zA-Z]+/g);
-                            if (maybeRule && maybeRule[0] && !maybeStyle) {
-                                TrackedWeight[maybeRule[0]] = maybeRule[0];
+            const font = find(FontLoader.library.items, ['family', family]);
+            if (font) {
+                let fontWeight = {};
+                font && font.variants && forEach(font.variants, (rule) => {
+
+                    const fontStyle = rule.match(/[a-zA-Z]+/g);
+                    const fontRule = rule.match(/\d+/g);
+
+                    !style ? style = 'none' : null;
+
+                    switch (style) {
+                        case 'regular' :
+                            !fontStyle && fontRule && fontRule[0] && (fontWeight[fontRule[0]] = fontRule[0]);
+                            break;
+                        case 'none' :
+                            fontRule && fontRule[0] && (fontWeight[fontRule[0]] = fontRule[0]);
+                            break;
+                        default :
+                            if (fontStyle && fontStyle[0] === style) {
+                                const x = rule.replace(fontStyle[0], '');
+                                x.length ? fontWeight[x] = x : false;
                             }
-                        }
-                        else {
-                            let maybeStyle = rule.match(/[a-zA-Z]+/g);
-                            if (maybeStyle && maybeStyle[0] === style) {
-                                let Rule = rule.replace(maybeStyle[0], '');
-                                Rule.length ? TrackedWeight[Rule] = Rule : false;
-                            }
-                        }
-                    }
-                    else {
-                        let maybeRule = rule.match(/\d+/g);
-                        if (maybeRule && maybeRule[0]) {
-                            TrackedWeight[maybeRule[0]] = maybeRule[0];
-                        }
+                            break;
+
                     }
                 });
-
-                return TrackedWeight;
+                return fontWeight;
             }
         }
+
         return defaultWeight;
     }
 
-    // @todo refactor this. this is messy
     getStyle(family = false, style = false, weight = false, defaultStyle = {}) {
 
         if (FontLoader.library && FontLoader.library.items) {
-            let TargetFamily = find(FontLoader.library.items, ['family', family])
-            if (TargetFamily) {
-                let TrackedStyle = {};
-                forEach(TargetFamily.variants, (rule) => {
-                    if (weight) {
-                        let maybeWeight =  rule.match(/\d+/g);
-                        if (maybeWeight && parseInt(maybeWeight[0]) === parseInt(weight)) {
-                            let Rule = rule.replace(maybeWeight[0], '');
-                            Rule.length ? TrackedStyle[Rule] = Rule : TrackedStyle['regular'] = 'regular';
-                        }
-                    }
-                    else {
-                        let maybeRule =  rule.match(/[a-zA-Z]+/g);
-                        if (maybeRule && maybeRule[0]) {
-                            TrackedStyle[maybeRule[0]] = maybeRule[0];
-                        }
+            const font = find(FontLoader.library.items, ['family', family]);
+            if (font) {
+                let fontStyle = {};
+                !weight ? weight = 'none' : null;
+
+                font && font.variants && forEach(font.variants, (rule) => {
+
+                    const fontWeight = rule.match(/\d+/g);
+                    const fontRule = rule.match(/[a-zA-Z]+/g);
+                    const Rule = fontWeight && fontWeight[0] ? rule.replace(fontWeight[0], '') : false;
+
+                    switch (weight) {
+                        case 'none' :
+                            fontRule && fontRule[0] && (fontStyle[fontRule[0]] = fontRule[0]);
+                            break;
+                        default :
+                            if (fontWeight && parseInt(fontWeight[0]) === parseInt(weight)) {
+                                Rule && Rule.length
+                                    ? fontStyle[Rule] = Rule.replace(/(?:^|\s)\S/g, function (a) {
+                                    return a.toUpperCase();
+                                })
+                                    : fontStyle['regular'] = 'Regular';
+                            }
+                            break;
                     }
                 });
 
-                return TrackedStyle;
+                return fontStyle;
+            }
+
+        }
+
+        return defaultStyle;
+    }
+
+    validateFont(family = false, style = '', weight = '') {
+
+        let validated = false;
+        let font = false;
+        const checkedRule = weight + style;
+
+        if (family && !get(FontLoader.families, family, false)) {
+            family = null;
+            validated = false;
+        }
+        if (family && checkedRule === '') {
+            validated = true;
+        }
+        else if (family && FontLoader.library && FontLoader.library.items) {
+            font = find(FontLoader.library.items, ['family', family]);
+            font && font.variants && forEach(font.variants, (rule) => {
+                if (rule === checkedRule) {
+                    validated = true;
+                    return false;
+                }
+            });
+        }
+
+        if (!font && family !== null) {
+            validated = true;
+        }
+
+        return validated;
+    }
+
+    insertFont(family = false, style= '', weight = '') {
+        let loaded = false;
+        if (family && FontLoader.library && FontLoader.library.items) {
+            const font = find(FontLoader.library.items, ['family', family]);
+            if (font) {
+                const variant = style + weight;
+                let rule = family;
+                if (variant) {
+                    rule += ':' + variant;
+                }
+                WebFontLoader.load({
+                    google: {
+                        families: [rule]
+                    }
+                });
+                loaded = true;
             }
         }
-        return defaultStyle;
+
+
+        return loaded;
     }
 }

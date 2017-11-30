@@ -31,7 +31,9 @@ export default class Inspector extends React.Component {
             this.resetNodeStatus();
         }
         if ('node' in nextProps && nextProps.node) {
-            this.activateNode(nextProps.node);
+            if (nextProps.node.uuid !== this.state.active) {
+                this.activateNode(nextProps.node);
+            }
         }
     };
 
@@ -79,9 +81,18 @@ export default class Inspector extends React.Component {
         this.setState({ active : node.uuid });
     };
 
+    onScroll = (value) => {
+        this.setState({
+            scrolledLeft: value.leftPosition,
+            scrolledtop: value.topPosition,
+            hasVerticalScrollbar: value.containerHeight < value.realHeight,
+            hasHorizontalScrollbar: value.containerWidth < value.realWidth
+        });
+    };
+
     render() {
 
-        const { iterator, state, config } = this;
+        const { iterator, state, config, onScroll } = this;
 
         const panelProps = get(config, 'inspectorPanelProps', {
             key: 'stylizer-iterator-panel',
@@ -111,7 +122,13 @@ export default class Inspector extends React.Component {
         const scrollAreaProps = get(config, 'inspectorPanelScrollAreaProps', {
             key: 'stylizer-iterator',
             speed: 0.8,
-            className: 'stylizer-content stylizer-iterator',
+            className: [
+                'stylizer-content',
+                'stylizer-iterator',
+                state.hasHorizontalScrollbar ? 'has-horizontal-scrollbar' : '',
+                state.hasVerticalScrollbar > 0 ? 'has-vertical-scrollbar': ''
+            ].join(' '),
+            onScroll: onScroll,
             contentClassName: 'content',
             horizontal: true
         });

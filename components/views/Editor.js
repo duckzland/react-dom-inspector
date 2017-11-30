@@ -84,13 +84,9 @@ export default class Editor extends React.Component {
         this.setState({ active: tabKey });
     };
 
-    onScroll = (value) => {
-        this.setState({ scroll: value});
-    };
-
     render() {
 
-        let { onScroll, onChangeTab, state, config } = this;
+        let { onChangeTab, state, config } = this;
         let ActivePanel = [];
 
         const { root, node } = state;
@@ -159,15 +155,6 @@ export default class Editor extends React.Component {
             className: 'stylizer-tabs'
         });
 
-        const scrollAreaProps = get(config, 'EditorPanelScrollAreaProps', {
-            key: "stylizer-tab-contents",
-            speed: 0.8,
-            className: "stylizer-tabs-contents",
-            contentClassName: "content",
-            horizontal: true,
-            onScroll: onScroll,
-        });
-
         const emptyProps = get(config, 'EditorPanelEmptyProps', {
             className: 'stylizer-selector-empty'
         });
@@ -226,7 +213,7 @@ export default class Editor extends React.Component {
                                 return ( <div { ...selectorItemProps }>{ TabKey }</div> )
                             }) }
                         </div>
-                        <ScrollArea { ...scrollAreaProps }>{ ActivePanel }</ScrollArea>
+                        { ActivePanel }
                     </div>
 
                     : <div { ...tabsWrapperProps }>

@@ -1,4 +1,5 @@
 import React from 'react';
+import ScrollArea from 'react-scrollbar';
 import ColorPicker  from './Elements/ColorPicker';
 import FontPicker from './Elements/FontPicker';
 import { get, forEach, camelCase } from 'lodash';
@@ -72,19 +73,19 @@ export default class Panel extends React.Component {
         this.setState(refresh);
     };
 
-    validate = (directive, rule) => {
-        this.testerNode.style[directive] = rule;
-        if (directive.indexOf('color') === -1) {
-            return this.testerNode.style[directive] === rule;
-        }
-        else {
-            return this.testerNode.style[directive].length !== 0;
-        }
-    };
-
     hasError = (key) => {
         return this.state.errors[key] ? this.state.errors[key] : false;
     };
+
+    setError = (key, refresh = true) => {
+        this.state.errors[key] = true;
+        refresh && this.setState(this.state);
+    };
+
+    removeError = (key, refresh = true) => {
+        this.state.errors[key] = false;
+        refresh && this.setState(this.state);
+    } ;
 
     getValues = () => {
         const { fields } = this;
@@ -108,6 +109,16 @@ export default class Panel extends React.Component {
         }
     };
 
+    validate = (directive, rule) => {
+        this.testerNode.style[directive] = rule;
+        if (directive.indexOf('color') === -1) {
+            return this.testerNode.style[directive] === rule;
+        }
+        else {
+            return this.testerNode.style[directive].length !== 0;
+        }
+    };
+
     validateValues = () => {
         const { state, validate } = this;
         state.errors = {};
@@ -117,49 +128,15 @@ export default class Panel extends React.Component {
         return state.errors;
     };
 
-    submit = (e) => {
-        const { hasError } = this;
-        const { value, name } = e.target;
-        let refresh = {
-            values: this.state.values,
-            errors: this.state.errors
-        };
-        refresh.values[name] = value;
-        refresh.errors[name] = !this.validate(name, value);
-
-        if (!hasError(name)) {
-            this.props.root.rebuildStyling(e);
-        }
-
-        this.setState(refresh);
-    };
-
-    onKeypress = (e) => {
-        let maybeNumber = e.target.value.match(/-?\d*(\d+)/g);
-        if (maybeNumber && maybeNumber[0]) {
-            let oldValue = maybeNumber[0], newNumber = parseFloat(maybeNumber[0]);
-            switch (e.key) {
-                case 'ArrowUp':
-                    newNumber++;
-                    break;
-                case 'ArrowDown':
-                    newNumber--;
-                    break;
-            }
-
-            e.target.value = e.target.value.replace(oldValue, newNumber);
-            this.submit(e);
-        }
-    };
-
     generateElement = (element) => {
-        const { onKeypress, submit, state, hasError, config } = this;
+        const { onKeypress, onSubmit, state, hasError, config } = this;
         const elementProps = get(config, camelCase('PanelFieldElementProps_'  + element.target), {
             key: 'stylizer-element-' + element.target + '-' + state.node.uuid,
             className: [
                 'stylizer-form-item',
                 'stylizer-field--' + element.target.replace(' ', '-'),
-                element.inline ? 'stylizer-label-inline' : '', hasError(element.target) ? 'stylizer-has-error' : ''
+                element.inline ? 'stylizer-label-inline' : '',
+                hasError(element.target) ? 'stylizer-has-error' : ''
             ].join(' ')
         });
 
@@ -175,7 +152,7 @@ export default class Panel extends React.Component {
             name: element.target,
             value: get(state, 'values.' + element.target, element.default),
             root: this,
-            onChange: submit,
+            onChange: onSubmit,
             config: config
         });
 
@@ -206,6 +183,11 @@ export default class Panel extends React.Component {
             case 'select' :
                 let options = [];
                 if (element.options) {
+                    const optionEmptyProps = get(config, 'PanelFieldSelectOptionEmptyProps', {
+                        key: 'stylizer-option-' + element.target + '-empty',
+                        value: ''
+                    });
+                    options.push(<option { ...optionEmptyProps }>{ null }</option>);
                     forEach(element.options, (text, value) => {
                         const optionProps = get(config, camelCase('PanelFieldSelectOptionProps ' + element.target), {
                             key: 'stylizer-option-' + element.target + text.replace(' ', '-'),
@@ -221,7 +203,6 @@ export default class Panel extends React.Component {
                 );
                 break;
         }
-
 
         return (
             <div { ...elementProps }>
@@ -259,8 +240,7 @@ export default class Panel extends React.Component {
             </div>
         )
     };
-
-
+    
     mutateSpace(direction, content, ownerKey, wipe = false) {
 
         const Space = this[direction + 'Space'];
@@ -284,9 +264,56 @@ export default class Panel extends React.Component {
         Space.ownerKey = ownerKey;
     }
 
+    onSubmit = (e) => {
+        const { hasError } = this;
+        const { value, name } = e.target;
+        let refresh = {
+            values: this.state.values,
+            errors: this.state.errors
+        };
+        refresh.values[name] = value;
+        if (!get(e, 'target.skipValidation', false)) {
+            refresh.errors[name] = !this.validate(name, value);
+        }
+
+        if (!hasError(name)) {
+            this.props.root.rebuildStyling(e);
+        }
+
+        this.setState(refresh);
+    };
+
+    onKeypress = (e) => {
+        let maybeNumber = e.target.value.match(/-?\d*(\d+)/g);
+        if (maybeNumber && maybeNumber[0]) {
+            let oldValue = maybeNumber[0], newNumber = parseFloat(maybeNumber[0]);
+            switch (e.key) {
+                case 'ArrowUp':
+                    newNumber++;
+                    break;
+                case 'ArrowDown':
+                    newNumber--;
+                    break;
+            }
+
+            e.target.value = e.target.value.replace(oldValue, newNumber);
+            this.onSubmit(e);
+        }
+    };
+
+    onScroll = (value) => {
+        this.setState({
+            scroll: value,
+            scrolledLeft: value.leftPosition,
+            scrolledtop: value.topPosition,
+            hasVerticalScrollbar: value.containerHeight < value.realHeight,
+            hasHorizontalScrollbar: value.containerWidth < value.realWidth
+        });
+    };
+
     render() {
 
-        const { leftSpace, rightSpace, fields, config, state, generateGroup, generateElement } = this;
+        const { leftSpace, rightSpace, fields, config, state, generateGroup, generateElement, onScroll } = this;
 
         const tabProps = get(config, 'PanelTabProps', {
             key: 'stylizer-tab-' + config.type + '-' + state.node.uuid,
@@ -295,8 +322,7 @@ export default class Panel extends React.Component {
 
         const leftSpaceProps = get(config, 'PanelLeftSpaceProps', {
             key: 'stylizer-panel-left-space',
-            className: 'stylizer-panel-left-space',
-            style: { paddingTop: (state.scroll && state.scroll.topPosition ? state.scroll.topPosition : 0) + 15 + 'px'}
+            className: 'stylizer-panel-left-space'
         });
 
         const centerSpaceProps = get(config, 'PanelCenterSpaceProps', {
@@ -309,19 +335,34 @@ export default class Panel extends React.Component {
             className: 'stylizer-panel-right-space'
         });
 
+        const scrollAreaProps = get(config, 'EditorPanelScrollAreaProps', {
+            key: "stylizer-tab-contents",
+            speed: 0.8,
+            className: [
+                'stylizer-tabs-contents',
+                state.hasHorizontalScrollbar ? 'horizontal-scrollbar' : '',
+                state.hasVerticalScrollbar > 0 ? 'has-vertical-scrollbar': ''
+            ].join(' '),
+            contentClassName: "content",
+            horizontal: true,
+            onScroll: onScroll,
+        });
+
         return (
             <div { ...tabProps }>
                 { leftSpace.content && <div { ...leftSpaceProps }>{ leftSpace.content }</div> }
-                <div { ...centerSpaceProps}>
-                    { fields.map( (element) => {
-                        switch (element.type) {
-                            case 'group' :
-                                return generateGroup(element);
-                            case 'element' :
-                                return generateElement(element);
-                        }
-                    })}
-                </div>
+                <ScrollArea { ...scrollAreaProps }>
+                    <div { ...centerSpaceProps}>
+                        { fields.map( (element) => {
+                            switch (element.type) {
+                                case 'group' :
+                                    return generateGroup(element);
+                                case 'element' :
+                                    return generateElement(element);
+                            }
+                        })}
+                    </div>
+                </ScrollArea>
                 { rightSpace.content && <div { ...rightSpaceProps}>{ rightSpace.content }</div> }
             </div>
         )
