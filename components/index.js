@@ -34,6 +34,7 @@ export default class Inspector extends React.Component {
     config = {
         domID: 'dom-inspector'
     };
+
     allowNavigator = true;
     iterator = false;
     DOMHelper = false;
@@ -131,16 +132,19 @@ export default class Inspector extends React.Component {
     };
 
     revertData = () => {
-        const { props, convertData, cloneSheet, setState } = this;
+        const { props, convertData, cloneSheet, iterator } = this;
         const storage = document.getElementById('stylizer-source');
 
         storage
             && props
             && props.onRevert
-            && props.onRevert(convertData(storage))
+            && props.onRevert(convertData(storage));
+
+        storage
             && document.body.removeChild(storage)
-            && cloneSheet()
-            && setState({ refresh: true });
+            && cloneSheet();
+
+        this.setState({ refresh: true });
     };
 
     convertData = (storage) => {

@@ -47,13 +47,33 @@ export default class Inspector extends React.Component {
     };
 
     resetNodeStatus() {
-        this.iterator.get().map((node) => {
-            node.reset();
-        });
+        this.iterator.reset();
     };
 
     scrollToItem = (node) => {
+        const DOMNode = node.trackNode();
+        if (DOMNode) {
+            this.state.scrolledLeft = DOMNode.offsetLeft;
+            this.state.scrolledTop = DOMNode.offsetTop;
+        }
+    };
 
+    moveScrollBar = (el) => {
+        if (!el) {
+            return false;
+        }
+
+        const { scrollXTo, scrollYTo } = el.scrollArea;
+        const { scrolledLeft, scrolledTop } = this.state;
+        const { leftPosition, topPosition } = el.state;
+
+        scrolledLeft
+            && (scrolledLeft !== leftPosition)
+            && scrollXTo(parseInt(scrolledLeft));
+
+        scrolledTop
+            && (scrolledTop !== topPosition)
+            && scrollYTo(parseInt(scrolledTop));
     };
 
     activateNode = (node) => {
@@ -89,7 +109,7 @@ export default class Inspector extends React.Component {
     onScroll = (value) => {
         this.setState({
             scrolledLeft: value.leftPosition,
-            scrolledtop: value.topPosition,
+            scrolledTop: value.topPosition,
             hasVerticalScrollbar: value.containerHeight < value.realHeight,
             hasHorizontalScrollbar: value.containerWidth < value.realWidth
         });
@@ -97,7 +117,7 @@ export default class Inspector extends React.Component {
 
     render() {
 
-        const { iterator, state, config, onScroll } = this;
+        const { iterator, state, config, onScroll, moveScrollBar } = this;
 
         const panelProps = get(config, 'inspectorPanelProps', {
             key: 'stylizer-iterator-panel',
@@ -126,6 +146,7 @@ export default class Inspector extends React.Component {
 
         const scrollAreaProps = get(config, 'inspectorPanelScrollAreaProps', {
             key: 'stylizer-iterator',
+            ref: (el) => { moveScrollBar(el) },
             speed: 0.8,
             className: [
                 'stylizer-content',

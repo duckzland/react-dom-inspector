@@ -170,11 +170,6 @@
   border-right-color: transparent;
 }
 
-.stylizer-tab-content .stylizer-panel-center-space input[role="combobox"],
-.stylizer-tab-content .stylizer-panel-center-space input[type="text"] {
-  padding: 6px 7px !important;
-}
-
 /**
   Border Panel
   **/
@@ -187,10 +182,6 @@
 .stylizer-tab-panel--border [class*="stylizer-group--border-"] {
   width: 25%;
   min-width: 260px;
-}
-
-.stylizer-tab-panel--border input[type="text"] {
-  padding: 6px 7px !important;
 }
 
 .stylizer-tab-panel--border [class*="stylizer-field--border-"] input {
@@ -358,13 +349,61 @@
   background: @FormElementBackground;
   border: 1px solid @FormElementBorder;
   color: @FormElementText;
-  padding: 5px 10px;
-  line-height: 120%;
+  padding: 0 7px;
+  line-height: 29px;
   min-height: 0;
   height: auto;
   font-size: 13px;
   border-radius: 0;
   margin: 0;
+}
+
+.stylizer-inspector select > option {
+  background-color: @FormElementBackground;
+  border: 1px solid @FormElementBorder;
+  cursor: pointer;
+}
+
+.stylizer-inspector select > option:hover {
+  background-color: darken(@FormElementBackground, 5%);
+}
+
+.stylizer-inspector select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.stylizer-inspector select:focus {
+  outline: none;
+}
+
+.stylizer-inspector select::-ms-expand {
+  display: none; /* hide the default arrow in ie10 and ie11 */
+}
+@ie9MediaMinWidthHack: "0\0";
+@media screen and (min-width: @ie9MediaMinWidthHack) {
+  .stylizer-inspector select {
+    background-image:none\9;
+  }
+}
+
+.stylizer-inspector .chrome-picker input,
+.stylizer-inspector input[role="combobox"],
+.stylizer-inspector input[type="text"],
+.stylizer-inspector input[type="url"],
+.stylizer-inspector input[type="number"],
+.stylizer-inspector input[type="tel"],
+.stylizer-inspector select {
+  height: 29px;
+}
+
+.stylizer-inspector textarea {
+  padding: 6px 7px;
+}
+
+.stylizer-inspector input[disabled] {
+  background: darken(@FormElementBackground, 5%);
 }
 
 .stylizer-font-element-autocomplete {
@@ -381,7 +420,9 @@
   right: 0;
   bottom: auto;
   max-height: 160px;
+  min-width: 160px;
   overflow-y: auto;
+  cursor: pointer;
 }
 
 .stylizer-inspector .stylizer-font-element-dropdown-item {
@@ -394,6 +435,8 @@
 
 .stylizer-inspector .stylizer-font-element-dropdown {
   border: 1px solid @FormElementBorder !important;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .stylizer-form-item {

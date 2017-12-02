@@ -34,7 +34,6 @@ export default class Items extends React.Component {
     };
 
     render() {
-
         const { isParent, isProcessed, isChanged, isLoaded, isActive, props, config } = this;
         const { node, root } = props;
         const itemProps = get(config, 'InspectorItemsItemProps', {

@@ -38,7 +38,7 @@ export default class Editor extends React.Component {
     constructor(props) {
         super(props);
 
-        this.styleElement = (new DOMHelper()).styleSheet({id: 'stylizer-source'}, 'style');
+        this.styleElement = (new DOMHelper()).styleSheet({ id: 'stylizer-source' }, 'style');
 
         if ('config' in props)  {
             Object.assign(this.config, props.config);
