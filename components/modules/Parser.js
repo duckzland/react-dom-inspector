@@ -3,7 +3,7 @@
  *
  * @author jason.xie@victheme.com
  */
-class Parser {
+export default class Parser {
 
     constructor(style) {
         return this.parseCSS(style);
@@ -94,5 +94,3 @@ class Parser {
         return ret; //we are done!
     }
 }
-
-export default Parser;

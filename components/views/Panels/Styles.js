@@ -1,7 +1,12 @@
 import BasePanel from '../Panel';
 
-class Styles extends BasePanel {
-
+/**
+ * Class for generating the sytles panel inside the editor markup
+ * This class is extending the BasePanel class
+ *
+ * @author jason.xie@victheme.com
+ */
+export default class Styles extends BasePanel {
     constructor(props) {
         super(props);
         this.state = {
@@ -86,6 +91,3 @@ class Styles extends BasePanel {
         this.initialize(props);
     }
 }
-
-
-export default Styles;

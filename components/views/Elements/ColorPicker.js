@@ -8,7 +8,7 @@ import { get } from 'lodash';
  *
  * @author jason.xie@victheme.com
  */
-class ColorPicker extends React.Component {
+export default class ColorPicker extends React.Component {
     state = {
         displayColorPicker: false,
         value: '',
@@ -136,5 +136,3 @@ class ColorPicker extends React.Component {
         )
     }
 }
-
-export default ColorPicker;

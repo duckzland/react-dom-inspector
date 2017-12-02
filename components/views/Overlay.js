@@ -5,9 +5,8 @@ import { get } from 'lodash';
  * Component for building an overlay for hovered DOM Element
  *
  * @author jason.xie@victheme.com
- * @todo Refactor this for more speed!
  */
-class Overlay extends React.Component {
+export default class Overlay extends React.Component {
 
     state = {
         position: {
@@ -198,5 +197,3 @@ class Overlay extends React.Component {
         )
     };
 }
-
-export default Overlay;

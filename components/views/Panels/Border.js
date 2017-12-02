@@ -1,7 +1,12 @@
 import BasePanel from '../Panel';
 
-class Border extends BasePanel {
-
+/**
+ * Class for generating the border panel inside the editor markup
+ * This class is extending the BasePanel class
+ *
+ * @author jason.xie@victheme.com
+ */
+export default class Border extends BasePanel {
     constructor(props) {
         super(props);
         this.state = {
@@ -136,6 +141,3 @@ class Border extends BasePanel {
         this.initialize(props);
     }
 }
-
-
-export default Border;

@@ -1,7 +1,12 @@
 import BasePanel from '../Panel';
 
-class Typography extends BasePanel {
-
+/**
+ * Class for generating the typography panel inside the editor markup
+ * This class is extending the BasePanel class
+ *
+ * @author jason.xie@victheme.com
+ */
+export default class Typography extends BasePanel {
     constructor(props) {
         super(props);
         this.state = {
@@ -114,6 +119,3 @@ class Typography extends BasePanel {
         this.initialize(props);
     }
 }
-
-
-export default Typography;

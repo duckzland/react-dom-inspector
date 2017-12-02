@@ -1,7 +1,12 @@
 import BasePanel from '../Panel';
 
-class Spacing extends BasePanel {
-
+/**
+ * Class for generating the spacing panel inside the editor markup
+ * This class is extending the BasePanel class
+ *
+ * @author jason.xie@victheme.com
+ */
+export default class Spacing extends BasePanel {
     constructor(props) {
         super(props);
         this.state = {
@@ -61,6 +66,3 @@ class Spacing extends BasePanel {
         this.initialize(props);
     }
 }
-
-
-export default Spacing;

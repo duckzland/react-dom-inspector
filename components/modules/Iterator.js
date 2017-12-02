@@ -8,7 +8,6 @@ import { findIndex, find } from 'lodash';
  * point at DOM tree.
  *
  * @author jason.xie@victheme.com
- * @todo Browser Compatibility test
  */
 export default class Iterator {
 

@@ -5,7 +5,7 @@ import HamburgerIcon from '../../node_modules/react-icons/lib/io/navicon-round';
 import HoverIcon from '../../node_modules/react-icons/lib/io/compose';
 import RevertIcon from '../../node_modules/react-icons/lib/io/trash-b';
 import CloseIcon from '../../node_modules/react-icons/lib/io/close';
-import SaveIcon from '../../node_modules/react-icons/lib/io/refresh';
+import SaveIcon from '../../node_modules/react-icons/lib/fa/floppy-o';
 import LayoutIcon from '../../node_modules/react-icons/lib/io/code-working';
 import DOMHelper from '../modules/DOMHelper';
 import BorderPanel from './Panels/Border';
@@ -14,7 +14,11 @@ import SpacingPanel from './Panels/Spacing';
 import StylesPanel from './Panels/Styles';
 import TypographyPanel from './Panels/Typography';
 
-
+/**
+ * Class for generating the Editor element markup
+ *
+ * @author jason.xie@victheme.com
+ */
 export default class Editor extends React.Component {
 
     state = {

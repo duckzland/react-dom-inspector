@@ -5,7 +5,7 @@ import FontPicker from './Elements/FontPicker';
 import { get, forEach, camelCase } from 'lodash';
 
 /**
- * Base Class for Panels
+ * Base Class for Creating Editor Panels
  *
  * @author jason.xie@victheme.com
  */
@@ -345,7 +345,7 @@ export default class Panel extends React.Component {
             ].join(' '),
             contentClassName: "content",
             horizontal: true,
-            onScroll: onScroll,
+            onScroll: onScroll
         });
 
         return (

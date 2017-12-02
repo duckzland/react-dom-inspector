@@ -5,6 +5,11 @@ import HamburgerIcon from '../../node_modules/react-icons/lib/io/navicon-round';
 import Iterator from '../modules/Iterator';
 import Items from './Items';
 
+/**
+ * Class for generating the Inspector main wrapper markup
+ *
+ * @author jason.xie@victheme.com
+ */
 export default class Inspector extends React.Component {
 
     state = {

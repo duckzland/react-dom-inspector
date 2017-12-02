@@ -113,8 +113,8 @@ export default class Inspector extends React.Component {
     };
 
     killApp = () => {
-        let mountNode = ReactDOM.findDOMNode(document.getElementById(this.config.domID));
-        let unmount = ReactDOM.unmountComponentAtNode(mountNode);
+        const mountNode = ReactDOM.findDOMNode(document.getElementById(this.config.domID));
+        const unmount = ReactDOM.unmountComponentAtNode(mountNode);
         if (unmount) {
             this.destroyEvent();
             document.body.removeAttribute('stylizer-active');
@@ -131,15 +131,40 @@ export default class Inspector extends React.Component {
     };
 
     revertData = () => {
-        let sheet = document.getElementById('stylizer-source');
-        sheet && document.body.removeChild(sheet);
-        this.cloneSheet();
-        this.setState({refresh: true});
+        const { props, convertData, cloneSheet, setState } = this;
+        const storage = document.getElementById('stylizer-source');
+
+        storage
+            && props
+            && props.onRevert
+            && props.onRevert(convertData(storage))
+            && document.body.removeChild(storage)
+            && cloneSheet()
+            && setState({ refresh: true });
     };
 
-    // @todo expand this with props hooks to save to database with ajax!
-    saveData = () => {
+    convertData = (storage) => {
+        const result = {
+            storage: storage,
+            styles: [],
+            cssText: ''
+        };
 
+        storage
+            && storage.sheet
+            && storage.sheet.cssRules
+            && forEach(storage.sheet.cssRules, (rule) => {
+                result.styles.push(rule.cssText);
+            });
+
+        result.cssText = result.styles.join("\n");
+        return result;
+    };
+
+    saveData = () => {
+        const { props, convertData } = this;
+        const storage = document.getElementById('stylizer-source');
+        storage && props && props.onSave && props.onSave(convertData(storage));
     };
 
     setActiveNode = (node) => {

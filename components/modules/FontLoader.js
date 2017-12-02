@@ -1,9 +1,14 @@
 import { forEach, set, find, get, isEqual} from 'lodash';
 import WebFontLoader from 'webfontloader';
 
-
+/**
+ * Class for creating a fontloader object for easy loading, verification and injecting
+ * fonts including google fonts.
+ *
+ * @author jason.xie@victheme.com
+ */
 export default class FontLoader {
-    static library = null
+    static library = null;
     static googleAPI = null;
     static isFetching = false;
     static families = null;
@@ -64,7 +69,7 @@ export default class FontLoader {
             const font = find(FontLoader.library.items, ['family', family]);
             if (font) {
                 let fontWeight = {};
-                font && font.variants && forEach(font.variants, (rule) => {
+                font.variants && forEach(font.variants, (rule) => {
 
                     const fontStyle = rule.match(/[a-zA-Z]+/g);
                     const fontRule = rule.match(/\d+/g);
@@ -75,9 +80,11 @@ export default class FontLoader {
                         case 'regular' :
                             !fontStyle && fontRule && fontRule[0] && (fontWeight[fontRule[0]] = fontRule[0]);
                             break;
+
                         case 'none' :
                             fontRule && fontRule[0] && (fontWeight[fontRule[0]] = fontRule[0]);
                             break;
+
                         default :
                             if (fontStyle && fontStyle[0] === style) {
                                 const x = rule.replace(fontStyle[0], '');
@@ -102,7 +109,7 @@ export default class FontLoader {
                 let fontStyle = {};
                 !weight ? weight = 'none' : null;
 
-                font && font.variants && forEach(font.variants, (rule) => {
+                font.variants && forEach(font.variants, (rule) => {
 
                     const fontWeight = rule.match(/\d+/g);
                     const fontRule = rule.match(/[a-zA-Z]+/g);
@@ -113,13 +120,13 @@ export default class FontLoader {
                             fontRule && fontRule[0] && (fontStyle[fontRule[0]] = fontRule[0]);
                             break;
                         default :
-                            if (fontWeight && parseInt(fontWeight[0]) === parseInt(weight)) {
-                                Rule && Rule.length
-                                    ? fontStyle[Rule] = Rule.replace(/(?:^|\s)\S/g, function (a) {
+                            fontWeight
+                                && Rule
+                                && (parseInt(fontWeight[0]) === parseInt(weight))
+                                && Rule.length
+                                && (fontStyle[Rule] = Rule.replace(/(?:^|\s)\S/g, function (a) {
                                     return a.toUpperCase();
-                                })
-                                    : fontStyle['regular'] = 'Regular';
-                            }
+                                }));
                             break;
                     }
                 });
@@ -132,7 +139,7 @@ export default class FontLoader {
         return defaultStyle;
     }
 
-    validateFont(family = false, style = '', weight = '') {
+    validate(family = false, style = '', weight = '') {
 
         let validated = false;
         let font = false;
@@ -162,16 +169,15 @@ export default class FontLoader {
         return validated;
     }
 
-    insertFont(family = false, style= '', weight = '') {
+    insert(family = false, style= '', weight = '') {
         let loaded = false;
         if (family && FontLoader.library && FontLoader.library.items) {
             const font = find(FontLoader.library.items, ['family', family]);
+
             if (font) {
                 const variant = style + weight;
-                let rule = family;
-                if (variant) {
-                    rule += ':' + variant;
-                }
+                const rule = variant ? family + ':' + variant : family;
+
                 WebFontLoader.load({
                     google: {
                         families: [rule]

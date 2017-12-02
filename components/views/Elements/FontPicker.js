@@ -34,7 +34,7 @@ export default class FontPicker extends React.Component {
             Object.assign(this.config, props.config);
 
             this.loader = new FontLoader(get(this.config, 'googleFontAPI'));
-            if (!this.loader.validateFont(get(props, 'family', ''), get(props, 'style', ''), get(props, 'weight', ''))) {
+            if (!this.loader.validate(get(props, 'family', ''), get(props, 'style', ''), get(props, 'weight', ''))) {
                 props.root.setError(props.name);
             }
         }
@@ -145,15 +145,15 @@ export default class FontPicker extends React.Component {
     };
 
     change = (e) => {
-        const { props, state, loader } = this;
+        const { props, state, loader, generateOptions } = this;
 
         state[props.mode] = state.value = e.target.value;
         const { family, style, weight } = state;
 
-        this.generateOptions(props.mode, family, style, weight);
+        generateOptions(props.mode, family, style, weight);
 
-        if (loader.validateFont(family, style, weight)) {
-            loader.insertFont(family, style, weight);
+        if (loader.validate(family, style, weight)) {
+            loader.insert(family, style, weight);
             props.root.removeError(props.name);
         }
         else {
@@ -185,7 +185,6 @@ export default class FontPicker extends React.Component {
         let options = [];
         switch (mode) {
             case 'family' :
-
                 mainProps.className += ' stylizer-font-element-autocomplete';
                 inputProps.items = [];
                 forEach(state.options, (text, value) => {
@@ -216,20 +215,36 @@ export default class FontPicker extends React.Component {
 
             case 'weight' :
             case 'style' :
-                if (Object.keys(state.options).length > 0) {
-                    const optionEmptyProps = get(config, 'ElementFontPickerOptionEmptyProps', {
-                        key: 'stylizer-option-' + props.name + '-empty',
-                        value: ''
-                    });
+                switch (Object.keys(state.options).length) {
+                    case 0 :
+                        inputProps.type = 'text';
+                        inputProps.disabled = true;
+                        inputProps.value = 'none';
 
-                    options.push(<option { ...optionEmptyProps }>{ null }</option>);
-                    forEach(state.options, (text, value) => {
-                        const optionProps = get(config, 'ElementFontPickerOptionProps', {
-                            key: 'stylizer-option-' + props.name + '-' + value.replace(' ', '-'),
-                            value: value
+                        delete inputProps.name;
+                        break;
+
+                    case 1 :
+                        inputProps.type = 'text';
+                        inputProps.disabled = true;
+                        inputProps.value = Object.keys(state.options)[0];
+                        break;
+
+                    default :
+                        const optionEmptyProps = get(config, 'ElementFontPickerOptionEmptyProps', {
+                            key: 'stylizer-option-' + props.name + '-empty',
+                            value: ''
                         });
-                        options.push(<option { ...optionProps }>{ text }</option>);
-                    });
+
+                        options.push(<option { ...optionEmptyProps }>{ null }</option>);
+                        forEach(state.options, (text, value) => {
+                            const optionProps = get(config, 'ElementFontPickerOptionProps', {
+                                key: 'stylizer-option-' + props.name + '-' + value.replace(' ', '-'),
+                                value: value
+                            });
+                            options.push(<option { ...optionProps }>{ text }</option>);
+                        });
+                        break;
                 }
             break;
         }
@@ -238,9 +253,9 @@ export default class FontPicker extends React.Component {
             <div { ...mainProps } >
                 { mode === 'family'
                     ? <Autocomplete { ...inputProps } />
-                    : Object.keys(state.options).length > 0
-                        ? <select { ...inputProps }>{ options }</select>
-                        : <input type="text" value="Not Available" disabled/>
+                    : Object.keys(state.options).length > 1
+                        ?  <select { ...inputProps }>{ options }</select>
+                        : <input { ...inputProps } />
                 }
             </div>
         )
