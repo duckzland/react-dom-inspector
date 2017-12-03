@@ -132,8 +132,27 @@ export default class Inspector extends React.Component {
         document.body.appendChild(sheet);
     };
 
+    wipeData = () => {
+        const { props, convertData, cloneSheet } = this;
+        const storage = document.getElementById('stylizer-source');
+        const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
+
+        storage
+            && props
+            && props.onWipe
+            && props.onWipe(convertData(storage));
+
+        sheet
+            && sheet.cssRules
+            && forEach(sheet.cssRules, (rule, delta) => {
+                sheet.removeRule(delta);
+            });
+
+        this.setState({ refresh: true });
+    };
+
     revertData = () => {
-        const { props, convertData, cloneSheet, iterator } = this;
+        const { props, convertData, cloneSheet } = this;
         const storage = document.getElementById('stylizer-source');
 
         storage
@@ -155,21 +174,29 @@ export default class Inspector extends React.Component {
             cssText: ''
         };
 
-        storage
-            && storage.sheet
-            && storage.sheet.cssRules
-            && forEach(storage.sheet.cssRules, (rule) => {
+        const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
+
+        sheet
+            && sheet.cssRules
+            && forEach(sheet.cssRules, (rule) => {
                 result.styles.push(rule.cssText);
             });
 
         result.cssText = result.styles.join("\n");
+
         return result;
     };
 
     saveData = () => {
         const { props, convertData } = this;
         const storage = document.getElementById('stylizer-source');
-        storage && props && props.onSave && props.onSave(convertData(storage));
+
+        storage
+            && props
+            && props.onSave
+            && props.onSave(convertData(storage));
+
+        return true;
     };
 
     setActiveNode = (node) => {

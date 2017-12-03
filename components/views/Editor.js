@@ -3,7 +3,8 @@ import ScrollArea from 'react-scrollbar';
 import { get } from 'lodash';
 import HamburgerIcon from '../../node_modules/react-icons/lib/io/navicon-round';
 import HoverIcon from '../../node_modules/react-icons/lib/io/compose';
-import RevertIcon from '../../node_modules/react-icons/lib/io/trash-b';
+import DeleteIcon from '../../node_modules/react-icons/lib/io/trash-b';
+import RevertIcon from '../../node_modules/react-icons/lib/fa/refresh';
 import CloseIcon from '../../node_modules/react-icons/lib/io/close';
 import SaveIcon from '../../node_modules/react-icons/lib/fa/floppy-o';
 import LayoutIcon from '../../node_modules/react-icons/lib/io/code-working';
@@ -134,6 +135,11 @@ export default class Editor extends React.Component {
             onClick: () => root.revertData()
         });
 
+        const deleteIconProps = get(config, 'EditorPanelDeleteIconProps', {
+            size: 16,
+            onClick: () => root.wipeData()
+        });
+
         const saveIconProps = get(config, 'EditorPanelSaveIconProps', {
             size: 16,
             onClick: () => root.saveData()
@@ -198,6 +204,7 @@ export default class Editor extends React.Component {
                         { !minimize && <LayoutIcon { ...layoutIconProps } /> }
                         { !minimize && <HoverIcon { ...hoverIconProps } /> }
                         { !minimize && <RevertIcon { ...revertIconProps } /> }
+                        { !minimize && <DeleteIcon { ...deleteIconProps } /> }
                         { !minimize && <SaveIcon { ...saveIconProps } /> }
                         { !minimize && <CloseIcon { ...closeIconProps } /> }
                         <HamburgerIcon { ...hamburgerIconProps } />
