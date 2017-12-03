@@ -8,9 +8,8 @@
         <meta charset="utf-8"/>
         <meta name="viewport"
               content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
+        <!-- Default Style Sheet for the example page -->
         <style type="text/css">
 
             a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, body, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, label, legend, li, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video {
@@ -104,45 +103,6 @@
                 justify-content: center
             }
 
-            input[type=text], input[type=date], input[type=datetime], input[type=email], input[type=number], input[type=search], input[type=time], input[type=url], input[type=password], select, textarea {
-                width: 100%;
-                display: block;
-                outline: 0;
-                box-sizing: border-box;
-                height: 40px;
-                line-height: 40px;
-                font-size: 16px;
-                padding: 5px 10px;
-                margin-bottom: 20px;
-                border-radius: 3px
-            }
-
-            textarea {
-                height: auto;
-                min-height: 200px
-            }
-
-            button, input[type=submit] {
-                border-radius: 2px;
-                font-size: 14px;
-                padding: 7px 16px;
-                border: none;
-                outline: 0;
-                line-height: 20px;
-                vertical-align: middle;
-                cursor: pointer
-            }
-
-            button i, input[type=submit] i {
-                margin-left: 5px;
-                display: inline-block;
-                vertical-align: middle
-            }
-
-            .has-error input[type=text], .has-error input[type=date], .has-error input[type=datetime], .has-error input[type=email], .has-error input[type=number], .has-error input[type=search], .has-error input[type=time], .has-error input[type=url], .has-error input[type=password] {
-                margin-bottom: 5px
-            }
-
             .button-fill {
                 font-size: 16px;
                 text-align: center;
@@ -150,7 +110,7 @@
                 padding: 12px 20px;
                 border-radius: 6px;
                 font-weight: 400;
-                letter-spacing: .6px;
+                letter-spacing: 0.6px;
                 -webkit-transition: background ease .3s;
                 transition: background ease .3s;
                 cursor: pointer;
@@ -221,14 +181,6 @@
                 min-width: calc(50% - 120px)
             }
 
-            .section-banner.reversed .banner {
-                order: 1
-            }
-
-            .section-banner.reversed .banner img {
-                float: right
-            }
-
             .section-banner .banner img {
                 box-shadow: 0 0 12px #333;
                 vertical-align: middle
@@ -247,13 +199,6 @@
                 hyphens: auto
             }
 
-            #banner:after, .section-banner:after {
-                content: '';
-                width: 100%;
-                position: absolute;
-                display: block
-            }
-
             .section-banner h1 {
                 font-size: 42px;
                 margin-bottom: 30px
@@ -265,13 +210,6 @@
                 font-weight: 400
             }
 
-            .section-centered form {
-                padding: 0 60px 60px;
-                margin-bottom: 40px;
-                min-width: 420px;
-                max-width: 620px
-            }
-
             .section-pages .content {
                 margin-bottom: 60px;
                 word-wrap: break-word;
@@ -279,24 +217,13 @@
                 -moz-hyphens: auto;
                 hyphens: auto
             }
-
-            #banner {
-                background-size: cover !important
-            }
-
-            #banner:after {
-                top: 0;
-                left: 0;
-                bottom: 0;
-                right: 0;
-                height: 100%;
-                z-index: 1
-            }
         </style>
     </head>
     <body class="flex-box flex-column flex-grow">
+
+        <!-- Example markup -->
         <div class="main-content flex-grow flex-box flex-column">
-            <section id="banner" class="center-banner flex-box flex-column flex-justify-center">
+            <section class="center-banner flex-box flex-column flex-justify-center">
                 <div class="container">
                     <h1>
                         React DOM Inspector
@@ -307,13 +234,12 @@
                     <a class="button-fill button-secondary" href="#">
                         Example of a Button
                     </a>
-
                     <h3>
                         <a href="#">Example of Link</a>
                     </h3>
                 </div>
             </section>
-            <section id="ticket" class="section-banner flex-box flex-column">
+            <section class="section-banner flex-box flex-column">
                 <div class="container flex-box flex-row flex-align-center">
                     <div class="banner">
                         <img src="./assets/img/test-image.jpg">
@@ -329,33 +255,20 @@
                 </div>
             </section>
         </div>
+
+        <!-- The markup where the Inspector will be injected to -->
         <div id="dom-inspector"></div>
-        <style id="stylizer-original" class="stylizer-sheet" type="text/css">
+
+        <!-- Emulating Previously stored stylesheets to be reinjected back to the javascript -->
+        <style id="stylizer-original" class="stylizer-sheet" type="text/css" scoped>
             .container {
                 background: #aabbcc;
                 border: 10px solid #000000;
                 padding: 60px;
             }
-            .footer-menu a {
-                color: #aabbcc;
-            }
-
-            .footer-social a {
-                color: #aabbcc;
-                background: gold;
-                text-align: left;
-            }
-
-            .footer-social a {
-                position: relative;
-            }
-
-            .footer-social li {
-                color: #aabbcc;
-                background: gold;
-                text-align: left;
-            }
         </style>
+
+        <!-- Loading the Inspector javascript -->
         <script src="assets/js/react-dom-inspector.js"></script>
     </body>
 </html>
