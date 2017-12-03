@@ -64,6 +64,7 @@
   line-height: 140%;
   vertical-align: middle;
   box-sizing: border-box;
+  font-size: 14px;
 }
 .stylizer-inspector.minimize {
   height: 34px;
@@ -165,8 +166,8 @@
   flex-grow: 1;
 }
 
-.stylizer-tab-content .stylizer-form-item:not(:last-child) select,
-.stylizer-tab-content .stylizer-form-item:not(:last-child) input {
+.stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) select,
+.stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) input {
   border-right-color: transparent;
 }
 
@@ -366,6 +367,7 @@
 
 .stylizer-inspector select > option:hover {
   background-color: darken(@FormElementBackground, 5%);
+  color: @FormElementText;
 }
 
 .stylizer-inspector select {
@@ -376,16 +378,6 @@
 
 .stylizer-inspector select:focus {
   outline: none;
-}
-
-.stylizer-inspector select::-ms-expand {
-  display: none; /* hide the default arrow in ie10 and ie11 */
-}
-@ie9MediaMinWidthHack: "0\0";
-@media screen and (min-width: @ie9MediaMinWidthHack) {
-  .stylizer-inspector select {
-    background-image:none\9;
-  }
 }
 
 .stylizer-inspector .chrome-picker input,
@@ -486,8 +478,8 @@
   text-transform: capitalize;
 }
 
-.stylizer-has-error input[role="combobox"],
-.stylizer-has-error .stylizer-form-input {
+.stylizer-inspector .stylizer-has-error input[role="combobox"],
+.stylizer-inspector .stylizer-has-error .stylizer-form-input {
   border-color: @ColorRed !important;
 }
 
@@ -498,6 +490,7 @@
 
 .stylizer-color-preview {
   width: 30px;
+  min-width: 30px;
   height: 29px;
   background-color: @FormElementBackground;
   border: 1px solid @FormElementBorder;
@@ -533,6 +526,8 @@
 .stylizer-color-element input[type="text"] {
   border-left: none;
   padding-left: 2px !important;
+  width: auto;
+  max-width: 100px;
 }
 
 
@@ -886,6 +881,23 @@ body[stylizer-active="true"][stylizer-vertical="false"] {
   line-height: 14px;
 }
 
+
+/**
+  IE & Edge Hacks
+  **/
+@ie9MediaMinWidthHack: "0\0";
+
+.stylizer-inspector ::-ms-reveal,
+.stylizer-inspector ::-ms-clear,
+.stylizer-inspector ::-ms-expand {
+  display: none !important;
+}
+
+@media screen and (min-width: @ie9MediaMinWidthHack) {
+  .stylizer-inspector select {
+    background-image:none\9;
+  }
+}
 
 /**
   Inject Responsive stuff here

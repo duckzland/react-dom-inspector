@@ -22,7 +22,7 @@ import TypographyPanel from './Panels/Typography';
 export default class Editor extends React.Component {
 
     state = {
-        active: 'typography',
+        active: 'selector',
         node: false,
         root: false,
         errors: {}

@@ -74,6 +74,8 @@ export default class Inspector extends React.Component {
         scrolledTop
             && (scrolledTop !== topPosition)
             && scrollYTo(parseInt(scrolledTop));
+
+        return true;
     };
 
     activateNode = (node) => {
