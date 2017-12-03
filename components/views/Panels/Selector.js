@@ -139,7 +139,7 @@ export default class Selector extends React.Component {
         const { config, state, isActive, toggle, submit } = this;
         const tabProps = get(config, 'PanelSelectorFieldTabProps', {
             key: 'stylizer-tab-selector-' + state.node.uuid,
-            className: 'stylizer-tab-content stylizer-content'
+            className: 'stylizer-tab-content stylizer-content stylizer-tab-panel--selector'
         });
 
         const selectorProps = get(config, 'PanelSelectorFieldSelectorProps', {

@@ -674,6 +674,7 @@
   font-size: 12px;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .stylizer-selector-badge {
@@ -840,8 +841,15 @@ body[stylizer-active="true"][stylizer-vertical="true"] {
   min-width: 1px;
 }
 
-[stylizer-vertical="true"] .stylizer-panel-center-space .stylizer-form-item {
+[stylizer-vertical="true"] .stylizer-form-item {
   margin-bottom: 20px;
+  display: block;
+  width: 100%;
+}
+
+[stylizer-vertical="true"] .stylizer-form-item > * {
+  width: 100%;
+  max-width: 100%;
 }
 
 [stylizer-vertical="true"] .stylizer-panel-left-space {
@@ -850,6 +858,17 @@ body[stylizer-active="true"][stylizer-vertical="true"] {
   left: 100%;
   bottom: 0;
 }
+
+[stylizer-vertical="true"] .stylizer-color-element input[type="text"] {
+  max-width: 100%;
+  flex-grow: 1;
+}
+
+[stylizer-vertical="true"] input[type="text"],
+[stylizer-vertical="true"] select {
+  width: 100%;
+}
+
 
 /**
   Horizontal Overrides
@@ -881,6 +900,12 @@ body[stylizer-active="true"][stylizer-vertical="false"] {
   line-height: 14px;
 }
 
+/**
+  Form Hacks
+  **/
+.stylizer-inspector :focus {
+  outline: 0;
+}
 
 /**
   IE & Edge Hacks
