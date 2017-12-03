@@ -1,4 +1,4 @@
-import { forEach, set, find, get, isEqual} from 'lodash';
+import { forEach, find, get, isEqual} from 'lodash';
 import WebFontLoader from 'webfontloader';
 
 /**
@@ -8,6 +8,7 @@ import WebFontLoader from 'webfontloader';
  * @author jason.xie@victheme.com
  */
 export default class FontLoader {
+
     static library = null;
     static googleAPI = null;
     static isFetching = false;
@@ -63,7 +64,6 @@ export default class FontLoader {
     }
 
     getWeight(family = false, style = false, weight =  false, defaultWeight = {}) {
-
 
         if (FontLoader.library && FontLoader.library.items) {
             const font = find(FontLoader.library.items, ['family', family]);
@@ -186,7 +186,6 @@ export default class FontLoader {
                 loaded = true;
             }
         }
-
 
         return loaded;
     }
