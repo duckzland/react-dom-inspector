@@ -21037,6 +21037,14 @@ var _FontPicker = __webpack_require__(743);
 
 var _FontPicker2 = _interopRequireDefault(_FontPicker);
 
+var _unlock = __webpack_require__(762);
+
+var _unlock2 = _interopRequireDefault(_unlock);
+
+var _lock = __webpack_require__(763);
+
+var _lock2 = _interopRequireDefault(_lock);
+
 var _lodash = __webpack_require__(26);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -21106,7 +21114,7 @@ var Panel = function (_React$Component) {
                     });
                     break;
                 case 'element':
-                    _this.state.values[element.target] = (0, _lodash.get)(node.styles, element.target);
+                    _this.state.values[element.target] = node.getStyle(element.target);
                     break;
             }
         };
@@ -21232,10 +21240,13 @@ var Panel = function (_React$Component) {
             );
         };
 
+        _this.onToggleLock = function (element) {};
+
         _this.generateGroup = function (element) {
             var state = _this.state,
                 config = _this.config,
-                generateElement = _this.generateElement;
+                generateElement = _this.generateElement,
+                onToggleLock = _this.onToggleLock;
 
             var elementProps = (0, _lodash.get)(config, (0, _lodash.camelCase)('PanelGroupElementProps ' + element.key), {
                 key: 'stylizer-group-' + element.title + '-' + state.node.uuid,
@@ -21253,10 +21264,16 @@ var Panel = function (_React$Component) {
             return _react2['default'].createElement(
                 'div',
                 elementProps,
-                element.title && _react2['default'].createElement(
+                (element.title || element.toggle) && _react2['default'].createElement(
                     'h3',
                     headingProps,
-                    element.title
+                    element.title && element.title,
+                    element.toggle && element.toggle === 'on' && _react2['default'].createElement(_unlock2['default'], { onClick: function onClick() {
+                            return onToggleLock(element);
+                        } }),
+                    element.toggle && element.toggle === 'off' && _react2['default'].createElement(_lock2['default'], { onClick: function onClick() {
+                            return onToggleLock(element);
+                        } })
                 ),
                 _react2['default'].createElement(
                     'div',
@@ -21278,6 +21295,7 @@ var Panel = function (_React$Component) {
                 values: _this.state.values,
                 errors: _this.state.errors
             };
+
             refresh.values[name] = value;
             if (!(0, _lodash.get)(e, 'target.skipValidation', false)) {
                 refresh.errors[name] = !_this.validate(name, value);
@@ -21404,7 +21422,8 @@ var Panel = function (_React$Component) {
                 state = this.state,
                 generateGroup = this.generateGroup,
                 generateElement = this.generateElement,
-                onScroll = this.onScroll;
+                onScroll = this.onScroll,
+                hookBeforeRender = this.hookBeforeRender;
 
 
             var tabProps = (0, _lodash.get)(config, 'PanelTabProps', {
@@ -21435,6 +21454,8 @@ var Panel = function (_React$Component) {
                 horizontal: true,
                 onScroll: onScroll
             });
+
+            hookBeforeRender && hookBeforeRender();
 
             return _react2['default'].createElement(
                 'div',
@@ -52458,6 +52479,10 @@ var _initialiseProps = function _initialiseProps() {
 
     this.generateStyling = function () {
 
+        if (_this.styles) {
+            return _this.styles;
+        }
+
         var node = _this.trackNode();
 
         _this.styles = {};
@@ -52472,6 +52497,7 @@ var _initialiseProps = function _initialiseProps() {
         for (var r in rules) {
             if (_this.validateSelector(rules[r].selectorText, node)) {
                 var parsed = new _Parser2['default'](rules[r].cssText);
+
                 for (var x in parsed) {
                     var _loop = function _loop(y) {
 
@@ -52483,17 +52509,6 @@ var _initialiseProps = function _initialiseProps() {
 
                         switch (directive) {
 
-                            case 'border-radius':
-                                ['border-top-left-radius', 'bottom-top-right-radius', 'border-bottom-left-radius', 'border-bottom-right-radius'].map(function (path) {
-                                    var style = elements.style[path.replace(/\s(-)/g, function ($1) {
-                                        return $1.toUpperCase();
-                                    })];
-                                    if (!style.match(skippedRule)) {
-                                        (0, _lodash.set)(_this.styles, path, style);
-                                    }
-                                });
-                                break;
-
                             case 'padding':
                             case 'margin':
                                 ['top', 'left', 'right', 'bottom'].map(function (dir) {
@@ -52501,7 +52516,7 @@ var _initialiseProps = function _initialiseProps() {
                                         style = elements.style[path.replace(/\s(-)/g, function ($1) {
                                         return $1.toUpperCase();
                                     })];
-                                    if (!style.match(skippedRule)) {
+                                    if (style && !style.match(skippedRule)) {
                                         (0, _lodash.set)(_this.styles, path, style);
                                     }
                                 });
@@ -52512,13 +52527,13 @@ var _initialiseProps = function _initialiseProps() {
                             case 'border-top':
                             case 'border-bottom':
                             case 'border':
-                                (0, _lodash.forEach)(directive !== 'border' ? [directive] : ['border-top', 'border-left', 'border-right', 'border-bottom'], function (dir) {
+                                (0, _lodash.forEach)(directive !== 'border' ? [directive] : ['border'], function (dir) {
                                     ['width', 'style', 'color'].map(function (type) {
                                         var path = dir + '-' + type,
                                             style = elements.style[path.replace(/\s(-)/g, function ($1) {
                                             return $1.toUpperCase();
                                         })];
-                                        if (!style.match(skippedRule)) {
+                                        if (style && !style.match(skippedRule)) {
                                             (0, _lodash.set)(_this.styles, path, style);
                                         }
                                     });
@@ -52531,7 +52546,7 @@ var _initialiseProps = function _initialiseProps() {
                                         style = elements.style[path.replace(/\s(-)/g, function ($1) {
                                         return $1.toUpperCase();
                                     })];
-                                    if (!style.match(skippedRule)) {
+                                    if (style && !style.match(skippedRule)) {
                                         (0, _lodash.set)(_this.styles, path, style);
                                     }
                                 });
@@ -52539,10 +52554,10 @@ var _initialiseProps = function _initialiseProps() {
 
                             case 'font':
                                 ['font-style', 'font-variant', 'font-weight', 'font-stretch', 'font-size', 'font-family', 'line-height'].map(function (path) {
-                                    var style = elements.style[type.replace(/\s(-)/g, function ($1) {
+                                    var style = elements.style[path.replace(/\s(-)/g, function ($1) {
                                         return $1.toUpperCase();
                                     })];
-                                    if (!style.match(skippedRule)) {
+                                    if (style && !style.match(skippedRule)) {
                                         (0, _lodash.set)(_this.styles, path, style);
                                     }
                                 });
@@ -52554,7 +52569,7 @@ var _initialiseProps = function _initialiseProps() {
                                         style = elements.style[path.replace(/\s(-)/g, function ($1) {
                                         return $1.toUpperCase();
                                     })];
-                                    if (!style.match(skippedRule)) {
+                                    if (style && !style.match(skippedRule)) {
                                         (0, _lodash.set)(_this.styles, path, style);
                                     }
                                 });
@@ -52562,7 +52577,7 @@ var _initialiseProps = function _initialiseProps() {
 
                             default:
                                 var style = parsed[x].rules[y].value;
-                                if (!style.match(skippedRule)) {
+                                if (style && !style.match(skippedRule)) {
                                     (0, _lodash.set)(_this.styles, parsed[x].rules[y].directive, style);
                                 }
                         }
@@ -52594,7 +52609,15 @@ var _initialiseProps = function _initialiseProps() {
         _this.changed = true;
     };
 
-    this.storeStyling = function (target, value) {
+    this.getStyle = function (target) {
+        return (0, _lodash.get)(_this.styles, target, '');
+    };
+
+    this.removeStyle = function (target) {
+        delete _this.styles[target];
+    };
+
+    this.storeStyle = function (target, value) {
         (0, _lodash.set)(_this.styles, target, value);
         _this.changed = true;
     };
@@ -52604,6 +52627,7 @@ var _initialiseProps = function _initialiseProps() {
         (0, _lodash.forEach)(_this.styles, function (value, rule) {
             rules.push(rule + ': ' + value + ';');
         });
+
         return _this.selector + ' {' + rules.join(' ') + '}';
     };
 
@@ -52638,102 +52662,55 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  * @author jason.xie@victheme.com
  */
 var Parser = function Parser(style) {
-    (0, _classCallCheck3['default'])(this, Parser);
-
-    _initialiseProps.call(this);
-
-    return this.parseCSS(style);
-};
-
-var _initialiseProps = function _initialiseProps() {
     var _this = this;
 
+    (0, _classCallCheck3['default'])(this, Parser);
+
     this.parseCSS = function (source) {
-        _this.styles = [];
-        _this.combinedCSSRegex = '((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})'; //to match css & media queries together
-        var arr;
-        var unified = new RegExp(_this.combinedCSSRegex, 'gi');
 
-        var styles = _this.styles;
+        var arr = new RegExp('((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})', 'gi').exec(source);
+        var selector = arr[2] ? arr[2] : arr[5] ? arr[5] : false;
+        var rules = arr[6] ? arr[6] : false;
 
-        arr = unified.exec(source);
-        if (arr === null) {
-            return;
-        }
-        var selector = '';
-        if (typeof arr[2] === 'undefined') {
-            selector = arr[5].split('\r\n').join('\n').trim();
-        } else {
-            selector = arr[2].split('\r\n').join('\n').trim();
-        }
-
-        selector = selector.replace(/\n+/, "\n");
-
-        //we have standard css
-        var rules = _this.parseRules(arr[6]);
-        var style = {
-            selector: selector,
-            rules: rules
-        };
-        if (selector === '@font-face') {
-            style.type = 'font-face';
-        }
-
-        styles.push(style);
-
-        return styles;
+        return selector && rules ? [{
+            selector: selector.split('\r\n').join('\n').trim().replace(/\n+/, "\n"),
+            rules: _this.parseRules(rules)
+        }] : [];
     };
 
-    this.parseRules = function (rules) {
-        //convert all windows style line endings to unix style line endings
-        rules = rules.split('\r\n').join('\n');
+    this.parseRules = function (styles) {
+
+        var rules = styles.split('\r\n').join('\n').split(';');
         var ret = [];
 
-        rules = rules.split(';');
-
-        //proccess rules line by line
         for (var i = 0; i < rules.length; i++) {
-            var line = rules[i];
 
-            //determine if line is a valid css directive, ie color:white;
-            line = line.trim();
+            var line = rules[i].trim();
+
             if (line.indexOf(':') !== -1) {
-                //line contains :
                 line = line.split(':');
-                var cssDirective = line[0].trim();
-                var cssValue = line.slice(1).join(':').trim();
+                var cssDirective = line[0] ? line[0].trim() : '';
+                var cssValue = line[1] ? line[1].trim() : '';
 
-                //more checks
-                if (cssDirective.length < 1 || cssValue.length < 1) {
-                    continue; //there is no css directive or value that is of length 1 or 0
-                    // PLAIN WRONG WHAT ABOUT margin:0; ?
-                }
-
-                //push rule
-                ret.push({
+                cssDirective !== '' && cssValue !== '' && ret.push({
                     directive: cssDirective,
                     value: cssValue
                 });
-            } else {
-                //if there is no ':', but what if it was mis splitted value which starts with base64
-                if (line.trim().substr(0, 7) === 'base64,') {
-                    //hack :)
-                    ret[ret.length - 1].value += line.trim();
-                } else {
-                    //add rule, even if it is defective
-                    if (line.length > 0) {
-                        ret.push({
-                            directive: '',
-                            value: line,
-                            defective: true
-                        });
-                    }
-                }
+            } else if (line.substr(0, 7) === 'base64,') {
+                ret[ret.length - 1].value += line;
+            } else if (line.length > 0) {
+                ret.push({
+                    directive: '',
+                    value: line,
+                    defective: true
+                });
             }
         }
 
-        return ret; //we are done!
+        return ret;
     };
+
+    return this.parseCSS(style);
 };
 
 exports['default'] = Parser;
@@ -55953,7 +55930,7 @@ var Editor = function (_React$Component) {
         var _this = (0, _possibleConstructorReturn3['default'])(this, (Editor.__proto__ || (0, _getPrototypeOf2['default'])(Editor)).call(this, props));
 
         _this.state = {
-            active: 'selector',
+            active: 'border',
             node: false,
             root: false,
             errors: {}
@@ -55983,7 +55960,7 @@ var Editor = function (_React$Component) {
                 }
             }
 
-            name !== 'selector' ? node.storeStyling(name, value) : node.storeSelector(value);
+            name !== 'selector' ? node.storeStyle(name, value) : node.storeSelector(value);
 
             styleElement.insertRule(node.getStyling());
 
@@ -56491,9 +56468,15 @@ var _inherits2 = __webpack_require__(21);
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
 var _Panel = __webpack_require__(120);
 
 var _Panel2 = _interopRequireDefault(_Panel);
+
+var _lodash = __webpack_require__(26);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -56511,102 +56494,263 @@ var Border = function (_BasePanel) {
 
         var _this = (0, _possibleConstructorReturn3['default'])(this, (Border.__proto__ || (0, _getPrototypeOf2['default'])(Border)).call(this, props));
 
+        _this.detectBorderGroup = function (Rules) {
+            var Grouped = (0, _lodash.isObject)(Rules) && !(0, _lodash.isEmpty)(Rules) ? false : true;
+
+            (0, _lodash.isObject)(Rules) && !(0, _lodash.isEmpty)(Rules) && (0, _lodash.forEach)(Rules, function (value, rule) {
+                switch (rule) {
+                    case 'border-width':
+                    case 'border-color':
+                    case 'border-style':
+                        Grouped = true;
+                        break;
+                }
+            });
+            return Grouped;
+        };
+
+        _this.detectRadiusGroup = function (Rules) {
+            var Grouped = (0, _lodash.isObject)(Rules) && !(0, _lodash.isEmpty)(Rules) ? false : true;
+
+            (0, _lodash.isObject)(Rules) && !(0, _lodash.isEmpty)(Rules) && (0, _lodash.forEach)(Rules, function (value, rule) {
+                switch (rule) {
+                    case 'border-radius':
+                        Grouped = true;
+                        break;
+                }
+            });
+            return Grouped;
+        };
+
+        _this.generateBorderFields = function () {
+            var Grouped = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+            var fields = _this.fields,
+                config = _this.config;
+
+
+            fields.map(function (field, delta) {
+                switch (field.key) {
+                    case 'border-top':
+                    case 'border-bottom':
+                    case 'border-left':
+                    case 'border-right':
+                    case 'border':
+                        delete fields[delta];
+                        break;
+                }
+            });
+
+            Grouped ? fields.push({
+                key: 'border',
+                title: 'Border',
+                type: 'group',
+                toggle: 'off',
+                elements: [{ title: 'color', target: 'border-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'width', target: 'border-width', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'style', target: 'border-style', type: 'element', field: 'select', options: config.borderOptions, 'default': '', inline: false }]
+            }) : (0, _lodash.forEach)({
+                'border-top': 'Border Top',
+                'border-left': 'Border Left',
+                'border-right': 'Border Right',
+                'border-bottom': 'Border Bottom'
+            }, function (Title, Key) {
+                fields.push({
+                    key: Key,
+                    title: Title,
+                    type: 'group',
+                    toggle: 'on',
+                    elements: [{ title: 'color', target: Key + '-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'width', target: Key + '-width', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'style', target: Key + '-style', type: 'element', field: 'select', options: config.borderOptions, 'default': '', inline: false }]
+                });
+            });
+        };
+
+        _this.generateRadiusFields = function () {
+            var Grouped = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+            var fields = _this.fields;
+
+            fields.map(function (field, delta) {
+                field.key === 'radius' ? delete fields[delta] : null;
+            });
+
+            fields.push({
+                key: 'radius',
+                title: 'Border Radius',
+                type: 'group',
+                toggle: Grouped ? 'off' : 'on',
+                elements: Grouped ? [{ title: 'radius', target: 'border-radius', type: 'element', field: 'text', 'default': '', inline: false }] : [{ title: 'top left', target: 'border-top-left-radius', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'top right', target: 'border-top-right-radius', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'bottom left', target: 'border-bottom-left-radius', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'bottom right', target: 'border-bottom-right-radius', type: 'element', field: 'text', 'default': '', inline: false }]
+            });
+        };
+
+        _this.generateOutlineFields = function () {
+            var fields = _this.fields,
+                config = _this.config;
+
+
+            fields.map(function (field, delta) {
+                field.key === 'outline' ? delete fields[delta] : null;
+            });
+
+            fields.push({
+                key: 'outline',
+                title: 'Outline',
+                type: 'group',
+                elements: [{ title: 'color', target: 'outline-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'width', target: 'outline-width', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'offset', target: 'outline-offset', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'style', target: 'outline-style', type: 'element', field: 'select', options: config.borderOptions, 'default': '', inline: false }]
+            });
+        };
+
+        _this.convertBorderValues = function () {
+            var Grouped = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+            var state = _this.state;
+            var values = state.values,
+                node = state.node;
+
+
+            if (!values) {
+                return false;
+            }
+
+            if (Grouped) {
+
+                values['border-color'] = '';
+                values['border-width'] = '';
+                values['border-style'] = '';
+
+                (0, _lodash.forEach)(['border-top', 'border-left', 'border-right', 'border-bottom'], function (key) {
+                    (0, _lodash.forEach)(['width', 'color', 'style'], function (subkey) {
+                        if (!values['border-' + subkey] && values[key + '-' + subkey]) {
+                            values['border-' + subkey] = values[key + '-' + subkey];
+                        }
+                        delete values[key + '-' + subkey];
+                        node && node.removeStyle(key + '-' + subkey);
+                    });
+                });
+            } else {
+                (0, _lodash.forEach)(['border-top', 'border-left', 'border-right', 'border-bottom'], function (key) {
+                    (0, _lodash.forEach)(['width', 'color', 'style'], function (subkey) {
+                        values[key + '-' + subkey] = values['border-' + subkey] ? values['border-' + subkey] : '';
+                    });
+                });
+
+                (0, _lodash.forEach)(['border-width', 'border-color', 'border-style'], function (key) {
+                    delete values[key];
+                    node && node.removeStyle(key);
+                });
+            }
+        };
+
+        _this.convertRadiusValues = function () {
+            var Grouped = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+            var state = _this.state;
+            var values = state.values,
+                node = state.node;
+
+
+            if (!values) {
+                return false;
+            }
+
+            if (Grouped) {
+                var radius = [];
+                (0, _lodash.forEach)(['border-top-left-radius', 'border-top-right-radius', 'border-bottom-right-radius', 'border-bottom-left-radius'], function (key) {
+                    values[key] && radius.push(values[key]);
+                    delete values[key];
+                    node && node.removeStyle(key);
+                });
+
+                values['border-radius'] = radius.join(' ');
+                node && node.storeStyle('border-radius', radius.join(' '));
+            } else {
+                var value = (0, _lodash.get)(values, 'border-radius', '').split(' ');
+                if (value) {
+                    values['border-top-left-radius'] = value[0] ? value[0] : '';
+                    values['border-top-right-radius'] = value[1] ? value[1] : value[0] ? value[0] : '';
+                    values['border-bottom-right-radius'] = value[2] ? value[2] : value[1] ? value[1] : value[0] ? value[0] : '';
+                    values['border-bottom-left-radius'] = value[3] ? value[3] : value[0] ? value[0] : '';
+                }
+
+                delete values['border-radius'];
+                node && node.removeStyle('border-radius');
+            }
+        };
+
+        _this.refreshElements = function () {
+            var state = _this.state;
+            var values = state.values;
+
+
+            if (!values) {
+                return false;
+            }
+
+            (0, _lodash.forEach)(values, function (value, name) {
+                _this.onSubmit({
+                    target: {
+                        name: name,
+                        value: value
+                    }
+                });
+            });
+        };
+
+        _this.onToggleLock = function (element) {
+            var state = _this.state;
+            var grouped = state.grouped;
+
+
+            switch (element.key) {
+                case 'border-top':
+                case 'border-left':
+                case 'border-right':
+                case 'border-bottom':
+                case 'border':
+                    grouped.border = !grouped.border;
+                    _this.convertBorderValues(grouped.border);
+                    break;
+                case 'radius':
+                    grouped.radius = !grouped.radius;
+                    _this.convertRadiusValues(grouped.radius);
+                    break;
+            }
+
+            _this.generateBorderFields(grouped.border);
+            _this.generateRadiusFields(grouped.radius);
+            _this.generateOutlineFields();
+            _this.refreshElements();
+        };
+
         _this.state = {
             node: false,
             errors: {},
-            values: {}
+            values: {},
+            grouped: {
+                border: true,
+                radius: true
+            }
         };
 
         _this.config = {
             type: 'border',
-            empty: null
+            empty: null,
+            borderOptions: {
+                none: 'None',
+                hidden: 'Hidden',
+                dotted: 'Dotted',
+                dashed: 'Dashed',
+                solid: 'Solid',
+                double: 'Double',
+                groove: 'Groove',
+                ridge: 'Ridge',
+                inset: 'Inset',
+                outset: 'Outset'
+            }
         };
-        _this.fields = [{
-            key: 'border-top',
-            title: 'Border Top',
-            type: 'group',
-            elements: [{ title: 'color', target: 'border-top-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'width', target: 'border-top-width', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'style', target: 'border-top-style', type: 'element', field: 'select', options: {
-                    none: 'None',
-                    hidden: 'Hidden',
-                    dotted: 'Dotted',
-                    dashed: 'Dashed',
-                    solid: 'Solid',
-                    double: 'Double',
-                    groove: 'Groove',
-                    ridge: 'Ridge',
-                    inset: 'Inset',
-                    outset: 'Outset'
-                }, 'default': '', inline: false }]
-        }, {
-            key: 'border-left',
-            title: 'Border Left',
-            type: 'group',
-            elements: [{ title: 'color', target: 'border-left-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'width', target: 'border-left-width', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'style', target: 'border-left-style', type: 'element', field: 'select', options: {
-                    none: 'None',
-                    hidden: 'Hidden',
-                    dotted: 'Dotted',
-                    dashed: 'Dashed',
-                    solid: 'Solid',
-                    double: 'Double',
-                    groove: 'Groove',
-                    ridge: 'Ridge',
-                    inset: 'Inset',
-                    outset: 'Outset'
-                }, 'default': '', inline: false }]
-        }, {
-            key: 'border-right',
-            title: 'Border Right',
-            type: 'group',
-            elements: [{ title: 'color', target: 'border-right-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'width', target: 'border-right-width', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'style', target: 'border-right-style', type: 'element', field: 'select', options: {
-                    none: 'None',
-                    hidden: 'Hidden',
-                    dotted: 'Dotted',
-                    dashed: 'Dashed',
-                    solid: 'Solid',
-                    double: 'Double',
-                    groove: 'Groove',
-                    ridge: 'Ridge',
-                    inset: 'Inset',
-                    outset: 'Outset'
-                }, 'default': '', inline: false }]
-        }, {
-            key: 'border-bottom',
-            title: 'Border Bottom',
-            type: 'group',
-            elements: [{ title: 'color', target: 'border-bottom-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'width', target: 'border-bottom-width', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'style', target: 'border-bottom-style', type: 'element', field: 'select', options: {
-                    none: 'None',
-                    hidden: 'Hidden',
-                    dotted: 'Dotted',
-                    dashed: 'Dashed',
-                    solid: 'Solid',
-                    double: 'Double',
-                    groove: 'Groove',
-                    ridge: 'Ridge',
-                    inset: 'Inset',
-                    outset: 'Outset'
-                }, 'default': '', inline: false }]
-        }, {
-            key: 'radius',
-            title: 'Border Radius',
-            type: 'group',
-            elements: [{ title: 'top left', target: 'border-top-left-radius', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'top right', target: 'border-top-right-radius', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'bottom left', target: 'border-bottom-left-radius', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'bottom right', target: 'border-bottom-right-radius', type: 'element', field: 'text', 'default': '', inline: false }]
-        }, {
-            key: 'outline',
-            title: 'Outline',
-            type: 'group',
-            elements: [{ title: 'color', target: 'outline-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'width', target: 'outline-width', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'offset', target: 'outline-offset', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'style', target: 'outline-style', type: 'element', field: 'select', options: {
-                    none: 'None',
-                    hidden: 'Hidden',
-                    dotted: 'Dotted',
-                    dashed: 'Dashed',
-                    solid: 'Solid',
-                    double: 'Double',
-                    groove: 'Groove',
-                    ridge: 'Ridge',
-                    inset: 'Inset',
-                    outset: 'Outset'
-                }, 'default': '', inline: false }]
-        }];
+
+        _this.fields = [];
+        _this.state.grouped.border = _this.detectBorderGroup((0, _lodash.get)(props, 'node.styles', _this.state.grouped.border));
+        _this.state.grouped.radius = _this.detectRadiusGroup((0, _lodash.get)(props, 'node.styles', _this.state.grouped.radius));
+
+        _this.generateBorderFields(_this.state.grouped.border);
+        _this.generateRadiusFields(_this.state.grouped.radius);
+        _this.generateOutlineFields();
+
         _this.initialize(props);
         return _this;
     }
@@ -69723,7 +69867,7 @@ exports = module.exports = __webpack_require__(759)(undefined);
 
 
 // module
-exports.push([module.i, "/**\n  Main Variables\n  @todo Convert more into mixin and less friendly\n  **/\n/**\n  Generic Styling for both vertical and horizontal\n  **/\n.stylizer-inspector {\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  z-index: 99999;\n  background: #051017;\n  width: 100%;\n  height: 320px;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  border-bottom: 3px solid #000000;\n}\n.stylizer-inspector,\n.stylizer-inspector * {\n  margin: 0;\n  padding: 0;\n  line-height: 140%;\n  vertical-align: middle;\n  box-sizing: border-box;\n  font-size: 14px;\n  font-family: Arial, Helvetica, Verdana, sans-serif;\n}\n.stylizer-inspector.minimize {\n  height: 34px;\n}\n.stylizer-inspector.minimize .stylizer-dom-panel {\n  display: none;\n}\n.stylizer-inspector.minimize .stylizer-tabs-wrapper {\n  display: none;\n}\n.stylizer-panels {\n  width: 30%;\n  background: #051017;\n  color: #d3f7ff;\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n  z-index: 9999;\n}\n.stylizer-panels.minimize {\n  max-width: 30px;\n}\n.stylizer-panels.minimize > :not(.stylizer-header) {\n  display: none;\n}\n.stylizer-editor-panel {\n  background: #081c27;\n  color: #9abdc5;\n  width: 70%;\n}\n.stylizer-header {\n  padding: 8px 15px;\n  background: #000000;\n  font-size: 14px;\n  font-weight: 300;\n  text-transform: uppercase;\n  display: flex;\n  flex-direction: row;\n  min-height: 35px;\n}\n.stylizer-editor-panel .stylizer-header {\n  background: #020709;\n}\n.stylizer-header-text {\n  flex-grow: 1;\n}\n.stylizer-header-actions svg {\n  cursor: pointer;\n  opacity: 0.8;\n  margin: 0 5px;\n}\n.stylizer-header-actions svg:hover {\n  opacity: 1;\n}\n.stylizer-content {\n  padding: 15px;\n  width: 100%;\n}\n.stylizer-content-flex {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-content-flex > * {\n  padding: 15px;\n}\n.stylizer-tab-content .stylizer-panel-left-space,\n.stylizer-tab-content .stylizer-panel-right-space {\n  background: #081c27;\n}\n.stylizer-tab-content .stylizer-panel-center-space {\n  display: flex;\n  flex-wrap: wrap;\n  flex-grow: 1;\n  padding: 15px 0;\n}\n.stylizer-tab-content .stylizer-form-item {\n  padding: 0;\n  flex-grow: 1;\n}\n.stylizer-tab-content .stylizer-form-group {\n  padding: 0 15px;\n  flex-grow: 1;\n}\n.stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) select,\n.stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) input {\n  border-right-color: transparent;\n}\n/**\n  Border Panel\n  **/\n.stylizer-tab-panel--border .stylizer-group--radius,\n.stylizer-tab-panel--border .stylizer-group--outline {\n  width: 50%;\n  min-width: 330px;\n}\n.stylizer-tab-panel--border [class*=\"stylizer-group--border-\"] {\n  width: 25%;\n  min-width: 260px;\n}\n.stylizer-tab-panel--border [class*=\"stylizer-field--border-\"] input {\n  min-width: 50px;\n}\n.stylizer-tab-panel--border .stylizer-field--border-top-color input,\n.stylizer-tab-panel--border .stylizer-field--border-left-color input,\n.stylizer-tab-panel--border .stylizer-field--border-right-color input,\n.stylizer-tab-panel--border .stylizer-field--border-bottom-color input {\n  min-width: 70px;\n}\n.stylizer-tab-panel--border select {\n  min-width: 80px;\n}\n/**\n  Spacing Panel\n  **/\n.stylizer-tab-panel--spacing .stylizer-form-group {\n  width: 25%;\n  min-width: 260px;\n}\n/**\n  Styles Panel\n  **/\n.stylizer-tab-panel--styles .stylizer-form-group {\n  width: 25%;\n  min-width: 320px;\n}\n.stylizer-tab-panel--styles .stylizer-group--background {\n  width: 50%;\n  min-width: 490px;\n}\n.stylizer-tab-panel--styles .stylizer-field--background-image input {\n  min-width: 100px;\n}\n.stylizer-tab-panel--styles .stylizer-field--display input,\n.stylizer-tab-panel--styles .stylizer-field--opacity input,\n.stylizer-tab-panel--styles .stylizer-field--background-position input,\n.stylizer-tab-panel--styles .stylizer-field--background-size input {\n  min-width: 60px;\n}\n.stylizer-tab-panel--styles .stylizer-field--background-color input,\n.stylizer-tab-panel--styles .stylizer-field--background-repeat select,\n.stylizer-tab-panel--styles .stylizer-field--visibility select,\n.stylizer-tab-panel--styles .stylizer-field--overflow select {\n  min-width: 100px;\n}\n/**\n  Typography Panel\n  **/\n.stylizer-tab-panel--typography .stylizer-form-group {\n  width: 50%;\n  min-width: 350px;\n}\n.stylizer-tab-panel--typography .stylizer-group--font {\n  min-width: 590px;\n}\n.stylizer-tab-panel--typography .stylizer-field--font-family input {\n  min-width: 100px;\n  width: 100%;\n}\n.stylizer-tab-panel--typography .stylizer-field--font-size input {\n  min-width: 60px;\n}\n.stylizer-tab-panel--typography .stylizer-field--white-space select,\n.stylizer-tab-panel--typography .stylizer-field--letter-spacing input,\n.stylizer-tab-panel--typography .stylizer-field--vertical-align select,\n.stylizer-tab-panel--typography .stylizer-field--font-weight input,\n.stylizer-tab-panel--typography .stylizer-field--font-weight select,\n.stylizer-tab-panel--typography .stylizer-field--font-style select,\n.stylizer-tab-panel--typography .stylizer-field--font-variant select {\n  min-width: 100px;\n}\n.stylizer-iterator {\n  flex-grow: 1;\n  overflow: hidden;\n  display: block;\n}\n.stylizer-element {\n  background: #071c2a;\n  color: #d3f7ff;\n  padding: 6px 10px;\n  margin-bottom: 8px;\n  white-space: nowrap;\n  cursor: pointer;\n  width: fit-content;\n  font-size: 12px;\n  font-weight: 300;\n  border-left: 5px solid #071c2a;\n  min-width: 100%;\n}\n.stylizer-element.overridden {\n  background: #000000;\n}\n.stylizer-element.active {\n  background: #4b9701;\n}\n.stylizer-element.changed {\n  background: #7d3d05;\n}\n.stylizer-element.parents:not(.processed) {\n  border-left: 3px solid #196597;\n}\n.stylizer-element.parents.processed {\n  border-left: 3px solid #0d334d;\n}\n.stylizer-element.active {\n  border-left: 3px solid #4b9701 !important;\n}\n.stylizer-element.changed {\n  border-left: 3px solid #11415f !important;\n}\n.stylizer-element.overridden {\n  border-left: 3px solid #4c2503 !important;\n}\n[data-depth] {\n  margin-left: 150px;\n}\n[data-depth=\"0\"] {\n  margin-left: 0px;\n}\n[data-depth=\"1\"] {\n  margin-left: 15px;\n}\n[data-depth=\"2\"] {\n  margin-left: 30px;\n}\n[data-depth=\"3\"] {\n  margin-left: 45px;\n}\n[data-depth=\"4\"] {\n  margin-left: 60px;\n}\n[data-depth=\"5\"] {\n  margin-left: 75px;\n}\n[data-depth=\"6\"] {\n  margin-left: 90px;\n}\n[data-depth=\"7\"] {\n  margin-left: 105px;\n}\n[data-depth=\"8\"] {\n  margin-left: 120px;\n}\n[data-depth=\"9\"] {\n  margin-left: 135px;\n}\n[data-depth=\"10\"] {\n  margin-left: 150px;\n}\n.stylizer-inspector .stylizer-font-element-dropdown-item,\n.stylizer-inspector .stylizer-font-element-dropdown,\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select,\n.stylizer-inspector textarea {\n  background: #213946;\n  border: 1px solid #040f15;\n  color: #d3f7ff;\n  padding: 0 7px;\n  line-height: 29px;\n  min-height: 0;\n  height: auto;\n  font-size: 13px;\n  border-radius: 0;\n  margin: 0;\n  width: 100%;\n}\n.stylizer-inspector select > option {\n  background-color: #213946;\n  border: 1px solid #040f15;\n  cursor: pointer;\n}\n.stylizer-inspector select > option:hover {\n  background-color: #192b35;\n  color: #d3f7ff;\n}\n.stylizer-inspector select {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n}\n.stylizer-inspector select:focus {\n  outline: none;\n}\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select {\n  height: 29px;\n}\n.stylizer-inspector textarea {\n  padding: 6px 7px;\n}\n.stylizer-inspector input[disabled] {\n  background: #192b35;\n}\n.stylizer-font-element-autocomplete {\n  position: relative;\n}\n.stylizer-font-element-autocomplete > * {\n  display: block !important;\n}\n.stylizer-inspector .stylizer-font-element-dropdown {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: auto;\n  max-height: 160px;\n  min-width: 160px;\n  overflow-y: auto;\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-font-element-dropdown-item {\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-font-element-dropdown-item:hover {\n  color: #0f82aa !important;\n}\n.stylizer-inspector .stylizer-font-element-dropdown {\n  border: 1px solid #040f15 !important;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.stylizer-form-item {\n  margin-bottom: 5px;\n}\n.stylizer-inspector label {\n  font-size: 12px;\n  margin-bottom: 3px;\n  font-weight: 300;\n  display: block;\n}\n.stylizer-form-header {\n  font-size: 12px;\n  margin-bottom: 8px;\n  padding-bottom: 4px;\n  color: #d3f7ff;\n  font-weight: 300;\n  border-bottom: 1px solid #040d12;\n}\n.stylizer-form-group {\n  margin-bottom: 18px;\n}\n.stylizer-form-row {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  flex-wrap: nowrap;\n}\n.stylizer-form-row > * {\n  padding: 0 7px;\n}\n.stylizer-form-row > *:first-child {\n  padding-left: 0;\n}\n.stylizer-form-row > *:last-child {\n  padding-right: 0;\n}\n.stylizer-form-label {\n  text-transform: capitalize;\n}\n.stylizer-inspector .stylizer-has-error input[role=\"combobox\"],\n.stylizer-inspector .stylizer-has-error .stylizer-form-input {\n  border-color: #c50313 !important;\n}\n.stylizer-color-element {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-color-preview {\n  width: 30px;\n  min-width: 30px;\n  height: 29px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-right: none;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-color-preview > .stylizer-color-preview-content {\n  border-radius: 100%;\n  width: 10px;\n  height: 10px;\n}\n.stylizer-color-closer {\n  max-width: 39px;\n  height: 29px;\n  width: 39px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-left: none;\n  margin-left: -1px;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-color-element input[type=\"text\"] {\n  border-left: none;\n}\n.stylizer-error-bag {\n  font-size: 13px;\n  padding: 3px;\n  color: #c50313;\n}\n.stylizer-label-inline {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n}\n.stylizer-label-inline .stylizer-form-input {\n  max-width: 120px;\n}\n.stylizer-label-inline .stylizer-form-label {\n  margin-right: 20px;\n  flex-grow: 1;\n}\n.stylizer-label-inline .stylizer-error-bag {\n  margin-left: 10px;\n}\n.stylizer-tabs-wrapper {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n}\n.stylizer-tabs {\n  background: #03141d;\n  color: #6d8d95;\n  max-width: 150px;\n  min-width: 150px;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-evenly;\n}\n.stylizer-tabs-contents {\n  background: #081c27;\n  flex-grow: 1;\n  display: flex;\n  flex-direction: column;\n  padding: 0;\n}\n.stylizer-tabs-contents.has-vertical-scrollbar {\n  padding-right: 15px;\n}\n.stylizer-tab-element {\n  padding: 10px 15px;\n  font-size: 13px;\n  display: block;\n  cursor: pointer;\n  text-transform: capitalize;\n  flex-grow: 1;\n  border-bottom: 1px solid #040d12;\n}\n.stylizer-tab-element.active {\n  background: #081c27;\n  color: #13a6d9;\n}\n.scrollarea-content {\n  width: auto;\n  display: table;\n  min-width: 100%;\n}\n.scrollarea .scrollbar-container:hover,\n.scrollarea .scrollbar-container {\n  background: #082739;\n  opacity: 1 !important;\n}\n.scrollarea .scrollbar-container .scrollbar {\n  background: #051118;\n  cursor: pointer;\n}\n.scrollarea .scrollbar-container.vertical {\n  width: 16px;\n}\n.scrollarea .scrollbar-container.vertical .scrollbar {\n  width: 16px;\n  margin: 0;\n  min-height: 20px !important;\n}\n.scrollarea .scrollbar-container.horizontal {\n  height: 16px;\n}\n.scrollarea .scrollbar-container.horizontal .scrollbar {\n  height: 16px;\n  margin: 0;\n  min-width: 20px !important;\n}\n.stylizer-overlay-box {\n  pointer-events: none;\n  position: fixed;\n  z-index: 0;\n  top: 0;\n  left: 0;\n  background: #ff929a;\n  opacity: 0.4;\n}\n.stylizer-overlay-margin {\n  margin: 0;\n}\n.stylizer-overlay-padding {\n  background: #ffbf80;\n  padding: 0;\n}\n.stylizer-overlay-content {\n  background: #edff7b;\n  width: 0;\n  height: 0;\n}\n.stylizer-selector-empty {\n  font-size: 14px;\n  text-align: center;\n  display: flex;\n  align-self: center;\n  justify-content: center;\n  flex-grow: 1;\n}\n.stylizer-selector-badges {\n  font-size: 12px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.stylizer-selector-badge {\n  display: flex;\n  flex-direction: row;\n  margin: 5px 0;\n  cursor: pointer;\n  align-items: center;\n}\n.stylizer-selector-badges-text {\n  background: #040f15;\n  color: #6d8d95;\n  padding: 4px 8px;\n  border-radius: 4px;\n  max-width: 100px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n.stylizer-selector-badge.active .stylizer-selector-badges-text {\n  background: #137fad;\n  color: #d3f7ff;\n}\n.stylizer-selector-badges-separator {\n  margin: 0 5px;\n}\n.stylizer-inspector .chrome-picker svg {\n  background: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker span {\n  color: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker {\n  background: #041e2b !important;\n  color: #6d8d95;\n  border: 1px solid #040f15;\n  box-shadow: none !important;\n}\n.stylizer-inspector .chrome-picker input {\n  background: #213946;\n  border: 1px solid #040f15 !important;\n  color: #d3f7ff !important;\n  box-shadow: none !important;\n  font-size: 13px !important;\n  height: auto !important;\n}\n/**\n  Vertical Overrides\n  **/\nbody[stylizer-active=\"false\"][stylizer-vertical=\"true\"] {\n  padding-left: 380px;\n}\nbody[stylizer-active=\"true\"][stylizer-vertical=\"true\"] {\n  padding-left: 34px;\n}\n[stylizer-vertical=\"true\"] .stylizer-inspector {\n  top: 0;\n  bottom: 0;\n  width: 390px;\n  flex-direction: column;\n  height: 100%;\n}\n[stylizer-vertical=\"true\"] .stylizer-inspector.minimize {\n  height: 100%;\n  width: 34px;\n}\n[stylizer-vertical=\"true\"] .stylizer-panels {\n  width: 100%;\n}\n[stylizer-vertical=\"true\"] .stylizer-dom-panel {\n  max-height: 40%;\n  height: 40%;\n  min-height: 40%;\n}\n[stylizer-vertical=\"true\"] .stylizer-panels.minimize {\n  max-width: none;\n  max-height: 35px;\n}\n[stylizer-vertical=\"true\"] .stylizer-editor-panel {\n  width: 100%;\n}\n[stylizer-vertical=\"true\"] .stylizer-inspector.minimize .stylizer-editor-panel .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\n[stylizer-vertical=\"true\"] .stylizer-inspector.minimize .stylizer-editor-panel .stylizer-header-actions svg {\n  margin: 0 0 5px;\n}\n[stylizer-vertical=\"true\"] .stylizer-inspector.minimize .stylizer-editor-panel .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\n[stylizer-vertical=\"true\"] .stylizer-tabs-wrapper {\n  flex-direction: column;\n}\n[stylizer-vertical=\"true\"] .stylizer-tabs {\n  flex-direction: row;\n  max-width: 100%;\n  min-width: 100%;\n  min-height: 35px;\n}\n[stylizer-vertical=\"true\"] .stylizer-tab-element {\n  border-bottom: none;\n  padding: 10px 14px;\n  font-size: 10px;\n}\n[stylizer-vertical=\"true\"] .stylizer-selector-empty {\n  flex-direction: column;\n}\n[stylizer-vertical=\"true\"] .stylizer-label-inline {\n  align-items: flex-start;\n  max-width: 25%;\n  flex-wrap: wrap;\n  flex-direction: column;\n  flex-grow: 1;\n  padding: 0 7px;\n  margin-bottom: 10px;\n}\n[stylizer-vertical=\"true\"] .stylizer-form-row {\n  flex-wrap: wrap;\n  margin: 0 -7px;\n}\n[stylizer-vertical=\"true\"] .stylizer-tab-content {\n  flex-direction: column;\n  position: relative;\n}\n[stylizer-vertical=\"true\"] .stylizer-panel-center-space .stylizer-form-row {\n  margin: 0;\n}\n[stylizer-vertical=\"true\"] .stylizer-panel-center-space .stylizer-form-group {\n  width: 100%;\n  min-width: 1px;\n}\n[stylizer-vertical=\"true\"] .stylizer-form-item {\n  margin-bottom: 20px;\n  display: block;\n  width: 100%;\n}\n[stylizer-vertical=\"true\"] .stylizer-form-item > * {\n  width: 100%;\n  max-width: 100%;\n}\n[stylizer-vertical=\"true\"] .stylizer-panel-left-space {\n  position: absolute;\n  top: 0;\n  left: 100%;\n  bottom: 0;\n}\n[stylizer-vertical=\"true\"] .stylizer-color-element input[type=\"text\"] {\n  max-width: 100%;\n  flex-grow: 1;\n}\n[stylizer-vertical=\"true\"] input[type=\"text\"],\n[stylizer-vertical=\"true\"] select {\n  width: 100%;\n}\n/**\n  Horizontal Overrides\n  **/\nbody[stylizer-active=\"false\"][stylizer-vertical=\"false\"] {\n  padding-bottom: 323px;\n}\nbody[stylizer-active=\"true\"][stylizer-vertical=\"false\"] {\n  padding-bottom: 34px;\n}\n[stylizer-vertical=\"false\"] .stylizer-panels.minimize .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\n[stylizer-vertical=\"false\"] .stylizer-panels.minimize .stylizer-header-actions svg {\n  margin: 0 0 5px;\n}\n[stylizer-vertical=\"false\"] .stylizer-panels.minimize .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\n/**\n  Form Hacks\n  **/\n.stylizer-inspector :focus {\n  outline: 0;\n}\n/**\n  IE & Edge Hacks\n  **/\n.stylizer-inspector ::-ms-reveal,\n.stylizer-inspector ::-ms-clear,\n.stylizer-inspector ::-ms-expand {\n  display: none !important;\n}\n@media screen and (min-width: \"0\\0\") {\n  .stylizer-inspector select {\n    background-image: none\\9;\n  }\n}\n/**\n  Inject Responsive stuff here\n  @todo create side by side vertical mode if user has wide monitor\n  **/\n", ""]);
+exports.push([module.i, "/**\n  Main Variables\n  @todo Convert more into mixin and less friendly\n  **/\n/**\n  Generic Styling for both vertical and horizontal\n  **/\n.stylizer-inspector {\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  z-index: 99999;\n  background: #051017;\n  width: 100%;\n  height: 320px;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  border-bottom: 3px solid #000000;\n}\n.stylizer-inspector,\n.stylizer-inspector * {\n  margin: 0;\n  padding: 0;\n  line-height: 140%;\n  vertical-align: middle;\n  box-sizing: border-box;\n  font-size: 14px;\n  font-family: Arial, Helvetica, Verdana, sans-serif;\n}\n.stylizer-inspector.minimize {\n  height: 34px;\n}\n.stylizer-inspector.minimize .stylizer-dom-panel {\n  display: none;\n}\n.stylizer-inspector.minimize .stylizer-tabs-wrapper {\n  display: none;\n}\n.stylizer-panels {\n  width: 30%;\n  background: #051017;\n  color: #d3f7ff;\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n  z-index: 9999;\n}\n.stylizer-panels.minimize {\n  max-width: 30px;\n}\n.stylizer-panels.minimize > :not(.stylizer-header) {\n  display: none;\n}\n.stylizer-editor-panel {\n  background: #081c27;\n  color: #9abdc5;\n  width: 70%;\n}\n.stylizer-header {\n  padding: 8px 15px;\n  background: #000000;\n  font-size: 14px;\n  font-weight: 300;\n  text-transform: uppercase;\n  display: flex;\n  flex-direction: row;\n  min-height: 35px;\n}\n.stylizer-editor-panel .stylizer-header {\n  background: #020709;\n}\n.stylizer-header-text {\n  flex-grow: 1;\n}\n.stylizer-header-actions svg {\n  cursor: pointer;\n  opacity: 0.8;\n  margin: 0 5px;\n}\n.stylizer-header-actions svg:hover {\n  opacity: 1;\n}\n.stylizer-content {\n  padding: 15px;\n  width: 100%;\n}\n.stylizer-content-flex {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-content-flex > * {\n  padding: 15px;\n}\n.stylizer-tab-content .stylizer-panel-left-space,\n.stylizer-tab-content .stylizer-panel-right-space {\n  background: #081c27;\n}\n.stylizer-tab-content .stylizer-panel-center-space {\n  display: flex;\n  flex-wrap: wrap;\n  flex-grow: 1;\n  padding: 15px 0;\n}\n.stylizer-tab-content .stylizer-form-item {\n  padding: 0;\n  flex-grow: 1;\n}\n.stylizer-tab-content .stylizer-form-group {\n  padding: 0 15px;\n  flex-grow: 1;\n}\n.stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) select,\n.stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) input {\n  border-right-color: transparent;\n}\n/**\n  Border Panel\n  **/\n.stylizer-tab-panel--border .stylizer-group--radius,\n.stylizer-tab-panel--border .stylizer-group--outline {\n  width: 50%;\n  min-width: 330px;\n}\n.stylizer-tab-panel--border [class*=\"stylizer-group--border-\"] {\n  width: 25%;\n  min-width: 260px;\n}\n.stylizer-tab-panel--border [class*=\"stylizer-field--border-\"] input {\n  min-width: 50px;\n}\n.stylizer-tab-panel--border .stylizer-field--border-top-color input,\n.stylizer-tab-panel--border .stylizer-field--border-left-color input,\n.stylizer-tab-panel--border .stylizer-field--border-right-color input,\n.stylizer-tab-panel--border .stylizer-field--border-bottom-color input {\n  min-width: 70px;\n}\n.stylizer-tab-panel--border select {\n  min-width: 80px;\n}\n/**\n  Spacing Panel\n  **/\n.stylizer-tab-panel--spacing .stylizer-form-group {\n  width: 25%;\n  min-width: 260px;\n}\n/**\n  Styles Panel\n  **/\n.stylizer-tab-panel--styles .stylizer-form-group {\n  width: 25%;\n  min-width: 320px;\n}\n.stylizer-tab-panel--styles .stylizer-group--background {\n  width: 50%;\n  min-width: 490px;\n}\n.stylizer-tab-panel--styles .stylizer-field--background-image input {\n  min-width: 100px;\n}\n.stylizer-tab-panel--styles .stylizer-field--display input,\n.stylizer-tab-panel--styles .stylizer-field--opacity input,\n.stylizer-tab-panel--styles .stylizer-field--background-position input,\n.stylizer-tab-panel--styles .stylizer-field--background-size input {\n  min-width: 60px;\n}\n.stylizer-tab-panel--styles .stylizer-field--background-color input,\n.stylizer-tab-panel--styles .stylizer-field--background-repeat select,\n.stylizer-tab-panel--styles .stylizer-field--visibility select,\n.stylizer-tab-panel--styles .stylizer-field--overflow select {\n  min-width: 100px;\n}\n/**\n  Typography Panel\n  **/\n.stylizer-tab-panel--typography .stylizer-form-group {\n  width: 50%;\n  min-width: 350px;\n}\n.stylizer-tab-panel--typography .stylizer-group--font {\n  min-width: 590px;\n}\n.stylizer-tab-panel--typography .stylizer-field--font-family input {\n  min-width: 100px;\n  width: 100%;\n}\n.stylizer-tab-panel--typography .stylizer-field--font-size input {\n  min-width: 60px;\n}\n.stylizer-tab-panel--typography .stylizer-field--white-space select,\n.stylizer-tab-panel--typography .stylizer-field--letter-spacing input,\n.stylizer-tab-panel--typography .stylizer-field--vertical-align select,\n.stylizer-tab-panel--typography .stylizer-field--font-weight input,\n.stylizer-tab-panel--typography .stylizer-field--font-weight select,\n.stylizer-tab-panel--typography .stylizer-field--font-style select,\n.stylizer-tab-panel--typography .stylizer-field--font-variant select {\n  min-width: 100px;\n}\n.stylizer-iterator {\n  flex-grow: 1;\n  overflow: hidden;\n  display: block;\n}\n.stylizer-element {\n  background: #071c2a;\n  color: #d3f7ff;\n  padding: 6px 10px;\n  margin-bottom: 8px;\n  white-space: nowrap;\n  cursor: pointer;\n  width: fit-content;\n  font-size: 12px;\n  font-weight: 300;\n  border-left: 5px solid #071c2a;\n  min-width: 100%;\n}\n.stylizer-element.overridden {\n  background: #000000;\n}\n.stylizer-element.active {\n  background: #4b9701;\n}\n.stylizer-element.changed {\n  background: #7d3d05;\n}\n.stylizer-element.parents:not(.processed) {\n  border-left: 3px solid #196597;\n}\n.stylizer-element.parents.processed {\n  border-left: 3px solid #0d334d;\n}\n.stylizer-element.active {\n  border-left: 3px solid #4b9701 !important;\n}\n.stylizer-element.changed {\n  border-left: 3px solid #11415f !important;\n}\n.stylizer-element.overridden {\n  border-left: 3px solid #4c2503 !important;\n}\n[data-depth] {\n  margin-left: 150px;\n}\n[data-depth=\"0\"] {\n  margin-left: 0px;\n}\n[data-depth=\"1\"] {\n  margin-left: 15px;\n}\n[data-depth=\"2\"] {\n  margin-left: 30px;\n}\n[data-depth=\"3\"] {\n  margin-left: 45px;\n}\n[data-depth=\"4\"] {\n  margin-left: 60px;\n}\n[data-depth=\"5\"] {\n  margin-left: 75px;\n}\n[data-depth=\"6\"] {\n  margin-left: 90px;\n}\n[data-depth=\"7\"] {\n  margin-left: 105px;\n}\n[data-depth=\"8\"] {\n  margin-left: 120px;\n}\n[data-depth=\"9\"] {\n  margin-left: 135px;\n}\n[data-depth=\"10\"] {\n  margin-left: 150px;\n}\n.stylizer-inspector .stylizer-font-element-dropdown-item,\n.stylizer-inspector .stylizer-font-element-dropdown,\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select,\n.stylizer-inspector textarea {\n  background: #213946;\n  border: 1px solid #040f15;\n  color: #d3f7ff;\n  padding: 0 7px;\n  line-height: 29px;\n  min-height: 0;\n  height: auto;\n  font-size: 13px;\n  border-radius: 0;\n  margin: 0;\n  width: 100%;\n}\n.stylizer-inspector select > option {\n  background-color: #213946;\n  border: 1px solid #040f15;\n  cursor: pointer;\n}\n.stylizer-inspector select > option:hover {\n  background-color: #192b35;\n  color: #d3f7ff;\n}\n.stylizer-inspector select {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n}\n.stylizer-inspector select:focus {\n  outline: none;\n}\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select {\n  height: 29px;\n}\n.stylizer-inspector textarea {\n  padding: 6px 7px;\n}\n.stylizer-inspector input[disabled] {\n  background: #192b35;\n}\n.stylizer-font-element-autocomplete {\n  position: relative;\n}\n.stylizer-font-element-autocomplete > * {\n  display: block !important;\n}\n.stylizer-inspector .stylizer-font-element-dropdown {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: auto;\n  max-height: 160px;\n  min-width: 160px;\n  overflow-y: auto;\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-font-element-dropdown-item {\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-font-element-dropdown-item:hover {\n  color: #0f82aa !important;\n}\n.stylizer-inspector .stylizer-font-element-dropdown {\n  border: 1px solid #040f15 !important;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.stylizer-form-item {\n  margin-bottom: 5px;\n}\n.stylizer-inspector label {\n  font-size: 12px;\n  margin-bottom: 3px;\n  font-weight: 300;\n  display: block;\n}\n.stylizer-form-header {\n  font-size: 12px;\n  margin-bottom: 8px;\n  padding-bottom: 4px;\n  color: #d3f7ff;\n  font-weight: 300;\n  border-bottom: 1px solid #040d12;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  align-items: center;\n  justify-content: space-between;\n}\n.stylizer-form-header svg {\n  cursor: pointer;\n}\n.stylizer-form-group {\n  margin-bottom: 18px;\n}\n.stylizer-form-row {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  flex-wrap: nowrap;\n}\n.stylizer-form-row > * {\n  padding: 0 7px;\n}\n.stylizer-form-row > *:first-child {\n  padding-left: 0;\n}\n.stylizer-form-row > *:last-child {\n  padding-right: 0;\n}\n.stylizer-form-label {\n  text-transform: capitalize;\n}\n.stylizer-inspector .stylizer-has-error input[role=\"combobox\"],\n.stylizer-inspector .stylizer-has-error .stylizer-form-input {\n  border-color: #c50313 !important;\n}\n.stylizer-color-element {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-color-preview {\n  width: 30px;\n  min-width: 30px;\n  height: 29px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-right: none;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-color-preview > .stylizer-color-preview-content {\n  border-radius: 100%;\n  width: 10px;\n  height: 10px;\n}\n.stylizer-color-closer {\n  max-width: 39px;\n  height: 29px;\n  width: 39px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-left: none;\n  margin-left: -1px;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-color-element input[type=\"text\"] {\n  border-left: none;\n}\n.stylizer-error-bag {\n  font-size: 13px;\n  padding: 3px;\n  color: #c50313;\n}\n.stylizer-label-inline {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n}\n.stylizer-label-inline .stylizer-form-input {\n  max-width: 120px;\n}\n.stylizer-label-inline .stylizer-form-label {\n  margin-right: 20px;\n  flex-grow: 1;\n}\n.stylizer-label-inline .stylizer-error-bag {\n  margin-left: 10px;\n}\n.stylizer-tabs-wrapper {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n}\n.stylizer-tabs {\n  background: #03141d;\n  color: #6d8d95;\n  max-width: 150px;\n  min-width: 150px;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-evenly;\n}\n.stylizer-tabs-contents {\n  background: #081c27;\n  flex-grow: 1;\n  display: flex;\n  flex-direction: column;\n  padding: 0;\n}\n.stylizer-tabs-contents.has-vertical-scrollbar {\n  padding-right: 15px;\n}\n.stylizer-tab-element {\n  padding: 10px 15px;\n  font-size: 13px;\n  display: block;\n  cursor: pointer;\n  text-transform: capitalize;\n  flex-grow: 1;\n  border-bottom: 1px solid #040d12;\n}\n.stylizer-tab-element.active {\n  background: #081c27;\n  color: #13a6d9;\n}\n.scrollarea-content {\n  width: auto;\n  display: table;\n  min-width: 100%;\n}\n.scrollarea .scrollbar-container:hover,\n.scrollarea .scrollbar-container {\n  background: #082739;\n  opacity: 1 !important;\n}\n.scrollarea .scrollbar-container .scrollbar {\n  background: #051118;\n  cursor: pointer;\n}\n.scrollarea .scrollbar-container.vertical {\n  width: 16px;\n}\n.scrollarea .scrollbar-container.vertical .scrollbar {\n  width: 16px;\n  margin: 0;\n  min-height: 20px !important;\n}\n.scrollarea .scrollbar-container.horizontal {\n  height: 16px;\n}\n.scrollarea .scrollbar-container.horizontal .scrollbar {\n  height: 16px;\n  margin: 0;\n  min-width: 20px !important;\n}\n.stylizer-overlay-box {\n  pointer-events: none;\n  position: fixed;\n  z-index: 0;\n  top: 0;\n  left: 0;\n  background: #ff929a;\n  opacity: 0.4;\n}\n.stylizer-overlay-margin {\n  margin: 0;\n}\n.stylizer-overlay-padding {\n  background: #ffbf80;\n  padding: 0;\n}\n.stylizer-overlay-content {\n  background: #edff7b;\n  width: 0;\n  height: 0;\n}\n.stylizer-selector-empty {\n  font-size: 14px;\n  text-align: center;\n  display: flex;\n  align-self: center;\n  justify-content: center;\n  flex-grow: 1;\n}\n.stylizer-selector-badges {\n  font-size: 12px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.stylizer-selector-badge {\n  display: flex;\n  flex-direction: row;\n  margin: 5px 0;\n  cursor: pointer;\n  align-items: center;\n}\n.stylizer-selector-badges-text {\n  background: #040f15;\n  color: #6d8d95;\n  padding: 4px 8px;\n  border-radius: 4px;\n  max-width: 100px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n}\n.stylizer-selector-badge.active .stylizer-selector-badges-text {\n  background: #137fad;\n  color: #d3f7ff;\n}\n.stylizer-selector-badges-separator {\n  margin: 0 5px;\n}\n.stylizer-inspector .chrome-picker svg {\n  background: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker span {\n  color: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker {\n  background: #041e2b !important;\n  color: #6d8d95;\n  border: 1px solid #040f15;\n  box-shadow: none !important;\n}\n.stylizer-inspector .chrome-picker input {\n  background: #213946;\n  border: 1px solid #040f15 !important;\n  color: #d3f7ff !important;\n  box-shadow: none !important;\n  font-size: 13px !important;\n  height: auto !important;\n}\n/**\n  Vertical Overrides\n  **/\nbody[stylizer-active=\"false\"][stylizer-vertical=\"true\"] {\n  padding-left: 380px;\n}\nbody[stylizer-active=\"true\"][stylizer-vertical=\"true\"] {\n  padding-left: 34px;\n}\n[stylizer-vertical=\"true\"] .stylizer-inspector {\n  top: 0;\n  bottom: 0;\n  width: 390px;\n  flex-direction: column;\n  height: 100%;\n}\n[stylizer-vertical=\"true\"] .stylizer-inspector.minimize {\n  height: 100%;\n  width: 34px;\n}\n[stylizer-vertical=\"true\"] .stylizer-panels {\n  width: 100%;\n}\n[stylizer-vertical=\"true\"] .stylizer-dom-panel {\n  max-height: 40%;\n  height: 40%;\n  min-height: 40%;\n}\n[stylizer-vertical=\"true\"] .stylizer-panels.minimize {\n  max-width: none;\n  max-height: 35px;\n}\n[stylizer-vertical=\"true\"] .stylizer-editor-panel {\n  width: 100%;\n}\n[stylizer-vertical=\"true\"] .stylizer-inspector.minimize .stylizer-editor-panel .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\n[stylizer-vertical=\"true\"] .stylizer-inspector.minimize .stylizer-editor-panel .stylizer-header-actions svg {\n  margin: 0 0 5px;\n}\n[stylizer-vertical=\"true\"] .stylizer-inspector.minimize .stylizer-editor-panel .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\n[stylizer-vertical=\"true\"] .stylizer-tabs-wrapper {\n  flex-direction: column;\n}\n[stylizer-vertical=\"true\"] .stylizer-tabs {\n  flex-direction: row;\n  max-width: 100%;\n  min-width: 100%;\n  min-height: 35px;\n}\n[stylizer-vertical=\"true\"] .stylizer-tab-element {\n  border-bottom: none;\n  padding: 10px 14px;\n  font-size: 10px;\n}\n[stylizer-vertical=\"true\"] .stylizer-selector-empty {\n  flex-direction: column;\n}\n[stylizer-vertical=\"true\"] .stylizer-label-inline {\n  align-items: flex-start;\n  max-width: 25%;\n  flex-wrap: wrap;\n  flex-direction: column;\n  flex-grow: 1;\n  padding: 0 7px;\n  margin-bottom: 10px;\n}\n[stylizer-vertical=\"true\"] .stylizer-form-row {\n  flex-wrap: wrap;\n  margin: 0 -7px;\n}\n[stylizer-vertical=\"true\"] .stylizer-tab-content {\n  flex-direction: column;\n  position: relative;\n}\n[stylizer-vertical=\"true\"] .stylizer-panel-center-space .stylizer-form-row {\n  margin: 0;\n}\n[stylizer-vertical=\"true\"] .stylizer-panel-center-space .stylizer-form-group {\n  width: 100%;\n  min-width: 1px;\n}\n[stylizer-vertical=\"true\"] .stylizer-form-item {\n  margin-bottom: 20px;\n  display: block;\n  width: 100%;\n}\n[stylizer-vertical=\"true\"] .stylizer-form-item > * {\n  width: 100%;\n  max-width: 100%;\n}\n[stylizer-vertical=\"true\"] .stylizer-panel-left-space {\n  position: absolute;\n  top: 0;\n  left: 100%;\n  bottom: 0;\n}\n[stylizer-vertical=\"true\"] .stylizer-color-element input[type=\"text\"] {\n  max-width: 100%;\n  flex-grow: 1;\n}\n[stylizer-vertical=\"true\"] input[type=\"text\"],\n[stylizer-vertical=\"true\"] select {\n  width: 100%;\n}\n/**\n  Horizontal Overrides\n  **/\nbody[stylizer-active=\"false\"][stylizer-vertical=\"false\"] {\n  padding-bottom: 323px;\n}\nbody[stylizer-active=\"true\"][stylizer-vertical=\"false\"] {\n  padding-bottom: 34px;\n}\n[stylizer-vertical=\"false\"] .stylizer-panels.minimize .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\n[stylizer-vertical=\"false\"] .stylizer-panels.minimize .stylizer-header-actions svg {\n  margin: 0 0 5px;\n}\n[stylizer-vertical=\"false\"] .stylizer-panels.minimize .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\n/**\n  Form Hacks\n  **/\n.stylizer-inspector :focus {\n  outline: 0;\n}\n/**\n  IE & Edge Hacks\n  **/\n.stylizer-inspector ::-ms-reveal,\n.stylizer-inspector ::-ms-clear,\n.stylizer-inspector ::-ms-expand {\n  display: none !important;\n}\n@media screen and (min-width: \"0\\0\") {\n  .stylizer-inspector select {\n    background-image: none\\9;\n  }\n}\n/**\n  Inject Responsive stuff here\n  @todo create side by side vertical mode if user has wide monitor\n  **/\n", ""]);
 
 // exports
 
@@ -70276,6 +70420,82 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
+
+/***/ }),
+/* 762 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactIconBase = __webpack_require__(52);
+
+var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var FaUnlock = function FaUnlock(props) {
+    return _react2.default.createElement(
+        _reactIconBase2.default,
+        _extends({ viewBox: '0 0 40 40' }, props),
+        _react2.default.createElement(
+            'g',
+            null,
+            _react2.default.createElement('path', { d: 'm38.6 12.9v5.7q0 0.6-0.4 1t-1 0.4h-1.4q-0.6 0-1-0.4t-0.4-1v-5.7q0-2.4-1.7-4.1t-4.1-1.7-4 1.7-1.7 4.1v4.2h2.2q0.9 0 1.5 0.7t0.6 1.5v12.8q0 0.9-0.6 1.6t-1.5 0.6h-21.5q-0.8 0-1.5-0.6t-0.6-1.6v-12.8q0-0.9 0.6-1.5t1.5-0.7h15v-4.2q0-4.2 3-7.1t7-2.9 7.1 2.9 2.9 7.1z' })
+        )
+    );
+};
+
+exports.default = FaUnlock;
+module.exports = exports['default'];
+
+/***/ }),
+/* 763 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactIconBase = __webpack_require__(52);
+
+var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var FaLock = function FaLock(props) {
+    return _react2.default.createElement(
+        _reactIconBase2.default,
+        _extends({ viewBox: '0 0 40 40' }, props),
+        _react2.default.createElement(
+            'g',
+            null,
+            _react2.default.createElement('path', { d: 'm14.1 17.1h11.5v-4.2q0-2.4-1.7-4.1t-4-1.7-4.1 1.7-1.7 4.1v4.2z m18.6 2.2v12.8q0 0.9-0.6 1.6t-1.5 0.6h-21.5q-0.8 0-1.5-0.6t-0.6-1.6v-12.8q0-0.9 0.6-1.5t1.5-0.7h0.8v-4.2q0-4.1 2.9-7.1t7.1-2.9 7 2.9 3 7.1v4.2h0.7q0.9 0 1.5 0.7t0.6 1.5z' })
+        )
+    );
+};
+
+exports.default = FaLock;
+module.exports = exports['default'];
 
 /***/ })
 /******/ ]);

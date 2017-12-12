@@ -1,4 +1,4 @@
-import { forEach, set} from 'lodash';
+import { forEach, set, get } from 'lodash';
 import Parser from './Parser';
 import DOMHelper from './DOMHelper';
 
@@ -80,6 +80,10 @@ export default class Store {
 
     generateStyling = () => {
 
+        if (this.styles) {
+            return this.styles;
+        }
+
         let node = this.trackNode();
 
         this.styles = {};
@@ -94,6 +98,7 @@ export default class Store {
         for (let r in rules) {
             if (this.validateSelector(rules[r].selectorText, node)) {
                 let parsed = new Parser(rules[r].cssText);
+
                 for (let x in parsed) {
                     for (let y in parsed[x].rules) {
 
@@ -105,22 +110,12 @@ export default class Store {
 
                         switch (directive) {
 
-                            case 'border-radius' :
-                                ['border-top-left-radius', 'bottom-top-right-radius', 'border-bottom-left-radius', 'border-bottom-right-radius'].map((path) => {
-                                    let style = elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })];
-                                    if (!style.match(skippedRule)) {
-                                        set(this.styles, path, style);
-                                    }
-                                });
-                                break;
-
-
                             case 'padding' :
                             case 'margin' :
                                 ['top', 'left', 'right', 'bottom'].map((dir) => {
                                     let path = directive + '-' + dir,
                                         style = elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })];
-                                    if (!style.match(skippedRule)) {
+                                    if (style && !style.match(skippedRule)) {
                                         set(this.styles, path, style);
                                     }
                                 });
@@ -131,11 +126,11 @@ export default class Store {
                             case 'border-top' :
                             case 'border-bottom' :
                             case 'border' :
-                                forEach((directive !== 'border' ? [directive] : ['border-top', 'border-left', 'border-right', 'border-bottom']), (dir) => {
+                                forEach((directive !== 'border' ? [directive] : ['border']), (dir) => {
                                     ['width', 'style', 'color'].map((type) => {
                                         let path = dir + '-' + type,
                                             style = elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })];
-                                        if (!style.match(skippedRule)) {
+                                        if (style && !style.match(skippedRule)) {
                                             set(this.styles, path, style);
                                         }
                                     });
@@ -146,7 +141,7 @@ export default class Store {
                                 ['width', 'style', 'color'].map((type) => {
                                     let path = 'outline-' + type,
                                         style = elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })];
-                                    if (!style.match(skippedRule)) {
+                                    if (style && !style.match(skippedRule)) {
                                         set(this.styles, path, style);
                                     }
                                 });
@@ -154,8 +149,8 @@ export default class Store {
 
                             case 'font' :
                                 ['font-style', 'font-variant', 'font-weight', 'font-stretch', 'font-size', 'font-family', 'line-height'].map((path) => {
-                                    let style = elements.style[type.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })];
-                                    if (!style.match(skippedRule)) {
+                                    let style = elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })];
+                                    if (style && !style.match(skippedRule)) {
                                         set(this.styles, path, style);
                                     }
                                 });
@@ -165,7 +160,7 @@ export default class Store {
                                 ['color', 'image', 'position', 'repeat', 'attachment', 'size', 'clip', 'origin'].map((type) => {
                                     let path = 'background-' + type,
                                         style = elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })];
-                                    if (!style.match(skippedRule)) {
+                                    if (style && !style.match(skippedRule)) {
                                         set(this.styles, path, style);
                                     }
                                 });
@@ -173,7 +168,7 @@ export default class Store {
 
                             default :
                                 let style = parsed[x].rules[y].value;
-                                if (!style.match(skippedRule)) {
+                                if (style && !style.match(skippedRule)) {
                                     set(this.styles, parsed[x].rules[y].directive, style);
                                 }
                         }
@@ -201,7 +196,15 @@ export default class Store {
         this.changed = true;
     };
 
-    storeStyling = (target, value) => {
+    getStyle = (target) => {
+        return get(this.styles, target, '');
+    };
+
+    removeStyle = (target) => {
+       delete this.styles[target];
+    };
+
+    storeStyle = (target, value) => {
         set(this.styles, target, value);
         this.changed = true;
     };
@@ -211,6 +214,7 @@ export default class Store {
         forEach(this.styles, (value, rule) => {
             rules.push(rule + ': ' + value + ';');
         });
+
         return this.selector + ' {' + rules.join(' ') + '}';
     };
 

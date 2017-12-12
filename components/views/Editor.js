@@ -23,7 +23,7 @@ import TypographyPanel from './Panels/Typography';
 export default class Editor extends React.Component {
 
     state = {
-        active: 'selector',
+        active: 'border',
         node: false,
         root: false,
         errors: {}
@@ -78,7 +78,7 @@ export default class Editor extends React.Component {
             }
         }
 
-        (name !== 'selector') ? node.storeStyling(name, value) : node.storeSelector(value);
+        (name !== 'selector') ? node.storeStyle(name, value) : node.storeSelector(value);
 
         styleElement.insertRule(node.getStyling());
 

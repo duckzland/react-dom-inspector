@@ -10,87 +10,53 @@ export default class Parser {
     }
 
     parseCSS = (source) => {
-        this.styles = [];
-        this.combinedCSSRegex = '((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})'; //to match css & media queries together
-        var arr;
-        var unified = new RegExp(this.combinedCSSRegex, 'gi');
 
-        let { styles } = this;
-        arr = unified.exec(source);
-        if (arr === null) {
-            return;
-        }
-        var selector = '';
-        if (typeof arr[2] === 'undefined') {
-            selector = arr[5].split('\r\n').join('\n').trim();
-        } else {
-            selector = arr[2].split('\r\n').join('\n').trim();
-        }
+        const arr = (new RegExp('((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})', 'gi')).exec(source);
+        const selector = arr[2] ? arr[2] : arr[5] ? arr[5] : false;
+        const rules = arr[6] ? arr[6] : false;
 
-        selector = selector.replace(/\n+/, "\n");
-
-        //we have standard css
-        var rules = this.parseRules(arr[6]);
-        var style = {
-            selector: selector,
-            rules: rules
-        };
-        if (selector === '@font-face') {
-            style.type = 'font-face';
-        }
-
-        styles.push(style);
-
-        return styles;
+        return selector && rules ? [{
+            selector: selector.split('\r\n').join('\n').trim().replace(/\n+/, "\n"),
+            rules: this.parseRules(rules)
+        }] : [];
     };
 
-    parseRules = (rules) => {
-        //convert all windows style line endings to unix style line endings
-        rules = rules.split('\r\n').join('\n');
-        var ret = [];
+    parseRules = (styles) => {
 
-        rules = rules.split(';');
+        const rules = styles.split('\r\n').join('\n').split(';');
+        let ret = [];
 
-        //proccess rules line by line
-        for (var i = 0; i < rules.length; i++) {
-            var line = rules[i];
+        for (let i = 0; i < rules.length; i++) {
 
-            //determine if line is a valid css directive, ie color:white;
-            line = line.trim();
+            let line = rules[i].trim();
+
             if (line.indexOf(':') !== -1) {
-                //line contains :
                 line = line.split(':');
-                var cssDirective = line[0].trim();
-                var cssValue = line.slice(1).join(':').trim();
+                let cssDirective = line[0] ? line[0].trim() : '';
+                let cssValue = line[1] ? line[1].trim() : '';
 
-                //more checks
-                if (cssDirective.length < 1 || cssValue.length < 1) {
-                    continue; //there is no css directive or value that is of length 1 or 0
-                    // PLAIN WRONG WHAT ABOUT margin:0; ?
-                }
+                cssDirective !== ''
+                    && cssValue !== ''
+                    && ret.push({
+                        directive: cssDirective,
+                        value: cssValue
+                    });
 
-                //push rule
+            }
+
+            else if (line.substr(0, 7) === 'base64,') {
+                ret[ret.length - 1].value += line;
+            }
+
+            else if (line.length > 0) {
                 ret.push({
-                    directive: cssDirective,
-                    value: cssValue
+                    directive: '',
+                    value: line,
+                    defective: true
                 });
-            } else {
-                //if there is no ':', but what if it was mis splitted value which starts with base64
-                if (line.trim().substr(0, 7) === 'base64,') { //hack :)
-                    ret[ret.length - 1].value += line.trim();
-                } else {
-                    //add rule, even if it is defective
-                    if (line.length > 0) {
-                        ret.push({
-                            directive: '',
-                            value: line,
-                            defective: true
-                        });
-                    }
-                }
             }
         }
 
-        return ret; //we are done!
+        return ret;
     }
 }

@@ -2,6 +2,8 @@ import React from 'react';
 import ScrollArea from 'react-scrollbar';
 import ColorPicker  from './Elements/ColorPicker';
 import FontPicker from './Elements/FontPicker';
+import ToggleOpenIcon from '../../node_modules/react-icons/lib/fa/unlock';
+import ToggleLockedIcon from '../../node_modules/react-icons/lib/fa/lock';
 import { get, forEach, camelCase } from 'lodash';
 
 /**
@@ -104,7 +106,7 @@ export default class Panel extends React.Component {
                 forEach(element.elements, (child) => getValue(child));
                 break;
             case 'element' :
-                this.state.values[element.target] = get(node.styles, element.target);
+                this.state.values[element.target] = node.getStyle(element.target);
                 break;
         }
     };
@@ -213,8 +215,10 @@ export default class Panel extends React.Component {
         )
     };
 
+    onToggleLock = (element) => {};
+
     generateGroup = (element) => {
-        const { state, config, generateElement } = this;
+        const { state, config, generateElement, onToggleLock } = this;
         const elementProps = get(config, camelCase('PanelGroupElementProps ' + element.key), {
             key: 'stylizer-group-' + element.title + '-' + state.node.uuid,
             className: ['stylizer-form-group', 'stylizer-group--' + element.key.replace(' ', '-'), element.inline ? 'stylizer-label-inline' : ''].join(' ')
@@ -230,7 +234,13 @@ export default class Panel extends React.Component {
 
         return (
             <div { ...elementProps }>
-                { element.title && <h3 { ...headingProps }>{ element.title }</h3> }
+                { (element.title || element.toggle )
+                    && <h3 { ...headingProps }>
+                        { element.title && element.title }
+                        { element.toggle && element.toggle === 'on' && <ToggleOpenIcon onClick={ () => onToggleLock(element) }/> }
+                        { element.toggle && element.toggle === 'off' && <ToggleLockedIcon onClick={ () => onToggleLock(element) }/> }
+                    </h3>
+                }
                 <div { ...wrapperProps }>
                     { element.elements
                         ? element.elements.map( (child) => { return generateElement(child) })
@@ -271,6 +281,7 @@ export default class Panel extends React.Component {
             values: this.state.values,
             errors: this.state.errors
         };
+
         refresh.values[name] = value;
         if (!get(e, 'target.skipValidation', false)) {
             refresh.errors[name] = !this.validate(name, value);
@@ -313,7 +324,7 @@ export default class Panel extends React.Component {
 
     render() {
 
-        const { leftSpace, rightSpace, fields, config, state, generateGroup, generateElement, onScroll } = this;
+        const { leftSpace, rightSpace, fields, config, state, generateGroup, generateElement, onScroll, hookBeforeRender } = this;
 
         const tabProps = get(config, 'PanelTabProps', {
             key: 'stylizer-tab-' + config.type + '-' + state.node.uuid,
@@ -347,6 +358,8 @@ export default class Panel extends React.Component {
             horizontal: true,
             onScroll: onScroll
         });
+
+        hookBeforeRender && hookBeforeRender();
 
         return (
             <div { ...tabProps }>
