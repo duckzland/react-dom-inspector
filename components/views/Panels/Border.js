@@ -1,6 +1,6 @@
 import React from 'react';
 import BasePanel from '../Panel';
-import { get, forEach, isObject, isEmpty } from 'lodash';
+import { get, forEach } from 'lodash';
 
 /**
  * Class for generating the border panel inside the editor markup
@@ -25,22 +25,22 @@ export default class Border extends BasePanel {
             type: 'border',
             empty: null,
             borderOptions: {
-                none: 'None',
-                hidden: 'Hidden',
-                dotted: 'Dotted',
-                dashed: 'Dashed',
-                solid: 'Solid',
-                double: 'Double',
-                groove: 'Groove',
-                ridge: 'Ridge',
-                inset: 'Inset',
-                outset: 'Outset'
+                none : 'None',
+                hidden : 'Hidden',
+                dotted : 'Dotted',
+                dashed : 'Dashed',
+                solid : 'Solid',
+                double : 'Double',
+                groove : 'Groove',
+                ridge : 'Ridge',
+                inset : 'Inset',
+                outset : 'Outset'
             }
         };
 
         this.fields = [];
-        this.state.grouped.border = this.detectBorderGroup(get(props, 'node.styles', this.state.grouped.border));
-        this.state.grouped.radius = this.detectRadiusGroup(get(props, 'node.styles', this.state.grouped.radius));
+        this.state.grouped.border = this.detectBorderGroup(get(props, 'node.styles', {}));
+        this.state.grouped.radius = this.detectRadiusGroup(get(props, 'node.styles', {}));
 
         this.generateBorderFields(this.state.grouped.border);
         this.generateRadiusFields(this.state.grouped.radius);
@@ -50,28 +50,28 @@ export default class Border extends BasePanel {
     }
 
     detectBorderGroup = (Rules) => {
-        let Grouped = isObject(Rules) && !isEmpty(Rules) && (!Rules['border-width'] && !Rules['border-style'] && !Rules['border-width']) ? false : true;
+        let Grouped = true;
+        forEach(['border-top', 'border-left', 'border-right', 'border-bottom'], (key) => {
+            forEach(['width', 'color', 'style'], (subkey) => {
+                if (Rules[key + '-' + subkey]) {
+                    Grouped = false;
+                    return false;
+                }
+            });
 
-        isObject(Rules) && !isEmpty(Rules) && forEach(Rules, (value, rule) => {
-            switch (rule) {
-                case 'border-width' :
-                case 'border-color' :
-                case 'border-style' :
-                    Grouped = true;
-                    break;
+            if (!Grouped) {
+                return false;
             }
         });
         return Grouped;
     };
 
     detectRadiusGroup = (Rules) => {
-        let Grouped = isObject(Rules) && !isEmpty(Rules) && !Rules['border-radius'] ? false : true;
-
-        isObject(Rules) && !isEmpty(Rules) && forEach(Rules, (value, rule) => {
-            switch (rule) {
-                case 'border-radius' :
-                    Grouped = true;
-                    break;
+        let Grouped = true;
+        forEach(['border-top-left-radius', 'border-top-right-radius', 'border-bottom-left-radius', 'border-bottom-right-radius'], (key) => {
+            if (Rules[key]) {
+                Grouped = false;
+                return false;
             }
         });
         return Grouped;
