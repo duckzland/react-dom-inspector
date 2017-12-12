@@ -50,7 +50,7 @@ export default class Border extends BasePanel {
     }
 
     detectBorderGroup = (Rules) => {
-        let Grouped = isObject(Rules) && !isEmpty(Rules) ? false : true;
+        let Grouped = isObject(Rules) && !isEmpty(Rules) && (!Rules['border-width'] && !Rules['border-style'] && !Rules['border-width']) ? false : true;
 
         isObject(Rules) && !isEmpty(Rules) && forEach(Rules, (value, rule) => {
             switch (rule) {
@@ -65,7 +65,7 @@ export default class Border extends BasePanel {
     };
 
     detectRadiusGroup = (Rules) => {
-        let Grouped = isObject(Rules) && !isEmpty(Rules) ? false : true;
+        let Grouped = isObject(Rules) && !isEmpty(Rules) && !Rules['border-radius'] ? false : true;
 
         isObject(Rules) && !isEmpty(Rules) && forEach(Rules, (value, rule) => {
             switch (rule) {
