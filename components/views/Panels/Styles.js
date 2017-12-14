@@ -1,4 +1,5 @@
 import BasePanel from '../Panel';
+import { get, forEach } from 'lodash';
 
 /**
  * Class for generating the sytles panel inside the editor markup
@@ -12,7 +13,8 @@ export default class Styles extends BasePanel {
         this.state = {
             node: false,
             errors: {},
-            values: {}
+            values: {},
+            gradient: false
         };
 
         this.config = {
@@ -23,20 +25,7 @@ export default class Styles extends BasePanel {
             {
                 key: 'background',
                 title: 'Background',
-                type: 'group',
-                elements: [
-                    {title: 'color', target: 'background-color', type: 'element', field: 'color', default: '', inline: false},
-                    {title: 'image', target: 'background-image', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'position', target: 'background-position', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'size', target: 'background-size', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'repeat', target: 'background-repeat', type: 'element', field: 'select', options: {
-                        initial: 'None',
-                        repeat : 'Repeat All',
-                        'repeat-x' : 'Horizontally',
-                        'repeat-y' : 'Vertically',
-                        'no-repeat': 'Don\'t Repeat'
-                    }, default: '', inline: false}
-                ]
+                type: 'group'
             },
             {
                 key: 'advanced',
@@ -88,6 +77,63 @@ export default class Styles extends BasePanel {
                 ]
             }
         ];
+
+        this.state.gradient = this.detectBackgroundGradient(get(props, 'node.styles', {}));
+
+        this.state.gradient ? this.generateGradientFields() : this.generateBackgroundFields();
+
         this.initialize(props);
     }
+
+    detectBackgroundGradient = (Rules) => {
+        let isGradient = false;
+        forEach(['background-image', 'background'], (key) =>  {
+            if (Rules[key] && Rules[key].indexOf('gradient') !== -1) {
+                isGradient = true;
+                return false;
+            }
+        });
+
+        return isGradient;
+    };
+
+    generateBackgroundFields = () => {
+        forEach(this.fields, (field, delta) => {
+            if (field.key === 'background') {
+                field.toggle = 'off';
+                field.elements = [
+                    { title: 'color', target: 'background-color', type: 'element', field: 'color', default: '', inline: false},
+                    { title: 'image', target: 'background-image', type: 'element', field: 'text', default: '', inline: false},
+                    { title: 'position', target: 'background-position', type: 'element', field: 'text', default: '', inline: false},
+                    { title: 'size', target: 'background-size', type: 'element', field: 'text', default: '', inline: false},
+                    { title: 'repeat', target: 'background-repeat', type: 'element', field: 'select', options: {
+                        initial: 'None',
+                        repeat : 'Repeat All',
+                        'repeat-x' : 'Horizontally',
+                        'repeat-y' : 'Vertically',
+                        'no-repeat': 'Don\'t Repeat'
+                    }, default: '', inline: false}
+                ];
+
+                return false;
+            }
+        })
+    };
+
+    generateGradientFields = () => {
+        forEach(this.fields, (field, delta) => {
+            if (field.key === 'background') {
+                field.toggle = 'on';
+                field.elements = [ { title: 'gradient', target: 'background-image', type: 'element', field: 'gradient', default: '', inline: false} ];
+
+                return false;
+            }
+        })
+    };
+
+    onToggleLock = (element) => {
+        this.state.gradient = !this.state.gradient;
+        this.state.gradient ? this.generateGradientFields() : this.generateBackgroundFields();
+        this.setState(this.state);
+    };
 }

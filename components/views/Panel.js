@@ -2,6 +2,7 @@ import React from 'react';
 import ScrollArea from 'react-scrollbar';
 import ColorPicker  from './Elements/ColorPicker';
 import FontPicker from './Elements/FontPicker';
+import GradientPicker from './Elements/GradientPicker';
 import ToggleOpenIcon from '../../node_modules/react-icons/lib/fa/unlock';
 import ToggleLockedIcon from '../../node_modules/react-icons/lib/fa/lock';
 import { get, forEach, camelCase } from 'lodash';
@@ -189,20 +190,20 @@ export default class Panel extends React.Component {
                         key: 'stylizer-option-' + element.target + '-empty',
                         value: ''
                     });
-                    options.push(<option { ...optionEmptyProps }>{ null }</option>);
+                    options.push( <option { ...optionEmptyProps }>{ null }</option> );
                     forEach(element.options, (text, value) => {
                         const optionProps = get(config, camelCase('PanelFieldSelectOptionProps ' + element.target), {
                             key: 'stylizer-option-' + element.target + text.replace(' ', '-'),
                             value: value
                         });
-                        options.push(<option { ...optionProps }>{ text }</option>);
+                        options.push( <option { ...optionProps }>{ text }</option> );
                     });
                 }
-                InputElement.push(
-                    <select { ...inputProps }>
-                        { options }
-                    </select>
-                );
+                InputElement.push( <select { ...inputProps }>{ options }</select> );
+                break;
+
+            case 'gradient' :
+                InputElement.push( <GradientPicker { ...inputProps } /> );
                 break;
         }
 

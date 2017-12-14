@@ -5,7 +5,7 @@ import { forEach } from 'lodash';
  *
  * @author jason.xie@victheme.com
  */
-class DOMHelper {
+export default class DOMHelper {
 
     constructor() {
         return this;
@@ -125,5 +125,3 @@ class DOMHelper {
     }
 
 }
-
-export default DOMHelper;

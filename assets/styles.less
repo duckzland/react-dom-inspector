@@ -39,6 +39,7 @@
 @ColorOrange: #7d3d05;
 @ColorRed: #c50313;
 
+@ie9MediaMinWidthHack: "0\0";
 
 /**
   Generic Styling for both vertical and horizontal
@@ -55,10 +56,6 @@
   flex-direction: row;
   flex-grow: 1;
   border-bottom: 3px solid darken(@InspectorBackground, 20%);
-}
-
-.stylizer-inspector,
-.stylizer-inspector * {
   margin: 0;
   padding: 0;
   line-height: 140%;
@@ -66,874 +63,1097 @@
   box-sizing: border-box;
   font-size: 14px;
   font-family: Arial, Helvetica, Verdana, sans-serif;
-}
-.stylizer-inspector.minimize {
-  height: 34px;
-}
-
-.stylizer-inspector.minimize .stylizer-dom-panel {
-  display: none;
-}
-
-.stylizer-inspector.minimize .stylizer-tabs-wrapper {
-  display: none;
-}
-
-.stylizer-panels {
-  width: 30%;
-  background: @InspectorBackground;
-  color: @InspectorText;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  z-index: 9999;
-}
-
-.stylizer-panels.minimize {
-  max-width: 30px;
-}
-
-.stylizer-panels.minimize > :not(.stylizer-header) {
-  display: none;
-}
-
-.stylizer-editor-panel {
-  background: @EditorBackground;
-  color: @EditorText;
-  width: 70%;
-}
-
-.stylizer-header {
-  padding: 8px 15px;
-  background: darken(@InspectorBackground, 7%);
-  font-size: 14px;
-  font-weight: 300;
-  text-transform: uppercase;
-  display: flex;
-  flex-direction: row;
-  min-height: 35px;
-}
-
-.stylizer-editor-panel .stylizer-header {
-  background: darken(@EditorBackground, 7%);
-}
-
-.stylizer-header-text {
-  flex-grow: 1;
-}
-.stylizer-header-actions svg {
-  cursor: pointer;
-  opacity: 0.8;
-  margin: 0 5px;
-}
-
-.stylizer-header-actions svg:hover {
-  opacity: 1;
-}
-
-.stylizer-content {
-  padding: 15px;
-  width: 100%;
-}
-
-.stylizer-content-flex {
-  display: flex;
-  flex-direction: row;
-}
-
-.stylizer-content-flex > * {
-  padding: 15px;
-}
-
-.stylizer-tab-content .stylizer-panel-left-space,
-.stylizer-tab-content .stylizer-panel-right-space {
-  background: @EditorBackground;
-}
-
-.stylizer-tab-content .stylizer-panel-center-space {
-  display: flex;
-  flex-wrap: wrap;
-  flex-grow: 1;
-  padding: 15px 0;
-}
-
-.stylizer-tab-content .stylizer-form-item {
-  padding: 0;
-  flex-grow: 1;
-}
-
-.stylizer-tab-content .stylizer-form-group {
-  padding: 0 15px;
-  flex-grow: 1;
-}
-
-.stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) select,
-.stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) input {
-  border-right-color: transparent;
-}
-
-/**
-  Border Panel
-  **/
-.stylizer-tab-panel--border .stylizer-group--radius,
-.stylizer-tab-panel--border .stylizer-group--outline {
-  width: 50%;
-  min-width: 330px;
-}
-
-.stylizer-tab-panel--border [class*="stylizer-group--border-"] {
-  width: 25%;
-  min-width: 260px;
-}
-
-.stylizer-tab-panel--border [class*="stylizer-field--border-"] input {
-  min-width: 50px;
-}
-
-.stylizer-tab-panel--border .stylizer-field--border-top-color input,
-.stylizer-tab-panel--border .stylizer-field--border-left-color input,
-.stylizer-tab-panel--border .stylizer-field--border-right-color input,
-.stylizer-tab-panel--border .stylizer-field--border-bottom-color input {
-  min-width: 70px;
-}
-
-.stylizer-tab-panel--border select {
-  min-width: 80px;
-}
-
-/**
-  Spacing Panel
-  **/
-.stylizer-tab-panel--spacing .stylizer-form-group {
-  width: 25%;
-  min-width: 260px;
-}
-
-/**
-  Styles Panel
-  **/
-.stylizer-tab-panel--styles .stylizer-form-group {
-  width: 25%;
-  min-width: 320px;
-}
-
-.stylizer-tab-panel--styles .stylizer-group--background {
-  width: 50%;
-  min-width: 490px;
-}
-
-.stylizer-tab-panel--styles .stylizer-field--background-image input {
-  min-width: 100px;
-}
-
-.stylizer-tab-panel--styles .stylizer-field--display input,
-.stylizer-tab-panel--styles .stylizer-field--opacity input,
-.stylizer-tab-panel--styles .stylizer-field--background-position input,
-.stylizer-tab-panel--styles .stylizer-field--background-size input{
-  min-width: 60px;
-}
-
-.stylizer-tab-panel--styles .stylizer-field--background-color input,
-.stylizer-tab-panel--styles .stylizer-field--background-repeat select,
-.stylizer-tab-panel--styles .stylizer-field--visibility select,
-.stylizer-tab-panel--styles .stylizer-field--overflow select {
-  min-width: 100px;
-}
-
-/**
-  Typography Panel
-  **/
-.stylizer-tab-panel--typography .stylizer-form-group {
-  width: 50%;
-  min-width: 350px;
-}
-
-.stylizer-tab-panel--typography .stylizer-group--font {
-  min-width: 590px;
-}
-
-.stylizer-tab-panel--typography .stylizer-field--font-family input {
-  min-width: 100px;
-  width: 100%;
-}
-
-.stylizer-tab-panel--typography .stylizer-field--font-size input {
-  min-width: 60px;
-}
-
-.stylizer-tab-panel--typography .stylizer-field--white-space select,
-.stylizer-tab-panel--typography .stylizer-field--letter-spacing input,
-.stylizer-tab-panel--typography .stylizer-field--vertical-align select,
-.stylizer-tab-panel--typography .stylizer-field--font-weight input,
-.stylizer-tab-panel--typography .stylizer-field--font-weight select,
-.stylizer-tab-panel--typography .stylizer-field--font-style select,
-.stylizer-tab-panel--typography .stylizer-field--font-variant select {
-  min-width: 100px;
-}
 
 
-.stylizer-iterator {
-  flex-grow: 1;
-  overflow: hidden;
-  display: block;
-}
-
-.stylizer-element {
-  background: @InspectorElementBackground;
-  color: @InspectorElementText;
-  padding: 6px 10px;
-  margin-bottom: 8px;
-  white-space: nowrap;
-  cursor: pointer;
-  width: fit-content;
-  font-size: 12px;
-  font-weight: 300;
-  border-left: 5px solid @InspectorElementBackground;
-  min-width: 100%;
-}
-
-.stylizer-element.overridden {
-  background: darken(@ColorBlue, 40%);
-}
-
-.stylizer-element.active {
-  background: @ColorGreen;
-}
-
-.stylizer-element.changed {
-  background: @ColorOrange;
-}
-
-.stylizer-element.parents:not(.processed) {
-  border-left: 3px solid lighten(@InspectorElementBackground, 25%);
-}
-
-.stylizer-element.parents.processed {
-  border-left: 3px solid lighten(@InspectorElementBackground, 8%);
-}
-
-.stylizer-element.active {
-  border-left: 3px solid @ColorGreen !important;
-}
-
-.stylizer-element.changed {
-  border-left: 3px solid darken(@ColorBlue, 10%) !important;
-}
-
-.stylizer-element.overridden {
-  border-left: 3px solid darken(@ColorOrange, 10%) !important;
-}
-
-[data-depth] {
-  margin-left: (10 * @InspectorElementMargin);
-}
-
-.data-depth-margin( @depth-margin, @max-depth ) when ( @max-depth >= 0 ) {
-  .data-depth-margin( @depth-margin, @max-depth - 1 );
-
-  [data-depth="@{max-depth}"] {
-    margin-left: (@max-depth * @depth-margin);
+  /**
+    Styling Reset
+    **/
+  * {
+    margin: 0;
+    padding: 0;
+    line-height: 140%;
+    vertical-align: middle;
+    box-sizing: border-box;
+    font-size: 14px;
+    font-family: Arial, Helvetica, Verdana, sans-serif;
   }
-}
-
-.data-depth-margin(@InspectorElementMargin, 10);
-
-.stylizer-inspector .stylizer-font-element-dropdown-item,
-.stylizer-inspector .stylizer-font-element-dropdown,
-.stylizer-inspector .chrome-picker input,
-.stylizer-inspector input[role="combobox"],
-.stylizer-inspector input[type="text"],
-.stylizer-inspector input[type="url"],
-.stylizer-inspector input[type="number"],
-.stylizer-inspector input[type="tel"],
-.stylizer-inspector select,
-.stylizer-inspector textarea {
-  background: @FormElementBackground;
-  border: 1px solid @FormElementBorder;
-  color: @FormElementText;
-  padding: 0 7px;
-  line-height: 29px;
-  min-height: 0;
-  height: auto;
-  font-size: 13px;
-  border-radius: 0;
-  margin: 0;
-  width: 100%;
-}
-
-.stylizer-inspector select > option {
-  background-color: @FormElementBackground;
-  border: 1px solid @FormElementBorder;
-  cursor: pointer;
-}
-
-.stylizer-inspector select > option:hover {
-  background-color: darken(@FormElementBackground, 5%);
-  color: @FormElementText;
-}
-
-.stylizer-inspector select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-
-.stylizer-inspector select:focus {
-  outline: none;
-}
-
-.stylizer-inspector .chrome-picker input,
-.stylizer-inspector input[role="combobox"],
-.stylizer-inspector input[type="text"],
-.stylizer-inspector input[type="url"],
-.stylizer-inspector input[type="number"],
-.stylizer-inspector input[type="tel"],
-.stylizer-inspector select {
-  height: 29px;
-}
-
-.stylizer-inspector textarea {
-  padding: 6px 7px;
-}
-
-.stylizer-inspector input[disabled] {
-  background: darken(@FormElementBackground, 5%);
-}
-
-.stylizer-font-element-autocomplete {
-  position: relative;
-}
-
-.stylizer-font-element-autocomplete > * {
-  display: block !important;
-}
-
-.stylizer-inspector .stylizer-font-element-dropdown {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: auto;
-  max-height: 160px;
-  min-width: 160px;
-  overflow-y: auto;
-  cursor: pointer;
-}
-
-.stylizer-inspector .stylizer-font-element-dropdown-item {
-  cursor: pointer;
-}
-
-.stylizer-inspector .stylizer-font-element-dropdown-item:hover {
-  color: darken(@FormElementActiveText, 10%) !important;
-}
-
-.stylizer-inspector .stylizer-font-element-dropdown {
-  border: 1px solid @FormElementBorder !important;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.stylizer-form-item {
-  margin-bottom: 5px;
-}
-
-.stylizer-inspector label {
-  font-size: 12px;
-  margin-bottom: 3px;
-  font-weight: 300;
-  display: block;
-}
-
-.stylizer-form-header {
-  font-size: 12px;
-  margin-bottom: 8px;
-  padding-bottom: 4px;
-  color: @FormElementText;
-  font-weight: 300;
-  border-bottom: 1px solid darken(@TabsActiveBackground, 5%);
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.stylizer-form-header svg {
-  cursor: pointer;
-}
-
-.stylizer-form-group {
-  margin-bottom: 18px;
-}
-
-.stylizer-form-row {
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  flex-wrap: nowrap;
-}
-
-.stylizer-form-row > * {
-  padding: 0 7px;
-}
-
-.stylizer-form-row > *:first-child {
-  padding-left: 0;
-}
-
-.stylizer-form-row > *:last-child {
-  padding-right: 0;
-}
-
-.stylizer-form-label {
-  text-transform: capitalize;
-}
-
-.stylizer-inspector .stylizer-has-error input[role="combobox"],
-.stylizer-inspector .stylizer-has-error .stylizer-form-input {
-  border-color: @ColorRed !important;
-}
-
-.stylizer-color-element {
-  display: flex;
-  flex-direction: row;
-}
-
-.stylizer-color-preview {
-  width: 30px;
-  min-width: 30px;
-  height: 29px;
-  background-color: @FormElementBackground;
-  border: 1px solid @FormElementBorder;
-  border-right: none;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.stylizer-color-preview > .stylizer-color-preview-content {
-  border-radius: 100%;
-  width: 10px;
-  height: 10px;
-}
-
-.stylizer-color-closer {
-  max-width: 39px;
-  height: 29px;
-  width: 39px;
-  background-color: @FormElementBackground;
-  border: 1px solid @FormElementBorder;
-  border-left: none;
-  margin-left: -1px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.stylizer-color-element input[type="text"] {
-  border-left: none;
-}
-
-
-.stylizer-error-bag {
-  font-size: 13px;
-  padding: 3px;
-  color: @ColorRed;
-}
-
-.stylizer-label-inline {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-.stylizer-label-inline .stylizer-form-input {
-  max-width: 120px;
-}
-
-
-.stylizer-label-inline .stylizer-form-label {
-  margin-right: 20px;
-  flex-grow: 1;
-}
-
-.stylizer-label-inline .stylizer-error-bag {
-  margin-left: 10px;
-}
-
-.stylizer-tabs-wrapper {
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-}
-
-.stylizer-tabs {
-  background: @TabsBackground;
-  color: @TabsText;
-  max-width: 150px;
-  min-width: 150px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-}
-
-.stylizer-tabs-contents {
-  background: @TabsActiveBackground;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-}
-
-.stylizer-tabs-contents.has-vertical-scrollbar {
-  padding-right: 15px;
-}
-
-.stylizer-tab-element {
-  padding: 10px 15px;
-  font-size: 13px;
-  display: block;
-  cursor: pointer;
-  text-transform: capitalize;
-  flex-grow: 1;
-  border-bottom: 1px solid darken(@TabsActiveBackground, 5%);
-}
-
-.stylizer-tab-element.active {
-  background: @TabsActiveBackground;
-  color: @TabsActiveText;
-}
-
-.scrollarea-content {
-  width: auto;
-  display: table;
-  min-width: 100%;
-}
-
-.scrollarea .scrollbar-container:hover,
-.scrollarea .scrollbar-container {
-  background: @ScrollerBackground;
-  opacity: 1 !important;
-}
-
-.scrollarea .scrollbar-container .scrollbar {
-  background: @ScrollerElement;
-  cursor: pointer;
-}
-
-.scrollarea .scrollbar-container.vertical {
-  width: 16px;
-}
-
-.scrollarea .scrollbar-container.vertical .scrollbar {
-  width: 16px;
-  margin: 0;
-  min-height: 20px !important;
-}
-
-.scrollarea .scrollbar-container.horizontal {
-  height: 16px;
-}
-
-.scrollarea .scrollbar-container.horizontal .scrollbar {
-  height: 16px;
-  margin: 0;
-  min-width: 20px !important;
-}
-
-.stylizer-overlay-box {
-  pointer-events: none;
-  position: fixed;
-  z-index: 0;
-  top: 0;
-  left: 0;
-  background: @OverlayMarginBackground;
-  opacity: 0.4;
-}
-
-.stylizer-overlay-margin {
-  margin: 0;
-}
-
-.stylizer-overlay-padding {
-  background: @OverlayPaddingBackground;
-  padding: 0;
-}
-
-.stylizer-overlay-content {
-  background: @OverlayContentBackground;
-  width: 0;
-  height: 0;
-}
-
-.stylizer-selector-empty {
-  font-size: 14px;
-  text-align: center;
-  display: flex;
-  align-self: center;
-  justify-content: center;
-  flex-grow: 1;
-}
-
-.stylizer-selector-badges {
-  font-size: 12px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.stylizer-selector-badge {
-  display: flex;
-  flex-direction: row;
-  margin: 5px 0;
-  cursor: pointer;
-  align-items: center;
-}
-
-.stylizer-selector-badges-text {
-  background: @BadgesBackground;
-  color: @BadgesText;
-  padding: 4px 8px;
-  border-radius: 4px;
-  max-width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 12px;
-}
-
-.stylizer-selector-badge.active .stylizer-selector-badges-text {
-  background: @BadgesActiveBackground;
-  color: @BadgesActiveText;
-}
-
-.stylizer-selector-badges-separator {
-  margin: 0 5px;
-}
-
-.stylizer-inspector .chrome-picker svg {
-  background:  @TabsText !important
-}
-
-.stylizer-inspector .chrome-picker span {
-  color: @TabsText !important;
-}
-
-.stylizer-inspector .chrome-picker {
-  background: lighten(@TabsBackground, 3%) !important;
-  color: @TabsText;
-  border: 1px solid @FormElementBorder;
-  box-shadow: none !important;
-}
-
-.stylizer-inspector .chrome-picker input {
-  background: @FormElementBackground;
-  border: 1px solid @FormElementBorder !important;
-  color: @FormElementText !important;
-  box-shadow: none !important;
-  font-size: 13px !important;
-  height: auto !important;
+
+  /**
+    Inspector Mode
+    **/
+  &.minimize {
+    height: 34px;
+  }
+
+  &.minimize .stylizer-tabs-wrapper,
+  &.minimize .stylizer-dom-panel {
+    display: none;
+  }
+
+  /**
+    Form Items
+    **/
+  .stylizer-font-element-dropdown-item,
+  .stylizer-font-element-dropdown,
+  .chrome-picker input,
+  input[role="combobox"],
+  input[type="text"],
+  input[type="url"],
+  input[type="number"],
+  input[type="tel"],
+  select,
+  textarea {
+    background: @FormElementBackground;
+    border: 1px solid @FormElementBorder;
+    color: @FormElementText;
+    padding: 0 7px;
+    line-height: 29px;
+    min-height: 0;
+    height: auto;
+    font-size: 13px;
+    border-radius: 0;
+    margin: 0;
+    width: 100%;
+  }
+
+  .chrome-picker input,
+  input[role="combobox"],
+  input[type="text"],
+  input[type="url"],
+  input[type="number"],
+  input[type="tel"],
+  select {
+    height: 29px;
+  }
+
+  textarea {
+    padding: 6px 7px;
+  }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+    padding-top: 10px;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &::-ms-track {
+      width: 100%;
+      cursor: pointer;
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+    }
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      border: 1px solid @FormElementBorder;
+      height: 20px;
+      width: 10px;
+      background: @ColorBlue;
+      cursor: pointer;
+      margin-top: -7px;
+    }
+
+    &::-moz-range-thumb {
+      border: 1px solid @FormElementBorder;
+      height: 20px;
+      width: 10px;
+      background: @ColorBlue;
+      cursor: pointer;
+      margin-top: -7px;
+    }
+
+    &::-ms-thumb {
+      border: 1px solid @FormElementBorder;
+      height: 20px;
+      width: 10px;
+      background: @ColorBlue;
+      cursor: pointer;
+      margin-top: -7px;
+    }
+
+    &::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 8px;
+      cursor: pointer;
+      background: @FormElementBackground;
+      border: 1px solid @FormElementBorder;
+    }
+
+    &:focus::-webkit-slider-runnable-track {
+      background: @FormElementBackground;
+    }
+
+    &::-moz-range-track {
+      width: 100%;
+      height: 8px;
+      cursor: pointer;
+      background: @FormElementBackground;
+      border: 1px solid @FormElementBorder;
+    }
+
+    &::-ms-track {
+      width: 100%;
+      height: 8px;
+      cursor: pointer;
+      background: transparent;
+      border-color: transparent;
+      border-width: 16px 0;
+      color: transparent;
+    }
+
+    &::-ms-fill-lower {
+      background: @FormElementBackground;
+      border: 1px solid @FormElementBorder;
+    }
+
+    &:focus::-ms-fill-lower {
+      background: @FormElementBackground;
+    }
+
+    &::-ms-fill-upper {
+      background: @FormElementBackground;
+      border: 1px solid @FormElementBorder;
+    }
+
+    &:focus::-ms-fill-upper {
+      background: @FormElementBackground;
+    }
+  }
+
+  input[disabled] {
+    background: darken(@FormElementBackground, 5%);
+  }
+
+  .stylizer-font-element-autocomplete {
+    position: relative;
+
+    & > * {
+      display: block !important;
+    }
+
+    .stylizer-font-element-dropdown {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: auto;
+      max-height: 160px;
+      min-width: 160px;
+      overflow-y: auto;
+      cursor: pointer;
+      border: 1px solid @FormElementBorder !important;
+      overflow-x: hidden;
+
+      .stylizer-font-element-dropdown-item {
+        cursor: pointer;
+
+        &:hover {
+          color: darken(@FormElementActiveText, 10%) !important;
+        }
+      }
+    }
+  }
+
+  select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    &:focus {
+      outline: none;
+    }
+
+    & > option {
+      background-color: @FormElementBackground;
+      border: 1px solid @FormElementBorder;
+      cursor: pointer;
+
+      &:hover {
+        background-color: darken(@FormElementBackground, 5%);
+        color: @FormElementText;
+      }
+    }
+  }
+
+  label {
+    font-size: 12px;
+    margin-bottom: 3px;
+    font-weight: 300;
+    display: block;
+  }
+
+  /** Form Hacks **/
+  :focus {
+    outline: 0;
+  }
+
+  ::-ms-reveal,
+  ::-ms-clear,
+  ::-ms-expand {
+    display: none !important;
+  }
+
+  @media screen and (min-width: @ie9MediaMinWidthHack) {
+    & select {
+      background-image:none\9;
+    }
+  }
+
+  .stylizer-form-item {
+    margin-bottom: 5px;
+  }
+
+  .stylizer-form-header {
+    font-size: 12px;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    color: @FormElementText;
+    font-weight: 300;
+    border-bottom: 1px solid darken(@TabsActiveBackground, 5%);
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: space-between;
+
+    svg {
+      cursor: pointer;
+    }
+  }
+
+  .stylizer-form-label {
+    text-transform: capitalize;
+  }
+
+  .stylizer-form-group {
+    margin-bottom: 18px;
+  }
+
+  .stylizer-form-row {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    flex-wrap: nowrap;
+
+    & > * {
+      padding: 0 7px;
+
+      &:first-child {
+        padding-left: 0;
+      }
+
+      &:last-child {
+        padding-right: 0;
+      }
+
+    }
+  }
+
+  .stylizer-has-error {
+    input[role="combobox"],
+    .stylizer-form-input {
+      border-color: @ColorRed !important;
+    }
+  }
+
+  .stylizer-error-bag {
+    font-size: 13px;
+    padding: 3px;
+    color: @ColorRed;
+  }
+
+  .stylizer-label-inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .stylizer-form-input {
+      max-width: 120px;
+    }
+
+    .stylizer-form-label {
+      margin-right: 20px;
+      flex-grow: 1;
+    }
+
+    .stylizer-error-bag {
+      margin-left: 10px;
+    }
+
+  }
+
+  .stylizer-color-element {
+    display: flex;
+    flex-direction: row;
+
+    input[type="text"] {
+      border-left: none;
+    }
+
+    .stylizer-color-preview {
+      width: 30px;
+      min-width: 30px;
+      height: 29px;
+      background-color: @FormElementBackground;
+      border: 1px solid @FormElementBorder;
+      border-right: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      & > .stylizer-color-preview-content {
+        border-radius: 100%;
+        width: 10px;
+        height: 10px;
+      }
+    }
+
+    .stylizer-color-closer {
+      max-width: 39px;
+      height: 29px;
+      width: 39px;
+      background-color: @FormElementBackground;
+      border: 1px solid @FormElementBorder;
+      border-left: none;
+      margin-left: -1px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .stylizer-gradient-element {
+    margin-top: 30px;
+
+    .stylizer-gradient-canvas {
+      width: 100%;
+      height: 40px;
+      border: 1px solid @FormElementBorder;
+      background-color: @FormElementBackground;
+    }
+
+    .stylizer-gradient-handle-wrapper {
+      width: 100%;
+      height: 40px;
+      position: relative;
+      margin-top: -40px;
+      margin-bottom: 40px;
+      z-index: 1;
+    }
+
+    .stylizer-gradient-handle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 8px;
+      height: 40px;
+      background: @ColorBlue;
+      cursor: move;
+      z-index: 2;
+    }
+
+    .stylizer-gradient-handle-closer {
+      margin-top: -16px;
+      margin-left: -2px;
+      height: 14px;
+      width: 14px;
+      display: block;
+      cursor: pointer;
+    }
+
+    .stylizer-gradient-handle-color {
+      margin-top: 41px;
+      margin-left: -6px;
+      height: 20px;
+      width: 20px;
+      display: block;
+      cursor: pointer;
+      border: 1px solid @ColorBlue;
+      background-color: darken(@FormElementBackground, 20%);
+    }
+  }
+
+  .stylizer-selector-badges {
+    font-size: 12px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .stylizer-selector-badge {
+      display: flex;
+      flex-direction: row;
+      margin: 5px 0;
+      cursor: pointer;
+      align-items: center;
+
+      .stylizer-selector-badges-text {
+        background: @BadgesBackground;
+        color: @BadgesText;
+        padding: 4px 8px;
+        border-radius: 4px;
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 12px;
+      }
+
+      .active {
+        .stylizer-selector-badges-text {
+          background: @BadgesActiveBackground;
+          color: @BadgesActiveText;
+        }
+      }
+
+      .stylizer-selector-badges-separator {
+        margin: 0 5px;
+      }
+    }
+  }
+
+  .chrome-picker {
+    background: lighten(@TabsBackground, 3%) !important;
+    color: @TabsText;
+    border: 1px solid @FormElementBorder;
+    box-shadow: none !important;
+
+    svg {
+      background:  @TabsText !important
+    }
+
+    span {
+      color: @TabsText !important;
+    }
+
+    input {
+      background: @FormElementBackground;
+      border: 1px solid @FormElementBorder !important;
+      color: @FormElementText !important;
+      box-shadow: none !important;
+      font-size: 13px !important;
+      height: auto !important;
+    }
+  }
+
+  /**
+    Tabs
+    **/
+  .stylizer-tabs-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+
+    .stylizer-tabs {
+      background: @TabsBackground;
+      color: @TabsText;
+      max-width: 150px;
+      min-width: 150px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+
+      .stylizer-tab-element {
+        padding: 10px 15px;
+        font-size: 13px;
+        display: block;
+        cursor: pointer;
+        text-transform: capitalize;
+        flex-grow: 1;
+        border-bottom: 1px solid darken(@TabsActiveBackground, 5%);
+
+        &.active {
+          background: @TabsActiveBackground;
+          color: @TabsActiveText;
+        }
+      }
+    }
+
+    .stylizer-tabs-contents {
+      background: @TabsActiveBackground;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+
+      &.has-vertical-scrollbar {
+        padding-right: 15px;
+      }
+    }
+  }
+
+  /**
+    Scroll bar
+    **/
+  .scrollarea {
+    .scrollarea-content {
+      width: auto;
+      display: table;
+      min-width: 100%;
+    }
+
+    .scrollbar-container {
+      background: @ScrollerBackground;
+      opacity: 1 !important;
+
+      &:hover {
+        background: @ScrollerBackground;
+        opacity: 1 !important;
+      }
+
+      .scrollbar {
+        background: @ScrollerElement;
+        cursor: pointer;
+      }
+
+      &.vertical {
+        width: 16px;
+
+        .scrollbar {
+          width: 16px;
+          margin: 0;
+          min-height: 20px !important;
+        }
+      }
+
+      &.horizontal {
+        height: 16px;
+
+        .scrollbar {
+          height: 16px;
+          margin: 0;
+          min-width: 20px !important;
+        }
+      }
+    }
+  }
+
+  /**
+    Overlay Box for Inspector Tools
+    **/
+  .stylizer-overlay-box {
+    pointer-events: none;
+    position: fixed;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    background: @OverlayMarginBackground;
+    opacity: 0.4;
+
+    .stylizer-overlay-margin {
+      margin: 0;
+    }
+
+    .stylizer-overlay-padding {
+      background: @OverlayPaddingBackground;
+      padding: 0;
+    }
+
+    .stylizer-overlay-content {
+      background: @OverlayContentBackground;
+      width: 0;
+      height: 0;
+    }
+  }
+
+
+  /**
+    Main Panels Structures
+    Used in both iterator and editor
+    **/
+  .stylizer-panels {
+    width: 30%;
+    background: @InspectorBackground;
+    color: @InspectorText;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    z-index: 9999;
+
+    &.minimize {
+      max-width: 30px;
+    }
+
+    &.minimize > :not(.stylizer-header) {
+      display: none;
+    }
+
+    .stylizer-header {
+      padding: 8px 15px;
+      background: darken(@InspectorBackground, 7%);
+      font-size: 14px;
+      font-weight: 300;
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: row;
+      min-height: 35px;
+
+      .stylizer-header-text {
+        flex-grow: 1;
+      }
+
+      .stylizer-header-actions svg {
+        cursor: pointer;
+        opacity: 0.8;
+        margin: 0 5px;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+
+    .stylizer-content {
+      padding: 15px;
+      width: 100%;
+    }
+
+    .stylizer-content-flex {
+      display: flex;
+      flex-direction: row;
+
+      & > * {
+        padding: 15px;
+      }
+    }
+
+    .stylizer-selector-empty {
+      font-size: 14px;
+      text-align: center;
+      display: flex;
+      align-self: center;
+      justify-content: center;
+      flex-grow: 1;
+    }
+  }
+
+  /**
+    Iterator Panel
+    **/
+  .stylizer-dom-panel {
+    .stylizer-iterator {
+      flex-grow: 1;
+      overflow: hidden;
+      display: block;
+
+
+      [data-depth] {
+        margin-left: (10 * @InspectorElementMargin);
+      }
+
+      .data-depth-margin( @depth-margin, @max-depth ) when ( @max-depth >= 0 ) {
+        .data-depth-margin( @depth-margin, @max-depth - 1 );
+
+        [data-depth="@{max-depth}"] {
+          margin-left: (@max-depth * @depth-margin);
+        }
+      }
+
+      .data-depth-margin(@InspectorElementMargin, 10);
+
+      .stylizer-element {
+        background: @InspectorElementBackground;
+        color: @InspectorElementText;
+        padding: 6px 10px;
+        margin-bottom: 8px;
+        white-space: nowrap;
+        cursor: pointer;
+        width: fit-content;
+        font-size: 12px;
+        font-weight: 300;
+        border-left: 5px solid @InspectorElementBackground;
+        min-width: 100%;
+
+        &.overridden {
+          background: darken(@ColorBlue, 40%);
+          border-left: 3px solid darken(@ColorOrange, 10%) !important;
+        }
+
+        &.active {
+          background: @ColorGreen;
+          border-left: 3px solid @ColorGreen !important;
+        }
+
+        &.changed {
+          background: @ColorOrange;
+          border-left: 3px solid darken(@ColorBlue, 10%) !important;
+        }
+
+        &.parents {
+          &:not(.processed) {
+            border-left: 3px solid lighten(@InspectorElementBackground, 25%);
+          }
+
+          &.processed {
+            border-left: 3px solid lighten(@InspectorElementBackground, 8%);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+    Editor Panel
+    **/
+  .stylizer-editor-panel {
+    background: @EditorBackground;
+    color: @EditorText;
+    width: 70%;
+
+    .stylizer-header {
+      background: darken(@EditorBackground, 7%);
+    }
+
+    .stylizer-tab-content {
+      .stylizer-panel-left-space,
+      .stylizer-panel-right-space {
+        background: @EditorBackground;
+      }
+
+      .stylizer-panel-center-space {
+        display: flex;
+        flex-wrap: wrap;
+        flex-grow: 1;
+        padding: 15px 0;
+      }
+
+      .stylizer-form-item {
+        padding: 0;
+        flex-grow: 1;
+
+        &:not(:last-child):not(.stylizer-has-error) {
+          & select,
+          & input {
+            border-right-color: transparent;
+          }
+        }
+      }
+
+      .stylizer-form-group {
+        padding: 0 15px;
+        flex-grow: 1;
+      }
+
+      &.stylizer-tab-panel--border {
+        .stylizer-group--radius,
+        .stylizer-group--outline {
+          width: 50%;
+          min-width: 330px;
+        }
+
+        [class*="stylizer-group--border-"] {
+          width: 25%;
+          min-width: 260px;
+        }
+
+        [class*="stylizer-field--border-"] input {
+          min-width: 50px;
+        }
+
+        .stylizer-field--border-top-color,
+        .stylizer-field--border-left-color,
+        .stylizer-field--border-right-color,
+        .stylizer-field--border-bottom-color {
+          input {
+            min-width: 70px;
+          }
+        }
+
+        select {
+          min-width: 80px;
+        }
+      }
+
+      &.stylizer-tab-panel--spacing {
+        .stylizer-form-group {
+          width: 25%;
+          min-width: 260px;
+        }
+      }
+
+      &.stylizer-tab-panel--styles {
+        .stylizer-form-group {
+          width: 25%;
+          min-width: 320px;
+        }
+
+        .stylizer-group--background {
+          width: 50%;
+          min-width: 490px;
+        }
+
+        .stylizer-field--background-image {
+          input {
+            min-width: 100px;
+          }
+        }
+
+        .stylizer-field--background-size,
+        .stylizer-field--background-position,
+        .stylizer-field--opacity,
+        .stylizer-field--display {
+          input {
+            min-width: 60px;
+          }
+        }
+
+        .stylizer-field--background-color {
+          input {
+            min-width: 100px;
+          }
+        }
+
+        .stylizer-field--background-repeat,
+        .stylizer-field--visibility,
+        .stylizer-field--overflow {
+          select {
+            min-width: 100px;
+          }
+        }
+      }
+
+      &.stylizer-tab-panel--typography {
+        .stylizer-form-group {
+          width: 50%;
+          min-width: 350px;
+        }
+        .stylizer-group--font {
+          min-width: 590px;
+        }
+
+        .stylizer-field--font-family {
+          input {
+            min-width: 100px;
+            width: 100%;
+          }
+        }
+
+        .stylizer-field--font-size {
+          input {
+            min-width: 60px;
+          }
+        }
+
+        .stylizer-field--letter-spacing,
+        .stylizer-field--font-weight {
+          input {
+            min-width: 100px;
+          }
+        }
+
+        .stylizer-field--white-space,
+        .stylizer-field--vertical-align,
+        .stylizer-field--font-weight,
+        .stylizer-field--font-style,
+        .stylizer-field--font-variant {
+          select {
+            min-width: 100px;
+          }
+        }
+
+      }
+    }
+  }
 }
 
 
 /**
   Vertical Overrides
   **/
-body[stylizer-active="false"][stylizer-vertical="true"] {
-  padding-left: 380px;
-}
+body[stylizer-vertical="true"] {
 
-body[stylizer-active="true"][stylizer-vertical="true"] {
-  padding-left: 34px;
-}
+  [stylizer-active="false"] {
+    padding-left: 380px;
+  }
 
-[stylizer-vertical="true"] .stylizer-inspector {
-  top: 0;
-  bottom: 0;
-  width: 390px;
-  flex-direction: column;
-  height: 100%;
-}
+  [stylizer-active="true"] {
+    padding-left: 34px;
+  }
 
-[stylizer-vertical="true"] .stylizer-inspector.minimize {
-  height: 100%;
-  width: 34px;
-}
+  .stylizer-inspector {
+    top: 0;
+    bottom: 0;
+    width: 390px;
+    flex-direction: column;
+    height: 100%;
 
-[stylizer-vertical="true"] .stylizer-panels {
-  width: 100%;
-}
+    &.minimize {
+      height: 100%;
+      width: 34px;
+    }
 
-[stylizer-vertical="true"] .stylizer-dom-panel {
-  max-height: 40%;
-  height: 40%;
-  min-height: 40%;
-}
+    .stylizer-panels {
+      &.minimize {
+        max-width: none;
+        max-height: 35px;
 
-[stylizer-vertical="true"] .stylizer-panels.minimize {
-  max-width: none;
-  max-height: 35px;
-}
+        .stylizer-editor-panel {
+          .stylizer-header {
+            flex-direction: column-reverse;
+            flex-grow: 1;
+            padding: 8px;
 
-[stylizer-vertical="true"] .stylizer-editor-panel {
-  width: 100%;
-}
+            .stylizer-header-text {
+              transform: rotate(180deg);
+              writing-mode: vertical-rl;
+              text-align: right;
+              margin-top: 19px;
+              line-height: 14px;
+            }
 
-[stylizer-vertical="true"] .stylizer-inspector.minimize .stylizer-editor-panel .stylizer-header {
-  flex-direction: column-reverse;
-  flex-grow: 1;
-  padding: 8px;
-}
+          }
 
-[stylizer-vertical="true"] .stylizer-inspector.minimize .stylizer-editor-panel .stylizer-header-actions svg {
-  margin: 0 0 5px;
-}
+          .stylizer-header-actions {
+            svg {
+              margin: 0 0 5px;
+            }
 
-[stylizer-vertical="true"] .stylizer-inspector.minimize .stylizer-editor-panel .stylizer-header .stylizer-header-text {
-  transform: rotate(180deg);
-  writing-mode: vertical-rl;
-  text-align: right;
-  margin-top: 19px;
-  line-height: 14px;
-}
+          }
 
-[stylizer-vertical="true"] .stylizer-tabs-wrapper {
-  flex-direction: column;
-}
+          .stylizer-selector-empty {
+            flex-direction: column;
+          }
 
-[stylizer-vertical="true"] .stylizer-tabs {
-  flex-direction: row;
-  max-width: 100%;
-  min-width: 100%;
-  min-height: 35px;
-}
+          .stylizer-panel-left-space {
+            position: absolute;
+            top: 0;
+            left: 100%;
+            bottom: 0;
+          }
+        }
+      }
 
-[stylizer-vertical="true"] .stylizer-tab-element {
-  border-bottom: none;
-  padding: 10px 14px;
-  font-size: 10px;
-}
+      &.stylizer-dom-panel {
+        max-height: 40%;
+        height: 40%;
+        min-height: 40%;
+      }
 
-[stylizer-vertical="true"] .stylizer-selector-empty {
-  flex-direction: column;
-}
+      &.stylizer-editor-panel {
+        width: 100%;
+      }
+    }
 
-[stylizer-vertical="true"] .stylizer-label-inline {
-  align-items: flex-start;
-  max-width: 25%;
-  flex-wrap: wrap;
-  flex-direction: column;
-  flex-grow: 1;
-  padding: 0 7px;
-  margin-bottom: 10px;
-}
+    .stylizer-label-inline {
+      align-items: flex-start;
+      max-width: 25%;
+      flex-wrap: wrap;
+      flex-direction: column;
+      flex-grow: 1;
+      padding: 0 7px;
+      margin-bottom: 10px;
+    }
 
-[stylizer-vertical="true"] .stylizer-form-row {
-  flex-wrap: wrap;
-  margin: 0 -7px;
-}
+    .stylizer-form-row {
+      flex-wrap: wrap;
+      margin: 0 -7px;
+    }
 
-[stylizer-vertical="true"] .stylizer-tab-content {
-  flex-direction: column;
-  position: relative;
-}
+    .stylizer-form-item {
+      margin-bottom: 20px;
+      display: block;
+      width: 100%;
 
-[stylizer-vertical="true"] .stylizer-panel-center-space .stylizer-form-row {
-  margin: 0;
-}
+      & > * {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
 
-[stylizer-vertical="true"] .stylizer-panel-center-space .stylizer-form-group {
-  width: 100%;
-  min-width: 1px;
-}
+    input[type="text"],
+    select {
+      width: 100%;
+    }
 
-[stylizer-vertical="true"] .stylizer-form-item {
-  margin-bottom: 20px;
-  display: block;
-  width: 100%;
-}
+    .stylizer-color-element {
+      input[type="text"] {
+        max-width: 100%;
+        flex-grow: 1;
+      }
+    }
 
-[stylizer-vertical="true"] .stylizer-form-item > * {
-  width: 100%;
-  max-width: 100%;
-}
+    .stylizer-tabs-wrapper {
+      flex-direction: column;
 
-[stylizer-vertical="true"] .stylizer-panel-left-space {
-  position: absolute;
-  top: 0;
-  left: 100%;
-  bottom: 0;
-}
+      .stylizer-tabs {
+        flex-direction: row;
+        max-width: 100%;
+        min-width: 100%;
+        min-height: 35px;
 
-[stylizer-vertical="true"] .stylizer-color-element input[type="text"] {
-  max-width: 100%;
-  flex-grow: 1;
-}
+        .stylizer-tab-element {
+          border-bottom: none;
+          padding: 10px 14px;
+          font-size: 10px;
+        }
 
-[stylizer-vertical="true"] input[type="text"],
-[stylizer-vertical="true"] select {
-  width: 100%;
+      }
+
+      .stylizer-tab-content {
+        flex-direction: column;
+        position: relative;
+
+        .stylizer-panel-center-space {
+          .stylizer-form-row {
+            margin: 0;
+          }
+
+          .stylizer-form-group {
+            width: 100%;
+            min-width: 1px;
+          }
+        }
+      }
+    }
+  }
 }
 
 
 /**
   Horizontal Overrides
   **/
-body[stylizer-active="false"][stylizer-vertical="false"] {
-  padding-bottom: 323px;
-}
+body[stylizer-vertical="false"] {
 
-body[stylizer-active="true"][stylizer-vertical="false"] {
-  padding-bottom: 34px;
-}
+  [stylizer-active="false"] {
+    padding-bottom: 323px;
 
-[stylizer-vertical="false"] .stylizer-panels.minimize .stylizer-header {
-  flex-direction: column-reverse;
-  flex-grow: 1;
-  padding: 8px;
-}
+    .stylizer-panels {
+      &.minimize {
+        .stylizer-header {
+          flex-direction: column-reverse;
+          flex-grow: 1;
+          padding: 8px;
 
+          .stylizer-header-actions {
+            svg {
+              margin: 0 0 5px;
+            }
+          }
 
-[stylizer-vertical="false"] .stylizer-panels.minimize .stylizer-header-actions svg {
-  margin: 0 0 5px;
-}
+          .stylizer-header-text {
+            transform: rotate(180deg);
+            writing-mode: vertical-rl;
+            text-align: right;
+            margin-top: 19px;
+            line-height: 14px;
+          }
+        }
+      }
+    }
+  }
 
-[stylizer-vertical="false"] .stylizer-panels.minimize .stylizer-header .stylizer-header-text {
-  transform: rotate(180deg);
-  writing-mode: vertical-rl;
-  text-align: right;
-  margin-top: 19px;
-  line-height: 14px;
-}
-
-/**
-  Form Hacks
-  **/
-.stylizer-inspector :focus {
-  outline: 0;
-}
-
-/**
-  IE & Edge Hacks
-  **/
-@ie9MediaMinWidthHack: "0\0";
-
-.stylizer-inspector ::-ms-reveal,
-.stylizer-inspector ::-ms-clear,
-.stylizer-inspector ::-ms-expand {
-  display: none !important;
-}
-
-@media screen and (min-width: @ie9MediaMinWidthHack) {
-  .stylizer-inspector select {
-    background-image:none\9;
+  [stylizer-active="true"] {
+    padding-bottom: 34px;
   }
 }
-
-/**
-  Inject Responsive stuff here
-  @todo create side by side vertical mode if user has wide monitor
-  **/

@@ -38,6 +38,10 @@ export default class ColorPicker extends React.Component {
         this.reset();
     }
 
+    componentWillUnmount() {
+        this.props.root.mutateSpace('left', null, null, true);
+    }
+
     show = () => {
         const { props, state, config, change, isOpen } = this;
         if (!isOpen()) {
