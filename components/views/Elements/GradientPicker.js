@@ -25,10 +25,11 @@ export default class GradientPicker extends React.Component {
         ]
     };
     config = {};
+    prefix = '';
 
     handleElement = null;
     pickerElement = null;
-    canvasElement = null;
+    previewElement = null;
 
     constructor(props) {
         super(props);
@@ -43,11 +44,25 @@ export default class GradientPicker extends React.Component {
         if ('root' in props) {
             this.state.root = props.root;
         }
+
+        this.detectPrefix();
     };
 
     componentDidMount() {
         this.createGradient();
-    }
+    };
+
+    detectPrefix() {
+        const dom = document.createElement('div');
+        ['-o-', '-ms-', '-moz-', '-webkit-', ''].map((prefix) => {
+            dom.style.background = prefix + 'linear-gradient(#000000, #ffffff)';
+            if (dom.style.background) {
+                this.prefix = prefix;
+            }
+        });
+
+        return this.prefix;
+    };
 
     onChange = (e) => {
 
@@ -85,8 +100,14 @@ export default class GradientPicker extends React.Component {
         const { state, handleElement, createGradient } = this;
         const { node } = state;
         const { nativeEvent } = e;
-        const oldVal = node ? get(state, 'stops.' + node.getAttribute('target') + '.position', false) : false;
-        const percent = handleElement && nativeEvent ? Math.min(100, Math.max(0, Math.round((100 / handleElement.clientWidth)  * nativeEvent.offsetX))) : false;
+
+        const oldVal = node
+                ? get(state, 'stops.' + node.getAttribute('target') + '.position', false)
+                : false;
+
+        const percent = handleElement && nativeEvent
+                ? Math.min(100, Math.max(0, Math.round((100 / handleElement.clientWidth)  * nativeEvent.offsetX)))
+                : false;
 
         if (!node 
             || !handleElement 
@@ -127,12 +148,14 @@ export default class GradientPicker extends React.Component {
     };
 
     addStop = (e) => {
+
         e.preventDefault();
         e.stopPropagation();
 
         const { state, handleElement } = this;
         const { nativeEvent } = e;
         const { originalTarget, layerX } = nativeEvent;
+        let newStop = false;
 
         if (!originalTarget
             || !nativeEvent
@@ -147,8 +170,6 @@ export default class GradientPicker extends React.Component {
         });
 
         state.stops = orderBy(state.stops, 'position', 'asc');
-
-        let newStop = false;
 
         forEach(state.stops, (stop, delta) => {
             if (newStop !== false) {
@@ -215,34 +236,51 @@ export default class GradientPicker extends React.Component {
     };
 
     createGradient = () => {
-        const { canvasElement, state } = this;
+        const { previewElement, state, linearGradientCSS, radialGradientCSS, prefix } = this;
 
-        if (!canvasElement) {
+        if (!previewElement) {
             return false;
         }
 
-        const ctx = canvasElement.getContext('2d');
-        const width = canvasElement.width;
-        const height = canvasElement.height;
-        let gradient = false;
+        previewElement.removeAttribute('style');
 
         switch (state.mode) {
             case 'linear' :
-                gradient = ctx.createLinearGradient(0, 0, width, 0);
+                previewElement.setAttribute('style', 'background-image:' + prefix + linearGradientCSS());
                 break;
 
             case 'radial' :
-                gradient = ctx.createRadialGradient(0, 0, 0, width, 0, state.rotate);
+                previewElement.setAttribute('style',  'background-image:' + prefix + radialGradientCSS());
                 break;
         }
+    };
 
-        if (gradient) {
-            state.stops.map(function(data) {
-                gradient.addColorStop(data.position / 100, data.color);
-            });
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, width, height);
-        }
+    linearGradientCSS = (repeating = false) => {
+        const { state } = this;
+        const rules = [ state.rotate + 'deg' ];
+
+        state.stops.map((data) => {
+            rules.push(data.color + ' ' + data.position + '%');
+        });
+
+        return (repeating ? 'repeating-linear-gradient' : 'linear-gradient') + '(' + rules.join(', ') + ');';
+    };
+
+    radialGradientCSS = (repeating = false) => {
+        const { state } = this;
+        const context = [];
+        const rules = [];
+
+        state.shape && context.push(state.shape);
+        state.size && context.push(state.size);
+        state.offset && context.push ('at ' + state.offset);
+
+        context.length && rules.push(context.join(' '));
+        state.stops.map((data) => {
+            rules.push(data.color + ' ' + data.position + '%');
+        });
+
+        return (repeating ? 'repeating-radial-gradient' : 'radial-gradient') + '(' + rules.join(', ') + ');';
     };
 
     render() {
@@ -251,9 +289,9 @@ export default class GradientPicker extends React.Component {
             className: props.className + ' stylizer-gradient-element'
         });
 
-        const canvasProps = get(config, 'ElementGradientPickerCanvasProps', {
+        const previewProps = get(config, 'ElementGradientPickerCanvasProps', {
             className: 'stylizer-gradient-canvas',
-            ref: (element) => { this.canvasElement = element }
+            ref: (element) => { this.previewElement = element }
         });
 
         const rowProps = get(config, 'ElementGradientPickerModeLabelProps', {
@@ -286,7 +324,7 @@ export default class GradientPicker extends React.Component {
         const rotateElementProps = get(config, 'ElementGradientPickerRotateProps', {
             type: 'range',
             min: 0,
-            max: 360,
+            max: 180,
             step: 1,
             className: 'stylizer-form-input',
             name: 'gradient-rotator',
@@ -343,7 +381,7 @@ export default class GradientPicker extends React.Component {
 
         return (
             <div { ...mainProps } >
-                <canvas { ...canvasProps } />
+                <div { ...previewProps } />
                 <div { ...handleElementProps }>
                     { Stops }
                 </div>
@@ -355,10 +393,11 @@ export default class GradientPicker extends React.Component {
                             <option key="radial-gradient" value="radial">Radial</option>
                         </select>
                     </div>
-                    <div { ...rotateWrapperProps }>
-                        <label { ...rotateLabelProps }>Rotate</label>
-                        <input { ...rotateElementProps } />
-                    </div>
+                    { state.mode === 'linear'
+                        && <div { ...rotateWrapperProps }>
+                            <label { ...rotateLabelProps }>Angle ({ state.rotate }deg)</label>
+                            <input { ...rotateElementProps } />
+                        </div> }
                 </div>
             </div>
         )
