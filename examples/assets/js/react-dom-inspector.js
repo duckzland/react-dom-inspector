@@ -21248,13 +21248,26 @@ var Panel = function (_React$Component) {
             );
         };
 
-        _this.onToggleLock = function (element) {};
+        _this.generateToggle = function (element) {
+            var onToggleLock = _this.onToggleLock;
+
+            _this.toggleOpenIcon = _react2['default'].createElement(_unlock2['default'], { onClick: function onClick() {
+                    return onToggleLock(element);
+                } });
+            _this.toggleCloseIcon = _react2['default'].createElement(_lock2['default'], { onClick: function onClick() {
+                    return onToggleLock(element);
+                } });
+        };
 
         _this.generateGroup = function (element) {
+
+            _this.generateToggle(element);
+
             var state = _this.state,
                 config = _this.config,
                 generateElement = _this.generateElement,
-                onToggleLock = _this.onToggleLock;
+                toggleOpenIcon = _this.toggleOpenIcon,
+                toggleCloseIcon = _this.toggleCloseIcon;
 
             var elementProps = (0, _lodash.get)(config, (0, _lodash.camelCase)('PanelGroupElementProps ' + element.key), {
                 key: 'stylizer-group-' + element.title + '-' + state.node.uuid,
@@ -21276,12 +21289,8 @@ var Panel = function (_React$Component) {
                     'h3',
                     headingProps,
                     element.title && element.title,
-                    element.toggle && element.toggle === 'on' && _react2['default'].createElement(_unlock2['default'], { onClick: function onClick() {
-                            return onToggleLock(element);
-                        } }),
-                    element.toggle && element.toggle === 'off' && _react2['default'].createElement(_lock2['default'], { onClick: function onClick() {
-                            return onToggleLock(element);
-                        } })
+                    element.toggle && element.toggle === 'on' && toggleOpenIcon,
+                    element.toggle && element.toggle === 'off' && toggleCloseIcon
                 ),
                 _react2['default'].createElement(
                     'div',
@@ -21292,6 +21301,8 @@ var Panel = function (_React$Component) {
                 )
             );
         };
+
+        _this.onToggleLock = function (element) {};
 
         _this.onSubmit = function (e) {
             var hasError = _this.hasError;
@@ -68999,6 +69010,10 @@ var _closeCircled = __webpack_require__(293);
 
 var _closeCircled2 = _interopRequireDefault(_closeCircled);
 
+var _GradientParser = __webpack_require__(768);
+
+var _GradientParser2 = _interopRequireDefault(_GradientParser);
+
 var _lodash = __webpack_require__(15);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -69018,8 +69033,13 @@ var GradientPicker = function (_React$Component) {
 
         _initialiseProps.call(_this);
 
+        var dom = document.createElement('div');
+
         if ('value' in props) {
-            _this.state.value = props.value;
+            var Parsed = props.value ? new _GradientParser2['default'](props.value) : false;
+            Parsed && (0, _lodash.forEach)(Parsed, function (val, key) {
+                _this.state[key] = val;
+            });
         }
 
         if ('config' in props) {
@@ -69030,45 +69050,36 @@ var GradientPicker = function (_React$Component) {
             _this.state.root = props.root;
         }
 
-        _this.detectPrefix();
+        ['-o-', '-ms-', '-moz-', '-webkit-', ''].map(function (prefix) {
+            dom.style.background = prefix + 'linear-gradient(#000000, #ffffff)';
+            if (dom.style.background) {
+                _this.prefix = prefix;
+            }
+        });
         return _this;
     }
 
     (0, _createClass3['default'])(GradientPicker, [{
         key: 'componentDidMount',
         value: function componentDidMount() {
-            this.createGradient();
-        }
-    }, {
-        key: 'detectPrefix',
-        value: function detectPrefix() {
-            var _this2 = this;
-
-            var dom = document.createElement('div');
-            ['-o-', '-ms-', '-moz-', '-webkit-', ''].map(function (prefix) {
-                dom.style.background = prefix + 'linear-gradient(#000000, #ffffff)';
-                if (dom.style.background) {
-                    _this2.prefix = prefix;
-                }
-            });
-
-            return this.prefix;
+            this.onSubmit();
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this3 = this;
+            var _this2 = this;
 
             var props = this.props,
                 state = this.state,
                 config = this.config,
-                _onChange = this.onChange,
-                dragStart = this.dragStart,
-                dragExit = this.dragExit,
-                dragMove = this.dragMove,
-                togglePicker = this.togglePicker,
-                addStop = this.addStop,
-                removeStop = this.removeStop;
+                onChange = this.onChange,
+                onKeypress = this.onKeypress,
+                onDragStart = this.onDragStart,
+                onDragExit = this.onDragExit,
+                onDragMove = this.onDragMove,
+                onTogglePicker = this.onTogglePicker,
+                onAddStop = this.onAddStop,
+                onRemoveStop = this.onRemoveStop;
 
             var mainProps = (0, _lodash.get)(config, 'ElementGradientPickerMainProps', {
                 className: props.className + ' stylizer-gradient-element'
@@ -69077,7 +69088,7 @@ var GradientPicker = function (_React$Component) {
             var previewProps = (0, _lodash.get)(config, 'ElementGradientPickerCanvasProps', {
                 className: 'stylizer-gradient-canvas',
                 ref: function ref(element) {
-                    _this3.previewElement = element;
+                    _this2.previewElement = element;
                 }
             });
 
@@ -69085,53 +69096,69 @@ var GradientPicker = function (_React$Component) {
                 className: 'stylizer-form-row'
             });
 
-            var modeLabelProps = (0, _lodash.get)(config, 'ElementGradientPickerModeLabelProps', {
+            var labelProps = (0, _lodash.get)(config, 'ElementGradientPickerLabelProps', {
                 className: 'stylizer-form-label'
             });
 
-            var modeWrapperProps = (0, _lodash.get)(config, 'ElementGradientPickerModeWrapperProps', {
-                className: 'stylizer-form-input'
+            var wrapperProps = (0, _lodash.get)(config, 'ElementGradientPickerWrapperProps', {
+                className: 'stylizer-form-item'
+            });
+
+            var repeatElementProps = (0, _lodash.get)(config, 'ElementGradientPickerRepeatElementProps', {
+                className: 'stylizer-form-input',
+                value: state.repeat,
+                name: 'repeat',
+                onChange: onChange
             });
 
             var modeElementProps = (0, _lodash.get)(config, 'ElementGradientPickerModeElementProps', {
                 className: 'stylizer-form-input',
                 value: state.mode,
-                name: 'gradient-mode',
-                onChange: function onChange(e) {
-                    _onChange(e);
-                }
-            });
-
-            var rotateWrapperProps = (0, _lodash.get)(config, 'ElementGradientPickerRotateWrapperProps', {
-                className: 'stylizer-form-input'
-            });
-
-            var rotateLabelProps = (0, _lodash.get)(config, 'ElementGradientPickerRotateLabelProps', {
-                className: 'stylizer-form-label'
+                name: 'mode',
+                onChange: onChange
             });
 
             var rotateElementProps = (0, _lodash.get)(config, 'ElementGradientPickerRotateProps', {
-                type: 'range',
-                min: 0,
-                max: 180,
-                step: 1,
+                type: 'text',
                 className: 'stylizer-form-input',
-                name: 'gradient-rotator',
+                name: 'rotate',
                 value: state.rotate,
-                onChange: _onChange
+                onKeyDown: onKeypress,
+                onChange: onChange
+            });
+
+            var shapeElementProps = (0, _lodash.get)(config, 'ElementGradientPickerShapeProps', {
+                className: 'stylizer-form-input',
+                name: 'shape',
+                value: state.shape,
+                onChange: onChange
+            });
+
+            var sizeElementProps = (0, _lodash.get)(config, 'ElementGradientPickerSizeProps', {
+                type: 'text',
+                className: 'stylizer-form-input',
+                name: 'size',
+                value: state.size,
+                onChange: onChange
+            });
+
+            var positionElementProps = (0, _lodash.get)(config, 'ElementGradientPickerOffsetProps', {
+                type: 'text',
+                className: 'stylizer-form-input',
+                name: 'position',
+                value: state.position,
+                onChange: onChange
             });
 
             var handleElementProps = (0, _lodash.get)(config, 'ElementGradientPickerHandleWrapperProps', {
                 className: 'stylizer-gradient-handle-wrapper',
                 ref: function ref(element) {
-                    _this3.handleElement = element;
+                    _this2.handleElement = element;
                 },
-                onMouseMove: dragMove,
-                onMouseUp: dragExit,
-                onMouseLeave: dragExit,
-                onClick: function onClick(e) {
-                    addStop(e);
-                }
+                onMouseMove: onDragMove,
+                onMouseUp: onDragExit,
+                onMouseLeave: onDragExit,
+                onClick: onAddStop
             });
 
             var Stops = [];
@@ -69142,17 +69169,16 @@ var GradientPicker = function (_React$Component) {
                     name: 'gradient-stops-drag',
                     key: 'gradient-stops-' + delta,
                     style: { left: stop.position + '%' },
-                    onMouseDown: dragStart,
-                    onMouseUp: dragExit
+                    onMouseDown: onDragStart,
+                    onMouseUp: onDragExit
                 });
 
                 var handleCloserProps = (0, _lodash.get)(config, 'ElementGradientPickerHandleCloserProps', {
                     key: 'gradient-stops-closer',
                     name: 'gradient-stops-delete',
                     className: 'stylizer-gradient-handle-closer',
-                    target: delta,
                     onClick: function onClick() {
-                        removeStop(delta);
+                        onRemoveStop(delta);
                     }
                 });
 
@@ -69160,10 +69186,9 @@ var GradientPicker = function (_React$Component) {
                     key: 'gradient-stops-color',
                     name: 'gradient-stops-color',
                     className: 'stylizer-gradient-handle-color',
-                    target: delta,
                     style: { backgroundColor: stop.color },
                     onClick: function onClick() {
-                        return togglePicker(delta);
+                        onTogglePicker(delta);
                     }
                 });
 
@@ -69189,10 +69214,33 @@ var GradientPicker = function (_React$Component) {
                     rowProps,
                     _react2['default'].createElement(
                         'div',
-                        modeWrapperProps,
+                        wrapperProps,
                         _react2['default'].createElement(
                             'label',
-                            modeLabelProps,
+                            labelProps,
+                            'Repeat'
+                        ),
+                        _react2['default'].createElement(
+                            'select',
+                            repeatElementProps,
+                            _react2['default'].createElement(
+                                'option',
+                                { key: 'gradient-norepeat', value: 'none' },
+                                'No Repeat'
+                            ),
+                            _react2['default'].createElement(
+                                'option',
+                                { key: 'gradient-repeat', value: 'repeat' },
+                                'Repeat'
+                            )
+                        )
+                    ),
+                    _react2['default'].createElement(
+                        'div',
+                        wrapperProps,
+                        _react2['default'].createElement(
+                            'label',
+                            labelProps,
                             'Mode'
                         ),
                         _react2['default'].createElement(
@@ -69200,27 +69248,93 @@ var GradientPicker = function (_React$Component) {
                             modeElementProps,
                             _react2['default'].createElement(
                                 'option',
-                                { key: 'linear-gradient', value: 'linear' },
+                                { key: 'gradient-linear', value: 'linear' },
                                 'Linear'
                             ),
                             _react2['default'].createElement(
                                 'option',
-                                { key: 'radial-gradient', value: 'radial' },
+                                { key: 'gradient-radial', value: 'radial' },
                                 'Radial'
                             )
                         )
                     ),
                     state.mode === 'linear' && _react2['default'].createElement(
                         'div',
-                        rotateWrapperProps,
+                        wrapperProps,
                         _react2['default'].createElement(
                             'label',
-                            rotateLabelProps,
-                            'Angle (',
-                            state.rotate,
-                            'deg)'
+                            labelProps,
+                            'Angle'
                         ),
                         _react2['default'].createElement('input', rotateElementProps)
+                    ),
+                    state.mode === 'radial' && _react2['default'].createElement(
+                        'div',
+                        wrapperProps,
+                        _react2['default'].createElement(
+                            'label',
+                            labelProps,
+                            'Shape'
+                        ),
+                        _react2['default'].createElement(
+                            'select',
+                            shapeElementProps,
+                            _react2['default'].createElement(
+                                'option',
+                                { key: 'radial-circle', value: 'circle' },
+                                'Circle'
+                            ),
+                            _react2['default'].createElement(
+                                'option',
+                                { key: 'radial-eclipse', value: 'ellipse' },
+                                'Ellipse'
+                            ),
+                            _react2['default'].createElement(
+                                'option',
+                                { key: 'radial-closest-side', value: 'closest-side' },
+                                'Closest Side'
+                            ),
+                            _react2['default'].createElement(
+                                'option',
+                                { key: 'radial-closest-corner', value: 'closest-corner' },
+                                'Closest Corner'
+                            ),
+                            _react2['default'].createElement(
+                                'option',
+                                { key: 'radial-farthest-side', value: 'farthest-side' },
+                                'Farthest Side'
+                            ),
+                            _react2['default'].createElement(
+                                'option',
+                                { key: 'radial-farthest-corner', value: 'farthest-corner' },
+                                'Farthest Corner'
+                            ),
+                            _react2['default'].createElement(
+                                'option',
+                                { key: 'radial-custom-size', value: 'custom-size' },
+                                'Custom Size'
+                            )
+                        )
+                    ),
+                    state.mode === 'radial' && state.shape === 'custom-size' && _react2['default'].createElement(
+                        'div',
+                        wrapperProps,
+                        _react2['default'].createElement(
+                            'label',
+                            labelProps,
+                            'Custom Size'
+                        ),
+                        _react2['default'].createElement('input', sizeElementProps)
+                    ),
+                    state.mode === 'radial' && _react2['default'].createElement(
+                        'div',
+                        wrapperProps,
+                        _react2['default'].createElement(
+                            'label',
+                            labelProps,
+                            'Position'
+                        ),
+                        _react2['default'].createElement('input', positionElementProps)
                     )
                 )
             );
@@ -69230,12 +69344,16 @@ var GradientPicker = function (_React$Component) {
 }(_react2['default'].Component);
 
 var _initialiseProps = function _initialiseProps() {
-    var _this4 = this;
+    var _this3 = this;
 
     this.state = {
-        activeColorPicker: false,
+        activePicker: false,
         mode: 'linear',
         rotate: 0,
+        shape: 'circle',
+        position: '',
+        size: '',
+        repeat: 'none',
         stops: [{
             position: 0,
             color: '#000000'
@@ -69251,96 +69369,90 @@ var _initialiseProps = function _initialiseProps() {
     this.previewElement = null;
 
     this.onChange = function (e) {
+        var state = _this3.state,
+            onSubmit = _this3.onSubmit;
 
-        switch (e.target.name) {
-            case 'gradient-mode':
-                _this4.state.mode = e.target.value;
-                _this4.createGradient();
-                break;
-
-            case 'gradient-rotator':
-                _this4.state.rotate = e.target.value;
-                _this4.createGradient();
-                break;
-
-            case 'gradient-stops-color':
-                break;
-
-            case 'gradient-stops-delete':
-                break;
-        }
-
-        _this4.setState(_this4.state);
+        state[e.target.name] = e.target.value;
+        onSubmit();
+        _this3.setState(state);
     };
 
-    this.dragStart = function (e) {
+    this.onDragStart = function (e) {
+        var state = _this3.state,
+            onDragExit = _this3.onDragExit;
+
         e.preventDefault();
-        _this4.dragExit();
-        _this4.state.node = e.target;
+        onDragExit();
+        state.node = e.target;
     };
 
-    this.dragMove = function (e) {
+    this.onDragMove = function (e) {
 
         e.preventDefault();
 
-        var state = _this4.state,
-            handleElement = _this4.handleElement,
-            createGradient = _this4.createGradient;
+        var state = _this3.state,
+            handleElement = _this3.handleElement,
+            onSubmit = _this3.onSubmit;
         var node = state.node;
         var nativeEvent = e.nativeEvent;
 
 
         var oldVal = node ? (0, _lodash.get)(state, 'stops.' + node.getAttribute('target') + '.position', false) : false;
 
-        var percent = handleElement && nativeEvent ? Math.min(100, Math.max(0, Math.round(100 / handleElement.clientWidth * nativeEvent.offsetX))) : false;
+        var percent = handleElement && nativeEvent && handleElement.clientWidth && nativeEvent.offsetX ? Math.min(100, Math.max(0, Math.round(100 / handleElement.clientWidth * nativeEvent.offsetX))) : false;
 
         if (!node || !handleElement || !nativeEvent || nativeEvent.offsetX < 0 || nativeEvent.target === node || oldVal === percent) {
             return false;
         }
 
         (0, _lodash.set)(state, 'stops.' + node.getAttribute('target') + '.position', percent);
-        createGradient();
-        _this4.setState(state);
+        onSubmit();
+
+        _this3.setState(state);
     };
 
-    this.dragExit = function () {
-        var state = _this4.state;
+    this.onDragExit = function (e) {
+        var state = _this3.state;
 
         state.node = false;
         state.stops = (0, _lodash.orderBy)(state.stops, 'position', 'asc');
     };
 
-    this.getStop = function (delta) {
-        return (0, _lodash.get)(_this4, 'state.stops.' + delta, false);
-    };
-
-    this.setStop = function (delta, data) {
-        return (0, _lodash.set)(_this4, 'state.stops.' + delta, data);
-    };
-
-    this.removeStop = function (delta) {
-        var getStop = _this4.getStop,
-            state = _this4.state,
-            createGradient = _this4.createGradient;
+    this.onKeypress = function (e) {
+        var maybeNumber = e.target.value.match(/-?\d*(\d+)/g);
+        var onChange = _this3.onChange;
 
 
-        if (getStop(delta)) {
-            state.stops.splice(delta, 1);
-            _this4.setState(state);
-            createGradient();
+        if (maybeNumber && maybeNumber[0]) {
+
+            var oldValue = maybeNumber[0];
+            var newNumber = parseFloat(maybeNumber[0]);
+            switch (e.key) {
+                case 'ArrowUp':
+                    newNumber++;
+                    break;
+                case 'ArrowDown':
+                    newNumber--;
+                    break;
+            }
+
+            e.target.value = e.target.value.replace(oldValue, newNumber);
+            onChange(e);
         }
     };
 
-    this.addStop = function (e) {
+    this.onAddStop = function (e) {
 
         e.preventDefault();
         e.stopPropagation();
 
-        var state = _this4.state,
-            handleElement = _this4.handleElement;
+        var state = _this3.state,
+            handleElement = _this3.handleElement,
+            onSubmit = _this3.onSubmit;
         var nativeEvent = e.nativeEvent;
         var originalTarget = nativeEvent.originalTarget,
             layerX = nativeEvent.layerX;
+
 
         var newStop = false;
 
@@ -69356,140 +69468,129 @@ var _initialiseProps = function _initialiseProps() {
         state.stops = (0, _lodash.orderBy)(state.stops, 'position', 'asc');
 
         (0, _lodash.forEach)(state.stops, function (stop, delta) {
-            if (newStop !== false) {
-                state.stops[newStop].color = stop.color;
-                return false;
-            }
             if (stop.color === 'needClosest') {
                 newStop = delta;
+                return false;
             }
         });
 
-        _this4.setState(state);
-    };
-
-    this.showPicker = function (delta) {
-        var props = _this4.props,
-            state = _this4.state,
-            config = _this4.config,
-            changePicker = _this4.changePicker,
-            getPicker = _this4.getPicker,
-            getStop = _this4.getStop;
-
-        var data = getStop(delta);
-
-        state.activeColorPicker = delta;
-
-        if (getPicker()) {
-            props.root.mutateSpace('left', null, null, true);
+        if (newStop !== false) {
+            if (state.stops[newStop + 1]) {
+                state.stops[newStop].color = state.stops[newStop + 1].color;
+            } else if (state.stops[newStop - 1]) {
+                state.stops[newStop].color = state.stops[newStop - 1].color;
+            } else {
+                state.stops[newStop].color = '#ffffff';
+            }
         }
 
-        var chromeProps = (0, _lodash.get)(config, 'ElementsGradientPickerChromeProps', {
-            ref: function ref(element) {
-                _this4.pickerElement = element;
-            },
-            color: data.color ? data.color : '',
-            onChange: changePicker
-        });
-
-        props.root.mutateSpace('left', _react2['default'].createElement(_reactColor.ChromePicker, chromeProps), props.uuid);
-        _this4.setState(state);
+        _this3.setState(state);
+        onSubmit();
     };
 
-    this.closePicker = function () {
-        _this4.props.root.mutateSpace('left', null, null, true);
-        _this4.setState({ activeColorPicker: false });
-    };
+    this.onSubmit = function () {
+        var previewElement = _this3.previewElement,
+            state = _this3.state,
+            prefix = _this3.prefix,
+            props = _this3.props;
 
-    this.getPicker = function () {
-        return _this4.pickerElement;
-    };
-
-    this.changePicker = function (color) {
-        var state = _this4.state,
-            convertPicker = _this4.convertPicker,
-            setStop = _this4.setStop,
-            getStop = _this4.getStop,
-            createGradient = _this4.createGradient;
-
-        var Stop = getStop(state.activeColorPicker);
-
-        Stop.color = convertPicker(color);
-        setStop(state.activeColorPicker, Stop);
-        createGradient();
-        _this4.setState(state);
-    };
-
-    this.togglePicker = function (delta) {
-        var getPicker = _this4.getPicker,
-            showPicker = _this4.showPicker,
-            closePicker = _this4.closePicker;
-
-        getPicker() && delta === _this4.state.activeColorPicker ? closePicker() : showPicker(delta);
-    };
-
-    this.convertPicker = function (color) {
-        if (color.rgb.a === 1 || color.rgb.a === 0) {
-            return color.hex;
-        }
-        return 'rgba(' + color.rgb.r + ', ' + color.rgb.g + ', ' + color.rgb.b + ', ' + color.rgb.a + ')';
-    };
-
-    this.createGradient = function () {
-        var previewElement = _this4.previewElement,
-            state = _this4.state,
-            linearGradientCSS = _this4.linearGradientCSS,
-            radialGradientCSS = _this4.radialGradientCSS,
-            prefix = _this4.prefix;
-
+        var rules = [];
+        var context = [];
+        var repeating = state.repeat === 'repeat';
 
         if (!previewElement) {
             return false;
         }
 
-        previewElement.removeAttribute('style');
-
+        var rule = '';
         switch (state.mode) {
             case 'linear':
-                previewElement.setAttribute('style', 'background-image:' + prefix + linearGradientCSS());
+                rules.push(state.rotate + 'deg');
+                state.stops.map(function (data) {
+                    rules.push(data.color + ' ' + data.position + '%');
+                });
+
+                rule = prefix + (repeating ? 'repeating-linear-gradient' : 'linear-gradient') + '(' + rules.join(', ') + ');';
                 break;
 
             case 'radial':
-                previewElement.setAttribute('style', 'background-image:' + prefix + radialGradientCSS());
+                state.shape && state.shape !== 'custom-size' && context.push(state.shape);
+                state.size && state.shape === 'custom-size' && context.push(state.size);
+                state.position && context.push('at ' + state.position);
+
+                context.length && rules.push(context.join(' '));
+
+                state.stops.map(function (data) {
+                    rules.push(data.color + ' ' + data.position + '%');
+                });
+
+                rule = prefix + (repeating ? 'repeating-radial-gradient' : 'radial-gradient') + '(' + rules.join(', ') + ');';
                 break;
+        }
+
+        previewElement.setAttribute('style', 'background-image:' + rule);
+        props.onChange && props.onChange({
+            target: {
+                skipValidation: true,
+                name: 'background-image',
+                value: rule
+            }
+        });
+    };
+
+    this.onRemoveStop = function (delta) {
+        var state = _this3.state,
+            onSubmit = _this3.onSubmit;
+
+        if ((0, _lodash.get)(state, 'stops.' + delta, false)) {
+            state.stops.splice(delta, 1);
+            _this3.setState(state);
+            onSubmit();
         }
     };
 
-    this.linearGradientCSS = function () {
-        var repeating = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-        var state = _this4.state;
+    this.onTogglePicker = function (delta) {
+        var props = _this3.props,
+            state = _this3.state,
+            config = _this3.config,
+            onChangePicker = _this3.onChangePicker,
+            pickerElement = _this3.pickerElement;
 
-        var rules = [state.rotate + 'deg'];
+        var data = (0, _lodash.get)(state, 'stops.' + delta, false);
 
-        state.stops.map(function (data) {
-            rules.push(data.color + ' ' + data.position + '%');
-        });
+        props.root.mutateSpace('left', null, null, true);
 
-        return (repeating ? 'repeating-linear-gradient' : 'linear-gradient') + '(' + rules.join(', ') + ');';
+        if (pickerElement && delta === state.activePicker) {
+            state.activePicker = false;
+        } else {
+            state.activePicker = delta;
+            var chromeProps = (0, _lodash.get)(config, 'ElementsGradientPickerChromeProps', {
+                ref: function ref(element) {
+                    _this3.pickerElement = element;
+                },
+                color: data.color ? data.color : '',
+                onChange: onChangePicker
+            });
+
+            props.root.mutateSpace('left', _react2['default'].createElement(_reactColor.ChromePicker, chromeProps), props.uuid);
+        }
+
+        _this3.setState(state);
     };
 
-    this.radialGradientCSS = function () {
-        var repeating = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-        var state = _this4.state;
+    this.onChangePicker = function (color) {
+        var state = _this3.state,
+            onSubmit = _this3.onSubmit;
 
-        var context = [];
-        var rules = [];
+        var Stop = (0, _lodash.get)(state, 'stops.' + state.activePicker, false);
 
-        state.shape && context.push(state.shape);
-        state.size && context.push(state.size);
-        state.offset && context.push('at ' + state.offset);
+        if (Stop) {
+            Stop.color = color.rgb.a === 1 || color.rgb.a === 0 ? color.hex : 'rgba(' + color.rgb.r + ', ' + color.rgb.g + ', ' + color.rgb.b + ', ' + color.rgb.a + ')';
 
-        context.length && rules.push(context.join(' '));
-        state.stops.map(function (data) {
-            rules.push(data.color + ' ' + data.position + '%');
-        });
-
-        return (repeating ? 'repeating-radial-gradient' : 'radial-gradient') + '(' + rules.join(', ') + ');';
+            (0, _lodash.set)(_this3, 'state.stops.' + state.activePicker, Stop);
+            onSubmit();
+            _this3.setState(state);
+        }
     };
 };
 
@@ -70005,9 +70106,21 @@ var _inherits2 = __webpack_require__(20);
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
 var _Panel = __webpack_require__(120);
 
 var _Panel2 = _interopRequireDefault(_Panel);
+
+var _toggleOn = __webpack_require__(767);
+
+var _toggleOn2 = _interopRequireDefault(_toggleOn);
+
+var _toggleOff = __webpack_require__(766);
+
+var _toggleOff2 = _interopRequireDefault(_toggleOff);
 
 var _lodash = __webpack_require__(15);
 
@@ -70026,6 +70139,17 @@ var Styles = function (_BasePanel) {
         (0, _classCallCheck3['default'])(this, Styles);
 
         var _this = (0, _possibleConstructorReturn3['default'])(this, (Styles.__proto__ || (0, _getPrototypeOf2['default'])(Styles)).call(this, props));
+
+        _this.generateToggle = function (element) {
+            var onToggleLock = _this.onToggleLock;
+
+            _this.toggleOpenIcon = _react2['default'].createElement(_toggleOn2['default'], { onClick: function onClick() {
+                    return onToggleLock(element);
+                } });
+            _this.toggleCloseIcon = _react2['default'].createElement(_toggleOff2['default'], { onClick: function onClick() {
+                    return onToggleLock(element);
+                } });
+        };
 
         _this.detectBackgroundGradient = function (Rules) {
             var isGradient = false;
@@ -70553,7 +70677,7 @@ exports = module.exports = __webpack_require__(762)(undefined);
 
 
 // module
-exports.push([module.i, "/**\n  Main Variables\n  @todo Convert more into mixin and less friendly\n  **/\n/**\n  Generic Styling for both vertical and horizontal\n  **/\n.stylizer-inspector {\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  z-index: 99999;\n  background: #051017;\n  width: 100%;\n  height: 320px;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  border-bottom: 3px solid #000000;\n  margin: 0;\n  padding: 0;\n  line-height: 140%;\n  vertical-align: middle;\n  box-sizing: border-box;\n  font-size: 14px;\n  font-family: Arial, Helvetica, Verdana, sans-serif;\n  /**\n    Styling Reset\n    **/\n  /**\n    Inspector Mode\n    **/\n  /**\n    Form Items\n    **/\n  /** Form Hacks **/\n  /**\n    Tabs\n    **/\n  /**\n    Scroll bar\n    **/\n  /**\n    Overlay Box for Inspector Tools\n    **/\n  /**\n    Main Panels Structures\n    Used in both iterator and editor\n    **/\n  /**\n    Iterator Panel\n    **/\n  /**\n    Editor Panel\n    **/\n}\n.stylizer-inspector * {\n  margin: 0;\n  padding: 0;\n  line-height: 140%;\n  vertical-align: middle;\n  box-sizing: border-box;\n  font-size: 14px;\n  font-family: Arial, Helvetica, Verdana, sans-serif;\n}\n.stylizer-inspector.minimize {\n  height: 34px;\n}\n.stylizer-inspector.minimize .stylizer-tabs-wrapper,\n.stylizer-inspector.minimize .stylizer-dom-panel {\n  display: none;\n}\n.stylizer-inspector .stylizer-font-element-dropdown-item,\n.stylizer-inspector .stylizer-font-element-dropdown,\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select,\n.stylizer-inspector textarea {\n  background: #213946;\n  border: 1px solid #040f15;\n  color: #d3f7ff;\n  padding: 0 7px;\n  line-height: 29px;\n  min-height: 0;\n  height: auto;\n  font-size: 13px;\n  border-radius: 0;\n  margin: 0;\n  width: 100%;\n}\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select {\n  height: 29px;\n}\n.stylizer-inspector textarea {\n  padding: 6px 7px;\n}\n.stylizer-inspector input[type=range] {\n  -webkit-appearance: none;\n  width: 100%;\n  background: transparent;\n  padding-top: 10px;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-thumb {\n  -webkit-appearance: none;\n}\n.stylizer-inspector input[type=range]:focus {\n  outline: none;\n}\n.stylizer-inspector input[type=range]::-ms-track {\n  width: 100%;\n  cursor: pointer;\n  background: transparent;\n  border-color: transparent;\n  color: transparent;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-thumb {\n  -webkit-appearance: none;\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-moz-range-thumb {\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-ms-thumb {\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-runnable-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-webkit-slider-runnable-track {\n  background: #213946;\n}\n.stylizer-inspector input[type=range]::-moz-range-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]::-ms-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: transparent;\n  border-color: transparent;\n  border-width: 16px 0;\n  color: transparent;\n}\n.stylizer-inspector input[type=range]::-ms-fill-lower {\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-ms-fill-lower {\n  background: #213946;\n}\n.stylizer-inspector input[type=range]::-ms-fill-upper {\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-ms-fill-upper {\n  background: #213946;\n}\n.stylizer-inspector input[disabled] {\n  background: #192b35;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete {\n  position: relative;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete > * {\n  display: block !important;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: auto;\n  max-height: 160px;\n  min-width: 160px;\n  overflow-y: auto;\n  cursor: pointer;\n  border: 1px solid #040f15 !important;\n  overflow-x: hidden;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown .stylizer-font-element-dropdown-item {\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown .stylizer-font-element-dropdown-item:hover {\n  color: #0f82aa !important;\n}\n.stylizer-inspector select {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n}\n.stylizer-inspector select:focus {\n  outline: none;\n}\n.stylizer-inspector select > option {\n  background-color: #213946;\n  border: 1px solid #040f15;\n  cursor: pointer;\n}\n.stylizer-inspector select > option:hover {\n  background-color: #192b35;\n  color: #d3f7ff;\n}\n.stylizer-inspector label {\n  font-size: 12px;\n  margin-bottom: 3px;\n  font-weight: 300;\n  display: block;\n}\n.stylizer-inspector :focus {\n  outline: 0;\n}\n.stylizer-inspector ::-ms-reveal,\n.stylizer-inspector ::-ms-clear,\n.stylizer-inspector ::-ms-expand {\n  display: none !important;\n}\n@media screen and (min-width: \"0\\0\") {\n  .stylizer-inspector select {\n    background-image: none\\9;\n  }\n}\n.stylizer-inspector .stylizer-form-item {\n  margin-bottom: 5px;\n}\n.stylizer-inspector .stylizer-form-header {\n  font-size: 12px;\n  margin-bottom: 8px;\n  padding-bottom: 4px;\n  color: #d3f7ff;\n  font-weight: 300;\n  border-bottom: 1px solid #040d12;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  align-items: center;\n  justify-content: space-between;\n}\n.stylizer-inspector .stylizer-form-header svg {\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-form-label {\n  text-transform: capitalize;\n}\n.stylizer-inspector .stylizer-form-group {\n  margin-bottom: 18px;\n}\n.stylizer-inspector .stylizer-form-row {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  flex-wrap: nowrap;\n}\n.stylizer-inspector .stylizer-form-row > * {\n  padding: 0 7px;\n}\n.stylizer-inspector .stylizer-form-row > *:first-child {\n  padding-left: 0;\n}\n.stylizer-inspector .stylizer-form-row > *:last-child {\n  padding-right: 0;\n}\n.stylizer-inspector .stylizer-has-error input[role=\"combobox\"],\n.stylizer-inspector .stylizer-has-error .stylizer-form-input {\n  border-color: #c50313 !important;\n}\n.stylizer-inspector .stylizer-error-bag {\n  font-size: 13px;\n  padding: 3px;\n  color: #c50313;\n}\n.stylizer-inspector .stylizer-label-inline {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-form-input {\n  max-width: 120px;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-form-label {\n  margin-right: 20px;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-error-bag {\n  margin-left: 10px;\n}\n.stylizer-inspector .stylizer-color-element {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-inspector .stylizer-color-element input[type=\"text\"] {\n  border-left: none;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-preview {\n  width: 30px;\n  min-width: 30px;\n  height: 29px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-right: none;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-preview > .stylizer-color-preview-content {\n  border-radius: 100%;\n  width: 10px;\n  height: 10px;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-closer {\n  max-width: 39px;\n  height: 29px;\n  width: 39px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-left: none;\n  margin-left: -1px;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-gradient-element {\n  margin-top: 30px;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-canvas {\n  width: 100%;\n  height: 40px;\n  border: 1px solid #040f15;\n  background-color: #213946;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-wrapper {\n  width: 100%;\n  height: 40px;\n  position: relative;\n  margin-top: -40px;\n  margin-bottom: 40px;\n  z-index: 1;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  width: 8px;\n  height: 40px;\n  background: #195e8a;\n  cursor: move;\n  z-index: 2;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-closer {\n  margin-top: -16px;\n  margin-left: -2px;\n  height: 14px;\n  width: 14px;\n  display: block;\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-color {\n  margin-top: 41px;\n  margin-left: -6px;\n  height: 20px;\n  width: 20px;\n  display: block;\n  cursor: pointer;\n  border: 1px solid #195e8a;\n  background-color: #000101;\n}\n.stylizer-inspector .stylizer-selector-badges {\n  font-size: 12px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge {\n  display: flex;\n  flex-direction: row;\n  margin: 5px 0;\n  cursor: pointer;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .stylizer-selector-badges-text {\n  background: #040f15;\n  color: #6d8d95;\n  padding: 4px 8px;\n  border-radius: 4px;\n  max-width: 100px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .active .stylizer-selector-badges-text {\n  background: #137fad;\n  color: #d3f7ff;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .stylizer-selector-badges-separator {\n  margin: 0 5px;\n}\n.stylizer-inspector .chrome-picker {\n  background: #041e2b !important;\n  color: #6d8d95;\n  border: 1px solid #040f15;\n  box-shadow: none !important;\n}\n.stylizer-inspector .chrome-picker svg {\n  background: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker span {\n  color: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker input {\n  background: #213946;\n  border: 1px solid #040f15 !important;\n  color: #d3f7ff !important;\n  box-shadow: none !important;\n  font-size: 13px !important;\n  height: auto !important;\n}\n.stylizer-inspector .stylizer-tabs-wrapper {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs {\n  background: #03141d;\n  color: #6d8d95;\n  max-width: 150px;\n  min-width: 150px;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-evenly;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element {\n  padding: 10px 15px;\n  font-size: 13px;\n  display: block;\n  cursor: pointer;\n  text-transform: capitalize;\n  flex-grow: 1;\n  border-bottom: 1px solid #040d12;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element.active {\n  background: #081c27;\n  color: #13a6d9;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs-contents {\n  background: #081c27;\n  flex-grow: 1;\n  display: flex;\n  flex-direction: column;\n  padding: 0;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs-contents.has-vertical-scrollbar {\n  padding-right: 15px;\n}\n.stylizer-inspector .scrollarea .scrollarea-content {\n  width: auto;\n  display: table;\n  min-width: 100%;\n}\n.stylizer-inspector .scrollarea .scrollbar-container {\n  background: #082739;\n  opacity: 1 !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container:hover {\n  background: #082739;\n  opacity: 1 !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container .scrollbar {\n  background: #051118;\n  cursor: pointer;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.vertical {\n  width: 16px;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.vertical .scrollbar {\n  width: 16px;\n  margin: 0;\n  min-height: 20px !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.horizontal {\n  height: 16px;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.horizontal .scrollbar {\n  height: 16px;\n  margin: 0;\n  min-width: 20px !important;\n}\n.stylizer-inspector .stylizer-overlay-box {\n  pointer-events: none;\n  position: fixed;\n  z-index: 0;\n  top: 0;\n  left: 0;\n  background: #ff929a;\n  opacity: 0.4;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-margin {\n  margin: 0;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-padding {\n  background: #ffbf80;\n  padding: 0;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-content {\n  background: #edff7b;\n  width: 0;\n  height: 0;\n}\n.stylizer-inspector .stylizer-panels {\n  width: 30%;\n  background: #051017;\n  color: #d3f7ff;\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n  z-index: 9999;\n}\n.stylizer-inspector .stylizer-panels.minimize {\n  max-width: 30px;\n}\n.stylizer-inspector .stylizer-panels.minimize > :not(.stylizer-header) {\n  display: none;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header {\n  padding: 8px 15px;\n  background: #000000;\n  font-size: 14px;\n  font-weight: 300;\n  text-transform: uppercase;\n  display: flex;\n  flex-direction: row;\n  min-height: 35px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-text {\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-actions svg {\n  cursor: pointer;\n  opacity: 0.8;\n  margin: 0 5px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-actions svg:hover {\n  opacity: 1;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content {\n  padding: 15px;\n  width: 100%;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content-flex {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content-flex > * {\n  padding: 15px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-selector-empty {\n  font-size: 14px;\n  text-align: center;\n  display: flex;\n  align-self: center;\n  justify-content: center;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator {\n  flex-grow: 1;\n  overflow: hidden;\n  display: block;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth] {\n  margin-left: 150px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"0\"] {\n  margin-left: 0px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"1\"] {\n  margin-left: 15px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"2\"] {\n  margin-left: 30px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"3\"] {\n  margin-left: 45px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"4\"] {\n  margin-left: 60px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"5\"] {\n  margin-left: 75px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"6\"] {\n  margin-left: 90px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"7\"] {\n  margin-left: 105px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"8\"] {\n  margin-left: 120px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"9\"] {\n  margin-left: 135px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"10\"] {\n  margin-left: 150px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element {\n  background: #071c2a;\n  color: #d3f7ff;\n  padding: 6px 10px;\n  margin-bottom: 8px;\n  white-space: nowrap;\n  cursor: pointer;\n  width: fit-content;\n  font-size: 12px;\n  font-weight: 300;\n  border-left: 5px solid #071c2a;\n  min-width: 100%;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.overridden {\n  background: #000000;\n  border-left: 3px solid #4c2503 !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.active {\n  background: #4b9701;\n  border-left: 3px solid #4b9701 !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.changed {\n  background: #7d3d05;\n  border-left: 3px solid #11415f !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.parents:not(.processed) {\n  border-left: 3px solid #196597;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.parents.processed {\n  border-left: 3px solid #0d334d;\n}\n.stylizer-inspector .stylizer-editor-panel {\n  background: #081c27;\n  color: #9abdc5;\n  width: 70%;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-header {\n  background: #020709;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-left-space,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-right-space {\n  background: #081c27;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-center-space {\n  display: flex;\n  flex-wrap: wrap;\n  flex-grow: 1;\n  padding: 15px 0;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item {\n  padding: 0;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) input {\n  border-right-color: transparent;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-group {\n  padding: 0 15px;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-group--radius,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-group--outline {\n  width: 50%;\n  min-width: 330px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border [class*=\"stylizer-group--border-\"] {\n  width: 25%;\n  min-width: 260px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border [class*=\"stylizer-field--border-\"] input {\n  min-width: 50px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-top-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-left-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-right-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-bottom-color input {\n  min-width: 70px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border select {\n  min-width: 80px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--spacing .stylizer-form-group {\n  width: 25%;\n  min-width: 260px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-form-group {\n  width: 25%;\n  min-width: 320px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-group--background {\n  width: 50%;\n  min-width: 490px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-image input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-size input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-position input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--opacity input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--display input {\n  min-width: 60px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-color input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-repeat select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--visibility select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--overflow select {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-form-group {\n  width: 50%;\n  min-width: 350px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-group--font {\n  min-width: 590px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-family input {\n  min-width: 100px;\n  width: 100%;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-size input {\n  min-width: 60px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--letter-spacing input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-weight input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--white-space select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--vertical-align select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-weight select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-style select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-variant select {\n  min-width: 100px;\n}\n/**\n  Vertical Overrides\n  **/\nbody[stylizer-vertical=\"true\"] [stylizer-active=\"false\"] {\n  padding-left: 380px;\n}\nbody[stylizer-vertical=\"true\"] [stylizer-active=\"true\"] {\n  padding-left: 34px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector {\n  top: 0;\n  bottom: 0;\n  width: 390px;\n  flex-direction: column;\n  height: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector.minimize {\n  height: 100%;\n  width: 34px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize {\n  max-width: none;\n  max-height: 35px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-header-actions svg {\n  margin: 0 0 5px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-selector-empty {\n  flex-direction: column;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-panel-left-space {\n  position: absolute;\n  top: 0;\n  left: 100%;\n  bottom: 0;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.stylizer-dom-panel {\n  max-height: 40%;\n  height: 40%;\n  min-height: 40%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.stylizer-editor-panel {\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-label-inline {\n  align-items: flex-start;\n  max-width: 25%;\n  flex-wrap: wrap;\n  flex-direction: column;\n  flex-grow: 1;\n  padding: 0 7px;\n  margin-bottom: 10px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-row {\n  flex-wrap: wrap;\n  margin: 0 -7px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-item {\n  margin-bottom: 20px;\n  display: block;\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-item > * {\n  width: 100%;\n  max-width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector input[type=\"text\"],\nbody[stylizer-vertical=\"true\"] .stylizer-inspector select {\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-color-element input[type=\"text\"] {\n  max-width: 100%;\n  flex-grow: 1;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper {\n  flex-direction: column;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs {\n  flex-direction: row;\n  max-width: 100%;\n  min-width: 100%;\n  min-height: 35px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element {\n  border-bottom: none;\n  padding: 10px 14px;\n  font-size: 10px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content {\n  flex-direction: column;\n  position: relative;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-panel-center-space .stylizer-form-row {\n  margin: 0;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-panel-center-space .stylizer-form-group {\n  width: 100%;\n  min-width: 1px;\n}\n/**\n  Horizontal Overrides\n  **/\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"false\"] {\n  padding-bottom: 323px;\n}\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header .stylizer-header-actions svg {\n  margin: 0 0 5px;\n}\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"true\"] {\n  padding-bottom: 34px;\n}\n", ""]);
+exports.push([module.i, "/**\n  Main Variables\n  @todo Convert more into mixin and less friendly\n  **/\n/**\n  Generic Styling for both vertical and horizontal\n  **/\n.stylizer-inspector {\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  z-index: 99999;\n  background: #051017;\n  width: 100%;\n  height: 320px;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  border-bottom: 3px solid #000000;\n  margin: 0;\n  padding: 0;\n  line-height: 140%;\n  vertical-align: middle;\n  box-sizing: border-box;\n  font-size: 14px;\n  font-family: Arial, Helvetica, Verdana, sans-serif;\n  /**\n    Styling Reset\n    **/\n  /**\n    Inspector Mode\n    **/\n  /**\n    Form Items\n    **/\n  /** Form Hacks **/\n  /**\n    Tabs\n    **/\n  /**\n    Scroll bar\n    **/\n  /**\n    Overlay Box for Inspector Tools\n    **/\n  /**\n    Main Panels Structures\n    Used in both iterator and editor\n    **/\n  /**\n    Iterator Panel\n    **/\n  /**\n    Editor Panel\n    **/\n}\n.stylizer-inspector * {\n  margin: 0;\n  padding: 0;\n  line-height: 140%;\n  vertical-align: middle;\n  box-sizing: border-box;\n  font-size: 14px;\n  font-family: Arial, Helvetica, Verdana, sans-serif;\n}\n.stylizer-inspector.minimize {\n  height: 34px;\n}\n.stylizer-inspector.minimize .stylizer-tabs-wrapper,\n.stylizer-inspector.minimize .stylizer-dom-panel {\n  display: none;\n}\n.stylizer-inspector .stylizer-font-element-dropdown-item,\n.stylizer-inspector .stylizer-font-element-dropdown,\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select,\n.stylizer-inspector textarea {\n  background: #213946;\n  border: 1px solid #040f15;\n  color: #d3f7ff;\n  padding: 0 7px;\n  line-height: 29px;\n  min-height: 0;\n  height: auto;\n  font-size: 13px;\n  border-radius: 0;\n  margin: 0;\n  width: 100%;\n}\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select {\n  height: 29px;\n}\n.stylizer-inspector textarea {\n  padding: 6px 7px;\n}\n.stylizer-inspector input[type=range] {\n  -webkit-appearance: none;\n  width: 100%;\n  background: transparent;\n  padding-top: 10px;\n  padding-left: 10px;\n  padding-right: 10px;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-thumb {\n  -webkit-appearance: none;\n}\n.stylizer-inspector input[type=range]:focus {\n  outline: none;\n}\n.stylizer-inspector input[type=range]::-ms-track {\n  width: 100%;\n  cursor: pointer;\n  background: transparent;\n  border-color: transparent;\n  color: transparent;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-thumb {\n  -webkit-appearance: none;\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-moz-range-thumb {\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-ms-thumb {\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-runnable-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-webkit-slider-runnable-track {\n  background: #213946;\n}\n.stylizer-inspector input[type=range]::-moz-range-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]::-ms-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: transparent;\n  border-color: transparent;\n  border-width: 16px 0;\n  color: transparent;\n}\n.stylizer-inspector input[type=range]::-ms-fill-lower {\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-ms-fill-lower {\n  background: #213946;\n}\n.stylizer-inspector input[type=range]::-ms-fill-upper {\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-ms-fill-upper {\n  background: #213946;\n}\n.stylizer-inspector input[disabled] {\n  background: #192b35;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete {\n  position: relative;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete > * {\n  display: block !important;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: auto;\n  max-height: 160px;\n  min-width: 160px;\n  overflow-y: auto;\n  cursor: pointer;\n  border: 1px solid #040f15 !important;\n  overflow-x: hidden;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown .stylizer-font-element-dropdown-item {\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown .stylizer-font-element-dropdown-item:hover {\n  color: #0f82aa !important;\n}\n.stylizer-inspector select {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n}\n.stylizer-inspector select:focus {\n  outline: none;\n}\n.stylizer-inspector select > option {\n  background-color: #213946;\n  border: 1px solid #040f15;\n  cursor: pointer;\n}\n.stylizer-inspector select > option:hover {\n  background-color: #192b35;\n  color: #d3f7ff;\n}\n.stylizer-inspector label {\n  font-size: 12px;\n  margin-bottom: 3px;\n  font-weight: 300;\n  display: block;\n}\n.stylizer-inspector :focus {\n  outline: 0;\n}\n.stylizer-inspector ::-ms-reveal,\n.stylizer-inspector ::-ms-clear,\n.stylizer-inspector ::-ms-expand {\n  display: none !important;\n}\n@media screen and (min-width: \"0\\0\") {\n  .stylizer-inspector select {\n    background-image: none\\9;\n  }\n}\n.stylizer-inspector .stylizer-form-item {\n  margin-bottom: 5px;\n}\n.stylizer-inspector .stylizer-form-header {\n  font-size: 12px;\n  margin-bottom: 8px;\n  padding-bottom: 4px;\n  color: #d3f7ff;\n  font-weight: 300;\n  border-bottom: 1px solid #040d12;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  align-items: center;\n  justify-content: space-between;\n}\n.stylizer-inspector .stylizer-form-header svg {\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-form-label {\n  text-transform: capitalize;\n}\n.stylizer-inspector .stylizer-form-group {\n  margin-bottom: 18px;\n}\n.stylizer-inspector .stylizer-form-row {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  flex-wrap: nowrap;\n}\n.stylizer-inspector .stylizer-form-row > * {\n  padding: 0 7px;\n}\n.stylizer-inspector .stylizer-form-row > *:first-child {\n  padding-left: 0;\n}\n.stylizer-inspector .stylizer-form-row > *:last-child {\n  padding-right: 0;\n}\n.stylizer-inspector .stylizer-has-error input[role=\"combobox\"],\n.stylizer-inspector .stylizer-has-error .stylizer-form-input {\n  border-color: #c50313 !important;\n}\n.stylizer-inspector .stylizer-error-bag {\n  font-size: 13px;\n  padding: 3px;\n  color: #c50313;\n}\n.stylizer-inspector .stylizer-label-inline {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-form-input {\n  max-width: 120px;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-form-label {\n  margin-right: 20px;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-error-bag {\n  margin-left: 10px;\n}\n.stylizer-inspector .stylizer-color-element {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-inspector .stylizer-color-element input[type=\"text\"] {\n  border-left: none;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-preview {\n  width: 30px;\n  min-width: 30px;\n  height: 29px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-right: none;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-preview > .stylizer-color-preview-content {\n  border-radius: 100%;\n  width: 10px;\n  height: 10px;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-closer {\n  max-width: 39px;\n  height: 29px;\n  width: 39px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-left: none;\n  margin-left: -1px;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-gradient-element {\n  margin-top: 30px;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-canvas {\n  width: 100%;\n  height: 40px;\n  border: 1px solid #040f15;\n  background-color: #213946;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-wrapper {\n  width: 100%;\n  height: 40px;\n  position: relative;\n  margin-top: -40px;\n  margin-bottom: 40px;\n  z-index: 1;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  width: 8px;\n  height: 40px;\n  background: #195e8a;\n  cursor: move;\n  z-index: 2;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-closer {\n  margin-top: -16px;\n  margin-left: -2px;\n  height: 14px;\n  width: 14px;\n  display: block;\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-color {\n  margin-top: 41px;\n  margin-left: -6px;\n  height: 20px;\n  width: 20px;\n  display: block;\n  cursor: pointer;\n  border: 1px solid #195e8a;\n  background-color: #000101;\n}\n.stylizer-inspector .stylizer-selector-badges {\n  font-size: 12px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge {\n  display: flex;\n  flex-direction: row;\n  margin: 5px 0;\n  cursor: pointer;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .stylizer-selector-badges-text {\n  background: #040f15;\n  color: #6d8d95;\n  padding: 4px 8px;\n  border-radius: 4px;\n  max-width: 100px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .active .stylizer-selector-badges-text {\n  background: #137fad;\n  color: #d3f7ff;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .stylizer-selector-badges-separator {\n  margin: 0 5px;\n}\n.stylizer-inspector .chrome-picker {\n  background: #041e2b !important;\n  color: #6d8d95;\n  border: 1px solid #040f15;\n  box-shadow: none !important;\n}\n.stylizer-inspector .chrome-picker svg {\n  background: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker span {\n  color: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker input {\n  background: #213946;\n  border: 1px solid #040f15 !important;\n  color: #d3f7ff !important;\n  box-shadow: none !important;\n  font-size: 13px !important;\n  height: auto !important;\n}\n.stylizer-inspector .stylizer-tabs-wrapper {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs {\n  background: #03141d;\n  color: #6d8d95;\n  max-width: 150px;\n  min-width: 150px;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-evenly;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element {\n  padding: 10px 15px;\n  font-size: 13px;\n  display: block;\n  cursor: pointer;\n  text-transform: capitalize;\n  flex-grow: 1;\n  border-bottom: 1px solid #040d12;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element.active {\n  background: #081c27;\n  color: #13a6d9;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs-contents {\n  background: #081c27;\n  flex-grow: 1;\n  display: flex;\n  flex-direction: column;\n  padding: 0;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs-contents.has-vertical-scrollbar {\n  padding-right: 15px;\n}\n.stylizer-inspector .scrollarea .scrollarea-content {\n  width: auto;\n  display: table;\n  min-width: 100%;\n}\n.stylizer-inspector .scrollarea .scrollbar-container {\n  background: #082739;\n  opacity: 1 !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container:hover {\n  background: #082739;\n  opacity: 1 !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container .scrollbar {\n  background: #051118;\n  cursor: pointer;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.vertical {\n  width: 16px;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.vertical .scrollbar {\n  width: 16px;\n  margin: 0;\n  min-height: 20px !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.horizontal {\n  height: 16px;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.horizontal .scrollbar {\n  height: 16px;\n  margin: 0;\n  min-width: 20px !important;\n}\n.stylizer-inspector .stylizer-overlay-box {\n  pointer-events: none;\n  position: fixed;\n  z-index: 0;\n  top: 0;\n  left: 0;\n  background: #ff929a;\n  opacity: 0.4;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-margin {\n  margin: 0;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-padding {\n  background: #ffbf80;\n  padding: 0;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-content {\n  background: #edff7b;\n  width: 0;\n  height: 0;\n}\n.stylizer-inspector .stylizer-panels {\n  width: 30%;\n  background: #051017;\n  color: #d3f7ff;\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n  z-index: 9999;\n}\n.stylizer-inspector .stylizer-panels.minimize {\n  max-width: 30px;\n}\n.stylizer-inspector .stylizer-panels.minimize > :not(.stylizer-header) {\n  display: none;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header {\n  padding: 8px 15px;\n  background: #000000;\n  font-size: 14px;\n  font-weight: 300;\n  text-transform: uppercase;\n  display: flex;\n  flex-direction: row;\n  min-height: 35px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-text {\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-actions svg {\n  cursor: pointer;\n  opacity: 0.8;\n  margin: 0 5px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-actions svg:hover {\n  opacity: 1;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content {\n  padding: 15px;\n  width: 100%;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content-flex {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content-flex > * {\n  padding: 15px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-selector-empty {\n  font-size: 14px;\n  text-align: center;\n  display: flex;\n  align-self: center;\n  justify-content: center;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator {\n  flex-grow: 1;\n  overflow: hidden;\n  display: block;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth] {\n  margin-left: 150px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"0\"] {\n  margin-left: 0px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"1\"] {\n  margin-left: 15px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"2\"] {\n  margin-left: 30px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"3\"] {\n  margin-left: 45px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"4\"] {\n  margin-left: 60px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"5\"] {\n  margin-left: 75px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"6\"] {\n  margin-left: 90px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"7\"] {\n  margin-left: 105px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"8\"] {\n  margin-left: 120px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"9\"] {\n  margin-left: 135px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"10\"] {\n  margin-left: 150px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element {\n  background: #071c2a;\n  color: #d3f7ff;\n  padding: 6px 10px;\n  margin-bottom: 8px;\n  white-space: nowrap;\n  cursor: pointer;\n  width: fit-content;\n  font-size: 12px;\n  font-weight: 300;\n  border-left: 5px solid #071c2a;\n  min-width: 100%;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.overridden {\n  background: #000000;\n  border-left: 3px solid #4c2503 !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.active {\n  background: #4b9701;\n  border-left: 3px solid #4b9701 !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.changed {\n  background: #7d3d05;\n  border-left: 3px solid #11415f !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.parents:not(.processed) {\n  border-left: 3px solid #196597;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.parents.processed {\n  border-left: 3px solid #0d334d;\n}\n.stylizer-inspector .stylizer-editor-panel {\n  background: #081c27;\n  color: #9abdc5;\n  width: 70%;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-header {\n  background: #020709;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-left-space,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-right-space {\n  background: #081c27;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-center-space {\n  display: flex;\n  flex-wrap: wrap;\n  flex-grow: 1;\n  padding: 15px 0;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item {\n  padding: 0;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) input {\n  border-right-color: transparent;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-group {\n  padding: 0 15px;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-group--radius,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-group--outline {\n  width: 50%;\n  min-width: 330px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border [class*=\"stylizer-group--border-\"] {\n  width: 25%;\n  min-width: 260px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border [class*=\"stylizer-field--border-\"] input {\n  min-width: 50px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-top-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-left-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-right-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-bottom-color input {\n  min-width: 70px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border select {\n  min-width: 80px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--spacing .stylizer-form-group {\n  width: 25%;\n  min-width: 260px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-form-group {\n  width: 25%;\n  min-width: 320px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-group--background {\n  width: 50%;\n  min-width: 490px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-image input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-size input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-position input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--opacity input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--display input {\n  min-width: 60px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-color input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-repeat select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--visibility select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--overflow select {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-form-group {\n  width: 50%;\n  min-width: 350px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-group--font {\n  min-width: 590px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-family input {\n  min-width: 100px;\n  width: 100%;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-size input {\n  min-width: 60px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--letter-spacing input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-weight input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--white-space select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--vertical-align select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-weight select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-style select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-variant select {\n  min-width: 100px;\n}\n/**\n  Vertical Overrides\n  **/\nbody[stylizer-vertical=\"true\"] [stylizer-active=\"false\"] {\n  padding-left: 380px;\n}\nbody[stylizer-vertical=\"true\"] [stylizer-active=\"true\"] {\n  padding-left: 34px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector {\n  top: 0;\n  bottom: 0;\n  width: 390px;\n  flex-direction: column;\n  height: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector.minimize {\n  height: 100%;\n  width: 34px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize {\n  max-width: none;\n  max-height: 35px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-header-actions svg {\n  margin: 0 0 5px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-selector-empty {\n  flex-direction: column;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-panel-left-space {\n  position: absolute;\n  top: 0;\n  left: 100%;\n  bottom: 0;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.stylizer-dom-panel {\n  max-height: 40%;\n  height: 40%;\n  min-height: 40%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.stylizer-editor-panel {\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-label-inline {\n  align-items: flex-start;\n  max-width: 25%;\n  flex-wrap: wrap;\n  flex-direction: column;\n  flex-grow: 1;\n  padding: 0 7px;\n  margin-bottom: 10px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-row {\n  flex-wrap: wrap;\n  margin: 0 -7px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-item {\n  margin-bottom: 20px;\n  display: block;\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-item > * {\n  width: 100%;\n  max-width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector input[type=\"text\"],\nbody[stylizer-vertical=\"true\"] .stylizer-inspector select {\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-color-element input[type=\"text\"] {\n  max-width: 100%;\n  flex-grow: 1;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper {\n  flex-direction: column;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs {\n  flex-direction: row;\n  max-width: 100%;\n  min-width: 100%;\n  min-height: 35px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element {\n  border-bottom: none;\n  padding: 10px 14px;\n  font-size: 10px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content {\n  flex-direction: column;\n  position: relative;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-panel-center-space .stylizer-form-row {\n  margin: 0;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-panel-center-space .stylizer-form-group {\n  width: 100%;\n  min-width: 1px;\n}\n/**\n  Horizontal Overrides\n  **/\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"false\"] {\n  padding-bottom: 323px;\n}\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header .stylizer-header-actions svg {\n  margin: 0 0 5px;\n}\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"true\"] {\n  padding-bottom: 34px;\n}\nbody[stylizer-vertical=\"false\"] .stylizer-tabs-wrapper {\n  max-height: 280px;\n}\n", ""]);
 
 // exports
 
@@ -71106,6 +71230,164 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
+
+/***/ }),
+/* 765 */,
+/* 766 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactIconBase = __webpack_require__(38);
+
+var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var FaToggleOff = function FaToggleOff(props) {
+    return _react2.default.createElement(
+        _reactIconBase2.default,
+        _extends({ viewBox: '0 0 40 40' }, props),
+        _react2.default.createElement(
+            'g',
+            null,
+            _react2.default.createElement('path', { d: 'm22.4 20q0-2-0.8-3.9t-2.2-3.1-3.1-2.2-3.9-0.7-3.8 0.7-3.2 2.2-2.1 3.1-0.8 3.9 0.8 3.9 2.1 3.1 3.2 2.2 3.8 0.7 3.9-0.7 3.1-2.2 2.2-3.1 0.8-3.9z m14.9 0q0-2-0.8-3.9t-2.1-3.1-3.2-2.2-3.9-0.7h-7.5q2.3 1.7 3.7 4.3t1.3 5.6-1.3 5.6-3.7 4.3h7.5q2 0 3.9-0.7t3.2-2.2 2.1-3.1 0.8-3.9z m2.5 0q0 2.5-1 4.8t-2.7 4-3.9 2.6-4.9 1h-14.9q-2.5 0-4.8-1t-4-2.6-2.6-4-1-4.8 1-4.8 2.6-4 4-2.6 4.8-1h14.9q2.6 0 4.9 1t3.9 2.6 2.7 4 1 4.8z' })
+        )
+    );
+};
+
+exports.default = FaToggleOff;
+module.exports = exports['default'];
+
+/***/ }),
+/* 767 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactIconBase = __webpack_require__(38);
+
+var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var FaToggleOn = function FaToggleOn(props) {
+    return _react2.default.createElement(
+        _reactIconBase2.default,
+        _extends({ viewBox: '0 0 40 40' }, props),
+        _react2.default.createElement(
+            'g',
+            null,
+            _react2.default.createElement('path', { d: 'm0 20q0-2.5 1-4.8t2.6-4 4-2.6 4.8-1h14.9q2.6 0 4.9 1t3.9 2.6 2.7 4 1 4.8-1 4.8-2.7 4-3.9 2.6-4.9 1h-14.9q-2.5 0-4.8-1t-4-2.6-2.6-4-1-4.8z m27.3 9.9q2 0 3.9-0.7t3.2-2.2 2.1-3.1 0.8-3.9-0.8-3.9-2.1-3.1-3.2-2.2-3.9-0.7-3.8 0.7-3.2 2.2-2.1 3.1-0.8 3.9 0.8 3.9 2.1 3.1 3.2 2.2 3.8 0.7z' })
+        )
+    );
+};
+
+exports.default = FaToggleOn;
+module.exports = exports['default'];
+
+/***/ }),
+/* 768 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _classCallCheck2 = __webpack_require__(13);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/**
+ * Class for parsing CSS Gradient rule
+ *
+ * @author jason.xie@victheme.com
+ */
+var GradientParser = function GradientParser(rule) {
+    (0, _classCallCheck3['default'])(this, GradientParser);
+
+    _initialiseProps.call(this);
+
+    return this.parseGradient(rule);
+};
+
+var _initialiseProps = function _initialiseProps() {
+    var _this = this;
+
+    this.tokens = {
+        shape: /(closest\-side|closest\-corner|farthest\-side|farthest\-corner|contain|cover|circle|ellipse)/i,
+        mode: /(linear|radial)/i,
+        repeat: /(repeating)/i,
+        position: /at (.*?),/i,
+        angle: /\((.*)deg/i,
+        size: /\((.*),/i,
+        sizeWithPosition: /\((.*) at/i,
+        color: /^(#[0-9a-f]{6}|#[0-9a-f]{3}|#(?:[0-9a-f]{2}){2,4}|(rgb|hsl)a?\((-?\d+%?[,\s]+){2,3}\s*[\d\.]+%?\))/i,
+        stops: /, (?![^(]*\))(?![^"']*["'](?:[^"']*["'][^"']*["'])*[^"']*$)/i
+    };
+
+    this.parseGradient = function (rule) {
+        var tokens = _this.tokens;
+
+        var angle = rule.match(tokens['angle']);
+        var shape = rule.match(tokens['shape']);
+        var position = rule.match(tokens['position']);
+        var size = rule.match(tokens['size']);
+        var sizeWithPosition = rule.match(tokens['sizeWithPosition']);
+        var stops = rule.substring(rule.indexOf('(') + 1, rule.lastIndexOf(')')).split(tokens['stops']);
+        var mode = rule.match(tokens['mode']);
+        var repeat = rule.match(tokens['repeat']);
+
+        var results = {
+            mode: mode && mode[1] ? mode[1] : '',
+            repeat: repeat && repeat[1] ? 'repeat' : 'none',
+            rotate: angle && angle[1] ? parseInt(angle[1]) : 0,
+            shape: shape && shape[1] ? shape[1] : 'custom-size',
+            position: position && position[1] ? position[1] : '',
+            size: position && position[1] ? sizeWithPosition && sizeWithPosition[1] ? sizeWithPosition[1] : '' : size && size[1] ? size[1] : '',
+            stops: []
+        };
+
+        stops && forEach(stops, function (stop) {
+            var color = stop.trim().match(tokens['color']);
+            color && color[1] && results.stops.push({
+                color: color[1],
+                position: parseInt(stop.replace(color[1], '').replace('%', '').trim())
+            });
+        });
+
+        return results;
+    };
+};
+
+exports['default'] = GradientParser;
 
 /***/ })
 /******/ ]);

@@ -216,10 +216,17 @@ export default class Panel extends React.Component {
         )
     };
 
-    onToggleLock = (element) => {};
+    generateToggle = (element) => {
+        const { onToggleLock } = this;
+        this.toggleOpenIcon = (<ToggleOpenIcon onClick={ () => onToggleLock(element) }/>);
+        this.toggleCloseIcon = (<ToggleLockedIcon onClick={ () => onToggleLock(element) }/>);
+    };
 
     generateGroup = (element) => {
-        const { state, config, generateElement, onToggleLock } = this;
+
+        this.generateToggle(element);
+
+        const { state, config, generateElement, toggleOpenIcon, toggleCloseIcon} = this;
         const elementProps = get(config, camelCase('PanelGroupElementProps ' + element.key), {
             key: 'stylizer-group-' + element.title + '-' + state.node.uuid,
             className: ['stylizer-form-group', 'stylizer-group--' + element.key.replace(' ', '-'), element.inline ? 'stylizer-label-inline' : ''].join(' ')
@@ -238,8 +245,8 @@ export default class Panel extends React.Component {
                 { (element.title || element.toggle )
                     && <h3 { ...headingProps }>
                         { element.title && element.title }
-                        { element.toggle && element.toggle === 'on' && <ToggleOpenIcon onClick={ () => onToggleLock(element) }/> }
-                        { element.toggle && element.toggle === 'off' && <ToggleLockedIcon onClick={ () => onToggleLock(element) }/> }
+                        { element.toggle && element.toggle === 'on' && toggleOpenIcon }
+                        { element.toggle && element.toggle === 'off' && toggleCloseIcon }
                     </h3>
                 }
                 <div { ...wrapperProps }>
@@ -274,6 +281,8 @@ export default class Panel extends React.Component {
         this.setState({ updateSpace: true });
         Space.ownerKey = ownerKey;
     }
+
+    onToggleLock = (element) => {};
 
     onSubmit = (e) => {
         const { hasError } = this;

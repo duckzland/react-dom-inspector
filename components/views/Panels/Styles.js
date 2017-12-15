@@ -1,4 +1,7 @@
+import React from 'react';
 import BasePanel from '../Panel';
+import ToggleOpenIcon from '../../../node_modules/react-icons/lib/fa/toggle-on';
+import ToggleLockedIcon from '../../../node_modules/react-icons/lib/fa/toggle-off';
 import { get, forEach } from 'lodash';
 
 /**
@@ -84,6 +87,12 @@ export default class Styles extends BasePanel {
 
         this.initialize(props);
     }
+
+    generateToggle = (element) => {
+        const { onToggleLock } = this;
+        this.toggleOpenIcon = (<ToggleOpenIcon onClick={ () => onToggleLock(element) }/>);
+        this.toggleCloseIcon = (<ToggleLockedIcon onClick={ () => onToggleLock(element) }/>);
+    };
 
     detectBackgroundGradient = (Rules) => {
         let isGradient = false;
