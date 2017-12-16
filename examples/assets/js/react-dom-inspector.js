@@ -71,7 +71,7 @@ var global = __webpack_require__(4);
 var core = __webpack_require__(41);
 var hide = __webpack_require__(24);
 var redefine = __webpack_require__(25);
-var ctx = __webpack_require__(35);
+var ctx = __webpack_require__(36);
 var PROTOTYPE = 'prototype';
 
 var $export = function (type, name, source) {
@@ -17885,6 +17885,74 @@ module.exports = function (NAME, exec) {
 /* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(28);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+var IconBase = function IconBase(_ref, _ref2) {
+  var children = _ref.children;
+  var color = _ref.color;
+  var size = _ref.size;
+  var style = _ref.style;
+  var width = _ref.width;
+  var height = _ref.height;
+
+  var props = _objectWithoutProperties(_ref, ['children', 'color', 'size', 'style', 'width', 'height']);
+
+  var _ref2$reactIconBase = _ref2.reactIconBase;
+  var reactIconBase = _ref2$reactIconBase === undefined ? {} : _ref2$reactIconBase;
+
+  var computedSize = size || reactIconBase.size || '1em';
+  return _react2.default.createElement('svg', _extends({
+    children: children,
+    fill: 'currentColor',
+    preserveAspectRatio: 'xMidYMid meet',
+    height: height || computedSize,
+    width: width || computedSize
+  }, reactIconBase, props, {
+    style: _extends({
+      verticalAlign: 'middle',
+      color: color || reactIconBase.color
+    }, reactIconBase.style || {}, style)
+  }));
+};
+
+IconBase.propTypes = {
+  color: _propTypes2.default.string,
+  size: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
+  width: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
+  height: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
+  style: _propTypes2.default.object
+};
+
+IconBase.contextTypes = {
+  reactIconBase: _propTypes2.default.shape(IconBase.propTypes)
+};
+
+exports.default = IconBase;
+module.exports = exports['default'];
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright (c) 2013-present, Facebook, Inc.
  *
@@ -17917,7 +17985,7 @@ if (process.env.NODE_ENV !== 'production') {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17977,7 +18045,7 @@ module.exports = invariant;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
@@ -17989,12 +18057,12 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var pIE = __webpack_require__(92);
 var createDesc = __webpack_require__(63);
-var toIObject = __webpack_require__(29);
+var toIObject = __webpack_require__(30);
 var toPrimitive = __webpack_require__(42);
 var has = __webpack_require__(23);
 var IE8_DOM_DEFINE = __webpack_require__(207);
@@ -18011,7 +18079,7 @@ exports.f = __webpack_require__(10) ? gOPD : function getOwnPropertyDescriptor(O
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
@@ -18030,7 +18098,7 @@ module.exports = Object.getPrototypeOf || function (O) {
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports) {
 
 /**
@@ -18062,7 +18130,7 @@ module.exports = isArray;
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18131,7 +18199,7 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18164,7 +18232,7 @@ exports.default = function () {
 }();
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
@@ -18190,7 +18258,7 @@ module.exports = function (fn, that, length) {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -18201,7 +18269,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18215,74 +18283,6 @@ module.exports = function (method, arg) {
   });
 };
 
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _propTypes = __webpack_require__(27);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-var IconBase = function IconBase(_ref, _ref2) {
-  var children = _ref.children;
-  var color = _ref.color;
-  var size = _ref.size;
-  var style = _ref.style;
-  var width = _ref.width;
-  var height = _ref.height;
-
-  var props = _objectWithoutProperties(_ref, ['children', 'color', 'size', 'style', 'width', 'height']);
-
-  var _ref2$reactIconBase = _ref2.reactIconBase;
-  var reactIconBase = _ref2$reactIconBase === undefined ? {} : _ref2$reactIconBase;
-
-  var computedSize = size || reactIconBase.size || '1em';
-  return _react2.default.createElement('svg', _extends({
-    children: children,
-    fill: 'currentColor',
-    preserveAspectRatio: 'xMidYMid meet',
-    height: height || computedSize,
-    width: width || computedSize
-  }, reactIconBase, props, {
-    style: _extends({
-      verticalAlign: 'middle',
-      color: color || reactIconBase.color
-    }, reactIconBase.style || {}, style)
-  }));
-};
-
-IconBase.propTypes = {
-  color: _propTypes2.default.string,
-  size: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
-  width: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
-  height: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]),
-  style: _propTypes2.default.object
-};
-
-IconBase.contextTypes = {
-  reactIconBase: _propTypes2.default.shape(IconBase.propTypes)
-};
-
-exports.default = IconBase;
-module.exports = exports['default'];
 
 /***/ }),
 /* 39 */
@@ -18442,7 +18442,7 @@ module.exports = function (KEY, exec) {
 // 4 -> Array#every
 // 5 -> Array#find
 // 6 -> Array#findIndex
-var ctx = __webpack_require__(35);
+var ctx = __webpack_require__(36);
 var IObject = __webpack_require__(91);
 var toObject = __webpack_require__(14);
 var toLength = __webpack_require__(12);
@@ -18650,7 +18650,7 @@ if (__webpack_require__(10)) {
   var $export = __webpack_require__(0);
   var $typed = __webpack_require__(113);
   var $buffer = __webpack_require__(168);
-  var ctx = __webpack_require__(35);
+  var ctx = __webpack_require__(36);
   var anInstance = __webpack_require__(71);
   var propertyDesc = __webpack_require__(63);
   var hide = __webpack_require__(24);
@@ -18666,7 +18666,7 @@ if (__webpack_require__(10)) {
   var toObject = __webpack_require__(14);
   var isArrayIter = __webpack_require__(159);
   var create = __webpack_require__(68);
-  var getPrototypeOf = __webpack_require__(31);
+  var getPrototypeOf = __webpack_require__(32);
   var gOPN = __webpack_require__(69).f;
   var getIterFn = __webpack_require__(161);
   var uid = __webpack_require__(64);
@@ -18681,7 +18681,7 @@ if (__webpack_require__(10)) {
   var arrayFill = __webpack_require__(163);
   var arrayCopyWithin = __webpack_require__(223);
   var $DP = __webpack_require__(11);
-  var $GOPD = __webpack_require__(30);
+  var $GOPD = __webpack_require__(31);
   var dP = $DP.f;
   var gOPD = $GOPD.f;
   var RangeError = global.RangeError;
@@ -19398,7 +19398,7 @@ module.exports = function (key) {
 var arrayMap = __webpack_require__(266),
     baseIteratee = __webpack_require__(605),
     baseMap = __webpack_require__(661),
-    isArray = __webpack_require__(32);
+    isArray = __webpack_require__(33);
 
 /**
  * Creates an array of values by running each element in `collection` thru
@@ -19636,7 +19636,7 @@ module.exports = function (it, Constructor, name, forbiddenField) {
 /* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ctx = __webpack_require__(35);
+var ctx = __webpack_require__(36);
 var call = __webpack_require__(221);
 var isArrayIter = __webpack_require__(159);
 var anObject = __webpack_require__(3);
@@ -19693,7 +19693,7 @@ var _assign = __webpack_require__(48);
 
 var ReactCurrentOwner = __webpack_require__(119);
 
-var warning = __webpack_require__(33);
+var warning = __webpack_require__(34);
 var canDefineProperty = __webpack_require__(118);
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -20358,7 +20358,7 @@ module.exports = g;
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(36);
+var cof = __webpack_require__(37);
 // eslint-disable-next-line no-prototype-builtins
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
   return cof(it) == 'String' ? it.split('') : Object(it);
@@ -20377,7 +20377,7 @@ exports.f = {}.propertyIsEnumerable;
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(36);
+var cof = __webpack_require__(37);
 var TAG = __webpack_require__(8)('toStringTag');
 // ES3 wrong here
 var ARG = cof(function () { return arguments; }()) == 'Arguments';
@@ -20547,7 +20547,7 @@ module.exports = function (key) {
 
 // false -> Array#indexOf
 // true  -> Array#includes
-var toIObject = __webpack_require__(29);
+var toIObject = __webpack_require__(30);
 var toLength = __webpack_require__(12);
 var toAbsoluteIndex = __webpack_require__(67);
 module.exports = function (IS_INCLUDES) {
@@ -20582,7 +20582,7 @@ exports.f = Object.getOwnPropertySymbols;
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.2 IsArray(argument)
-var cof = __webpack_require__(36);
+var cof = __webpack_require__(37);
 module.exports = Array.isArray || function isArray(arg) {
   return cof(arg) == 'Array';
 };
@@ -20594,7 +20594,7 @@ module.exports = Array.isArray || function isArray(arg) {
 
 // 7.2.8 IsRegExp(argument)
 var isObject = __webpack_require__(6);
-var cof = __webpack_require__(36);
+var cof = __webpack_require__(37);
 var MATCH = __webpack_require__(8)('match');
 module.exports = function (it) {
   var isRegExp;
@@ -20870,7 +20870,7 @@ module.exports = function (COLLECTION) {
 // https://tc39.github.io/proposal-setmap-offrom/
 var $export = __webpack_require__(0);
 var aFunction = __webpack_require__(17);
-var ctx = __webpack_require__(35);
+var ctx = __webpack_require__(36);
 var forOf = __webpack_require__(72);
 
 module.exports = function (COLLECTION) {
@@ -21009,7 +21009,7 @@ var _classCallCheck2 = __webpack_require__(13);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(34);
+var _createClass2 = __webpack_require__(35);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
@@ -21041,11 +21041,11 @@ var _GradientPicker = __webpack_require__(751);
 
 var _GradientPicker2 = _interopRequireDefault(_GradientPicker);
 
-var _unlock = __webpack_require__(752);
+var _unlock = __webpack_require__(753);
 
 var _unlock2 = _interopRequireDefault(_unlock);
 
-var _lock = __webpack_require__(753);
+var _lock = __webpack_require__(754);
 
 var _lock2 = _interopRequireDefault(_lock);
 
@@ -21776,8 +21776,8 @@ module.exports = copyObject;
 
 
 if (process.env.NODE_ENV !== 'production') {
-  var invariant = __webpack_require__(28);
-  var warning = __webpack_require__(33);
+  var invariant = __webpack_require__(29);
+  var warning = __webpack_require__(34);
   var ReactPropTypesSecret = __webpack_require__(130);
   var loggedTypeFailures = {};
 }
@@ -22129,7 +22129,7 @@ module.exports = {
   set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
     function (test, buggy, set) {
       try {
-        set = __webpack_require__(35)(Function.call, __webpack_require__(30).f(Object.prototype, '__proto__').set, 2);
+        set = __webpack_require__(36)(Function.call, __webpack_require__(31).f(Object.prototype, '__proto__').set, 2);
         set(test, []);
         buggy = !(test instanceof Array);
       } catch (e) { buggy = true; }
@@ -22250,7 +22250,7 @@ var has = __webpack_require__(23);
 var Iterators = __webpack_require__(83);
 var $iterCreate = __webpack_require__(156);
 var setToStringTag = __webpack_require__(81);
-var getPrototypeOf = __webpack_require__(31);
+var getPrototypeOf = __webpack_require__(32);
 var ITERATOR = __webpack_require__(8)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
 var FF_ITERATOR = '@@iterator';
@@ -22451,7 +22451,7 @@ module.exports = function fill(value /* , start = 0, end = @length */) {
 var addToUnscopables = __webpack_require__(58);
 var step = __webpack_require__(224);
 var Iterators = __webpack_require__(83);
-var toIObject = __webpack_require__(29);
+var toIObject = __webpack_require__(30);
 
 // 22.1.3.4 Array.prototype.entries()
 // 22.1.3.13 Array.prototype.keys()
@@ -22487,7 +22487,7 @@ addToUnscopables('entries');
 /* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ctx = __webpack_require__(35);
+var ctx = __webpack_require__(36);
 var invoke = __webpack_require__(214);
 var html = __webpack_require__(147);
 var cel = __webpack_require__(143);
@@ -22530,7 +22530,7 @@ if (!setTask || !clearTask) {
     delete queue[id];
   };
   // Node.js 0.8-
-  if (__webpack_require__(36)(process) == 'process') {
+  if (__webpack_require__(37)(process) == 'process') {
     defer = function (id) {
       process.nextTick(ctx(run, id, 1));
     };
@@ -22582,7 +22582,7 @@ var macrotask = __webpack_require__(165).set;
 var Observer = global.MutationObserver || global.WebKitMutationObserver;
 var process = global.process;
 var Promise = global.Promise;
-var isNode = __webpack_require__(36)(process) == 'process';
+var isNode = __webpack_require__(37)(process) == 'process';
 
 module.exports = function () {
   var head, last, notify;
@@ -23226,8 +23226,8 @@ var _prodInvariant = __webpack_require__(85);
 
 var ReactCurrentOwner = __webpack_require__(119);
 
-var invariant = __webpack_require__(28);
-var warning = __webpack_require__(33);
+var invariant = __webpack_require__(29);
+var warning = __webpack_require__(34);
 
 function isNative(fn) {
   // Based on isNative() from Lodash
@@ -23920,7 +23920,7 @@ module.exports = getSymbols;
 /* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArray = __webpack_require__(32),
+var isArray = __webpack_require__(33),
     isSymbol = __webpack_require__(126);
 
 /** Used to match property names within property paths. */
@@ -24600,7 +24600,7 @@ exports.f = __webpack_require__(8);
 /***/ (function(module, exports, __webpack_require__) {
 
 var has = __webpack_require__(23);
-var toIObject = __webpack_require__(29);
+var toIObject = __webpack_require__(30);
 var arrayIndexOf = __webpack_require__(104)(false);
 var IE_PROTO = __webpack_require__(145)('IE_PROTO');
 
@@ -24642,7 +24642,7 @@ module.exports = __webpack_require__(10) ? Object.defineProperties : function de
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-var toIObject = __webpack_require__(29);
+var toIObject = __webpack_require__(30);
 var gOPN = __webpack_require__(69).f;
 var toString = {}.toString;
 
@@ -24790,7 +24790,7 @@ module.exports = 1 / $parseFloat(__webpack_require__(149) + '-0') !== -Infinity 
 /* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var cof = __webpack_require__(36);
+var cof = __webpack_require__(37);
 module.exports = function (it, msg) {
   if (typeof it != 'number' && cof(it) != 'Number') throw TypeError(msg);
   return +it;
@@ -25019,7 +25019,7 @@ module.exports = __webpack_require__(112)(MAP, function (get) {
 var dP = __webpack_require__(11).f;
 var create = __webpack_require__(68);
 var redefineAll = __webpack_require__(73);
-var ctx = __webpack_require__(35);
+var ctx = __webpack_require__(36);
 var anInstance = __webpack_require__(71);
 var forOf = __webpack_require__(72);
 var $iterDefine = __webpack_require__(155);
@@ -25382,7 +25382,7 @@ module.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
 var isArray = __webpack_require__(106);
 var isObject = __webpack_require__(6);
 var toLength = __webpack_require__(12);
-var ctx = __webpack_require__(35);
+var ctx = __webpack_require__(36);
 var IS_CONCAT_SPREADABLE = __webpack_require__(8)('isConcatSpreadable');
 
 function flattenIntoArray(target, original, source, sourceLen, start, depth, mapper, thisArg) {
@@ -25445,7 +25445,7 @@ module.exports = function (that, maxLength, fillString, left) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var getKeys = __webpack_require__(66);
-var toIObject = __webpack_require__(29);
+var toIObject = __webpack_require__(30);
 var isEnum = __webpack_require__(92).f;
 module.exports = function (isEntries) {
   return function (it) {
@@ -25654,7 +25654,7 @@ var _classCallCheck2 = __webpack_require__(13);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(34);
+var _createClass2 = __webpack_require__(35);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
@@ -26071,7 +26071,7 @@ var ReactNoopUpdateQueue = __webpack_require__(249);
 
 var canDefineProperty = __webpack_require__(118);
 var emptyObject = __webpack_require__(78);
-var invariant = __webpack_require__(28);
+var invariant = __webpack_require__(29);
 var lowPriorityWarning = __webpack_require__(172);
 
 /**
@@ -26211,7 +26211,7 @@ module.exports = {
 
 
 
-var warning = __webpack_require__(33);
+var warning = __webpack_require__(34);
 
 function warnNoop(publicInstance, callerName) {
   if (process.env.NODE_ENV !== 'production') {
@@ -26392,7 +26392,7 @@ var checkReactTypeSpec = __webpack_require__(568);
 
 var canDefineProperty = __webpack_require__(118);
 var getIteratorFn = __webpack_require__(251);
-var warning = __webpack_require__(33);
+var warning = __webpack_require__(34);
 var lowPriorityWarning = __webpack_require__(172);
 
 function getDeclarationErrorAddendum() {
@@ -26636,8 +26636,8 @@ module.exports = ReactElementValidator;
 
 
 var emptyFunction = __webpack_require__(49);
-var invariant = __webpack_require__(28);
-var warning = __webpack_require__(33);
+var invariant = __webpack_require__(29);
+var warning = __webpack_require__(34);
 var assign = __webpack_require__(48);
 
 var ReactPropTypesSecret = __webpack_require__(130);
@@ -27188,7 +27188,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactIconBase = __webpack_require__(38);
+var _reactIconBase = __webpack_require__(27);
 
 var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
 
@@ -27392,7 +27392,7 @@ module.exports = baseForOwn;
 
 var baseTimes = __webpack_require__(596),
     isArguments = __webpack_require__(259),
-    isArray = __webpack_require__(32),
+    isArray = __webpack_require__(33),
     isBuffer = __webpack_require__(175),
     isIndex = __webpack_require__(260),
     isTypedArray = __webpack_require__(261);
@@ -27924,7 +27924,7 @@ module.exports = getAllKeys;
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayPush = __webpack_require__(275),
-    isArray = __webpack_require__(32);
+    isArray = __webpack_require__(33);
 
 /**
  * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
@@ -28145,7 +28145,7 @@ module.exports = baseGet;
 /* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArray = __webpack_require__(32),
+var isArray = __webpack_require__(33),
     isKey = __webpack_require__(184),
     stringToPath = __webpack_require__(650),
     toString = __webpack_require__(653);
@@ -28848,7 +28848,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactIconBase = __webpack_require__(38);
+var _reactIconBase = __webpack_require__(27);
 
 var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
 
@@ -28946,8 +28946,8 @@ if (process.env.NODE_ENV !== "production") {
 
 var _assign = __webpack_require__(48);
 var emptyObject = __webpack_require__(78);
-var invariant = __webpack_require__(28);
-var warning = __webpack_require__(33);
+var invariant = __webpack_require__(29);
+var warning = __webpack_require__(34);
 var emptyFunction = __webpack_require__(49);
 var checkPropTypes = __webpack_require__(129);
 
@@ -30602,8 +30602,8 @@ if (process.env.NODE_ENV !== "production") {
 'use strict';
 
 var React = __webpack_require__(1);
-var invariant = __webpack_require__(28);
-var warning = __webpack_require__(33);
+var invariant = __webpack_require__(29);
+var warning = __webpack_require__(34);
 var ExecutionEnvironment = __webpack_require__(186);
 var _assign = __webpack_require__(48);
 var emptyFunction = __webpack_require__(49);
@@ -46156,7 +46156,7 @@ var _classCallCheck2 = __webpack_require__(13);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(34);
+var _createClass2 = __webpack_require__(35);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
@@ -46198,13 +46198,13 @@ var _Editor = __webpack_require__(579);
 
 var _Editor2 = _interopRequireDefault(_Editor);
 
-var _Overlay = __webpack_require__(759);
+var _Overlay = __webpack_require__(762);
 
 var _Overlay2 = _interopRequireDefault(_Overlay);
 
 var _lodash = __webpack_require__(15);
 
-__webpack_require__(760);
+__webpack_require__(763);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -47470,12 +47470,12 @@ var wksDefine = __webpack_require__(144);
 var enumKeys = __webpack_require__(340);
 var isArray = __webpack_require__(106);
 var anObject = __webpack_require__(3);
-var toIObject = __webpack_require__(29);
+var toIObject = __webpack_require__(30);
 var toPrimitive = __webpack_require__(42);
 var createDesc = __webpack_require__(63);
 var _create = __webpack_require__(68);
 var gOPNExt = __webpack_require__(211);
-var $GOPD = __webpack_require__(30);
+var $GOPD = __webpack_require__(31);
 var $DP = __webpack_require__(11);
 var $keys = __webpack_require__(66);
 var gOPD = $GOPD.f;
@@ -47741,8 +47741,8 @@ $export($export.S + $export.F * !__webpack_require__(10), 'Object', { defineProp
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
-var toIObject = __webpack_require__(29);
-var $getOwnPropertyDescriptor = __webpack_require__(30).f;
+var toIObject = __webpack_require__(30);
+var $getOwnPropertyDescriptor = __webpack_require__(31).f;
 
 __webpack_require__(45)('getOwnPropertyDescriptor', function () {
   return function getOwnPropertyDescriptor(it, key) {
@@ -47757,7 +47757,7 @@ __webpack_require__(45)('getOwnPropertyDescriptor', function () {
 
 // 19.1.2.9 Object.getPrototypeOf(O)
 var toObject = __webpack_require__(14);
-var $getPrototypeOf = __webpack_require__(31);
+var $getPrototypeOf = __webpack_require__(32);
 
 __webpack_require__(45)('getPrototypeOf', function () {
   return function getPrototypeOf(it) {
@@ -47973,7 +47973,7 @@ NAME in FProto || __webpack_require__(10) && dP(FProto, NAME, {
 "use strict";
 
 var isObject = __webpack_require__(6);
-var getPrototypeOf = __webpack_require__(31);
+var getPrototypeOf = __webpack_require__(32);
 var HAS_INSTANCE = __webpack_require__(8)('hasInstance');
 var FunctionProto = Function.prototype;
 // 19.2.3.6 Function.prototype[@@hasInstance](V)
@@ -48014,12 +48014,12 @@ $export($export.G + $export.F * (parseFloat != $parseFloat), { parseFloat: $pars
 
 var global = __webpack_require__(4);
 var has = __webpack_require__(23);
-var cof = __webpack_require__(36);
+var cof = __webpack_require__(37);
 var inheritIfRequired = __webpack_require__(150);
 var toPrimitive = __webpack_require__(42);
 var fails = __webpack_require__(5);
 var gOPN = __webpack_require__(69).f;
-var gOPD = __webpack_require__(30).f;
+var gOPD = __webpack_require__(31).f;
 var dP = __webpack_require__(11).f;
 var $trim = __webpack_require__(82).trim;
 var NUMBER = 'Number';
@@ -48644,7 +48644,7 @@ $export($export.S + $export.F * (!!$fromCodePoint && $fromCodePoint.length != 1)
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
-var toIObject = __webpack_require__(29);
+var toIObject = __webpack_require__(30);
 var toLength = __webpack_require__(12);
 
 $export($export.S, 'String', {
@@ -49122,7 +49122,7 @@ $export($export.S, 'Array', { isArray: __webpack_require__(106) });
 
 "use strict";
 
-var ctx = __webpack_require__(35);
+var ctx = __webpack_require__(36);
 var $export = __webpack_require__(0);
 var toObject = __webpack_require__(14);
 var call = __webpack_require__(221);
@@ -49194,11 +49194,11 @@ $export($export.S + $export.F * __webpack_require__(5)(function () {
 
 // 22.1.3.13 Array.prototype.join(separator)
 var $export = __webpack_require__(0);
-var toIObject = __webpack_require__(29);
+var toIObject = __webpack_require__(30);
 var arrayJoin = [].join;
 
 // fallback for not array-like strings
-$export($export.P + $export.F * (__webpack_require__(91) != Object || !__webpack_require__(37)(arrayJoin)), 'Array', {
+$export($export.P + $export.F * (__webpack_require__(91) != Object || !__webpack_require__(38)(arrayJoin)), 'Array', {
   join: function join(separator) {
     return arrayJoin.call(toIObject(this), separator === undefined ? ',' : separator);
   }
@@ -49213,7 +49213,7 @@ $export($export.P + $export.F * (__webpack_require__(91) != Object || !__webpack
 
 var $export = __webpack_require__(0);
 var html = __webpack_require__(147);
-var cof = __webpack_require__(36);
+var cof = __webpack_require__(37);
 var toAbsoluteIndex = __webpack_require__(67);
 var toLength = __webpack_require__(12);
 var arraySlice = [].slice;
@@ -49260,7 +49260,7 @@ $export($export.P + $export.F * (fails(function () {
   // V8 bug
   test.sort(null);
   // Old WebKit
-}) || !__webpack_require__(37)($sort)), 'Array', {
+}) || !__webpack_require__(38)($sort)), 'Array', {
   // 22.1.3.25 Array.prototype.sort(comparefn)
   sort: function sort(comparefn) {
     return comparefn === undefined
@@ -49278,7 +49278,7 @@ $export($export.P + $export.F * (fails(function () {
 
 var $export = __webpack_require__(0);
 var $forEach = __webpack_require__(46)(0);
-var STRICT = __webpack_require__(37)([].forEach, true);
+var STRICT = __webpack_require__(38)([].forEach, true);
 
 $export($export.P + $export.F * !STRICT, 'Array', {
   // 22.1.3.10 / 15.4.4.18 Array.prototype.forEach(callbackfn [, thisArg])
@@ -49319,7 +49319,7 @@ module.exports = function (original) {
 var $export = __webpack_require__(0);
 var $map = __webpack_require__(46)(1);
 
-$export($export.P + $export.F * !__webpack_require__(37)([].map, true), 'Array', {
+$export($export.P + $export.F * !__webpack_require__(38)([].map, true), 'Array', {
   // 22.1.3.15 / 15.4.4.19 Array.prototype.map(callbackfn [, thisArg])
   map: function map(callbackfn /* , thisArg */) {
     return $map(this, callbackfn, arguments[1]);
@@ -49336,7 +49336,7 @@ $export($export.P + $export.F * !__webpack_require__(37)([].map, true), 'Array',
 var $export = __webpack_require__(0);
 var $filter = __webpack_require__(46)(2);
 
-$export($export.P + $export.F * !__webpack_require__(37)([].filter, true), 'Array', {
+$export($export.P + $export.F * !__webpack_require__(38)([].filter, true), 'Array', {
   // 22.1.3.7 / 15.4.4.20 Array.prototype.filter(callbackfn [, thisArg])
   filter: function filter(callbackfn /* , thisArg */) {
     return $filter(this, callbackfn, arguments[1]);
@@ -49353,7 +49353,7 @@ $export($export.P + $export.F * !__webpack_require__(37)([].filter, true), 'Arra
 var $export = __webpack_require__(0);
 var $some = __webpack_require__(46)(3);
 
-$export($export.P + $export.F * !__webpack_require__(37)([].some, true), 'Array', {
+$export($export.P + $export.F * !__webpack_require__(38)([].some, true), 'Array', {
   // 22.1.3.23 / 15.4.4.17 Array.prototype.some(callbackfn [, thisArg])
   some: function some(callbackfn /* , thisArg */) {
     return $some(this, callbackfn, arguments[1]);
@@ -49370,7 +49370,7 @@ $export($export.P + $export.F * !__webpack_require__(37)([].some, true), 'Array'
 var $export = __webpack_require__(0);
 var $every = __webpack_require__(46)(4);
 
-$export($export.P + $export.F * !__webpack_require__(37)([].every, true), 'Array', {
+$export($export.P + $export.F * !__webpack_require__(38)([].every, true), 'Array', {
   // 22.1.3.5 / 15.4.4.16 Array.prototype.every(callbackfn [, thisArg])
   every: function every(callbackfn /* , thisArg */) {
     return $every(this, callbackfn, arguments[1]);
@@ -49387,7 +49387,7 @@ $export($export.P + $export.F * !__webpack_require__(37)([].every, true), 'Array
 var $export = __webpack_require__(0);
 var $reduce = __webpack_require__(222);
 
-$export($export.P + $export.F * !__webpack_require__(37)([].reduce, true), 'Array', {
+$export($export.P + $export.F * !__webpack_require__(38)([].reduce, true), 'Array', {
   // 22.1.3.18 / 15.4.4.21 Array.prototype.reduce(callbackfn [, initialValue])
   reduce: function reduce(callbackfn /* , initialValue */) {
     return $reduce(this, callbackfn, arguments.length, arguments[1], false);
@@ -49404,7 +49404,7 @@ $export($export.P + $export.F * !__webpack_require__(37)([].reduce, true), 'Arra
 var $export = __webpack_require__(0);
 var $reduce = __webpack_require__(222);
 
-$export($export.P + $export.F * !__webpack_require__(37)([].reduceRight, true), 'Array', {
+$export($export.P + $export.F * !__webpack_require__(38)([].reduceRight, true), 'Array', {
   // 22.1.3.19 / 15.4.4.22 Array.prototype.reduceRight(callbackfn [, initialValue])
   reduceRight: function reduceRight(callbackfn /* , initialValue */) {
     return $reduce(this, callbackfn, arguments.length, arguments[1], true);
@@ -49423,7 +49423,7 @@ var $indexOf = __webpack_require__(104)(false);
 var $native = [].indexOf;
 var NEGATIVE_ZERO = !!$native && 1 / [1].indexOf(1, -0) < 0;
 
-$export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(37)($native)), 'Array', {
+$export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(38)($native)), 'Array', {
   // 22.1.3.11 / 15.4.4.14 Array.prototype.indexOf(searchElement [, fromIndex])
   indexOf: function indexOf(searchElement /* , fromIndex = 0 */) {
     return NEGATIVE_ZERO
@@ -49441,13 +49441,13 @@ $export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(37)($nati
 "use strict";
 
 var $export = __webpack_require__(0);
-var toIObject = __webpack_require__(29);
+var toIObject = __webpack_require__(30);
 var toInteger = __webpack_require__(44);
 var toLength = __webpack_require__(12);
 var $native = [].lastIndexOf;
 var NEGATIVE_ZERO = !!$native && 1 / [1].lastIndexOf(1, -0) < 0;
 
-$export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(37)($native)), 'Array', {
+$export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(38)($native)), 'Array', {
   // 22.1.3.14 / 15.4.4.15 Array.prototype.lastIndexOf(searchElement [, fromIndex])
   lastIndexOf: function lastIndexOf(searchElement /* , fromIndex = @[*-1] */) {
     // convert -0 to +0
@@ -49752,7 +49752,7 @@ __webpack_require__(110)('split', 2, function (defined, SPLIT, $split) {
 
 var LIBRARY = __webpack_require__(65);
 var global = __webpack_require__(4);
-var ctx = __webpack_require__(35);
+var ctx = __webpack_require__(36);
 var classof = __webpack_require__(93);
 var $export = __webpack_require__(0);
 var isObject = __webpack_require__(6);
@@ -50324,7 +50324,7 @@ $export($export.S + $export.F * __webpack_require__(5)(function () {
 
 // 26.1.4 Reflect.deleteProperty(target, propertyKey)
 var $export = __webpack_require__(0);
-var gOPD = __webpack_require__(30).f;
+var gOPD = __webpack_require__(31).f;
 var anObject = __webpack_require__(3);
 
 $export($export.S, 'Reflect', {
@@ -50373,8 +50373,8 @@ $export($export.S, 'Reflect', {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.6 Reflect.get(target, propertyKey [, receiver])
-var gOPD = __webpack_require__(30);
-var getPrototypeOf = __webpack_require__(31);
+var gOPD = __webpack_require__(31);
+var getPrototypeOf = __webpack_require__(32);
 var has = __webpack_require__(23);
 var $export = __webpack_require__(0);
 var isObject = __webpack_require__(6);
@@ -50400,7 +50400,7 @@ $export($export.S, 'Reflect', { get: get });
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.7 Reflect.getOwnPropertyDescriptor(target, propertyKey)
-var gOPD = __webpack_require__(30);
+var gOPD = __webpack_require__(31);
 var $export = __webpack_require__(0);
 var anObject = __webpack_require__(3);
 
@@ -50417,7 +50417,7 @@ $export($export.S, 'Reflect', {
 
 // 26.1.8 Reflect.getPrototypeOf(target)
 var $export = __webpack_require__(0);
-var getProto = __webpack_require__(31);
+var getProto = __webpack_require__(32);
 var anObject = __webpack_require__(3);
 
 $export($export.S, 'Reflect', {
@@ -50496,8 +50496,8 @@ $export($export.S, 'Reflect', {
 
 // 26.1.13 Reflect.set(target, propertyKey, V [, receiver])
 var dP = __webpack_require__(11);
-var gOPD = __webpack_require__(30);
-var getPrototypeOf = __webpack_require__(31);
+var gOPD = __webpack_require__(31);
+var getPrototypeOf = __webpack_require__(32);
 var has = __webpack_require__(23);
 var $export = __webpack_require__(0);
 var createDesc = __webpack_require__(63);
@@ -50761,8 +50761,8 @@ __webpack_require__(144)('observable');
 // https://github.com/tc39/proposal-object-getownpropertydescriptors
 var $export = __webpack_require__(0);
 var ownKeys = __webpack_require__(234);
-var toIObject = __webpack_require__(29);
-var gOPD = __webpack_require__(30);
+var toIObject = __webpack_require__(30);
+var gOPD = __webpack_require__(31);
 var createProperty = __webpack_require__(160);
 
 $export($export.S, 'Object', {
@@ -50859,8 +50859,8 @@ __webpack_require__(10) && $export($export.P + __webpack_require__(114), 'Object
 var $export = __webpack_require__(0);
 var toObject = __webpack_require__(14);
 var toPrimitive = __webpack_require__(42);
-var getPrototypeOf = __webpack_require__(31);
-var getOwnPropertyDescriptor = __webpack_require__(30).f;
+var getPrototypeOf = __webpack_require__(32);
+var getOwnPropertyDescriptor = __webpack_require__(31).f;
 
 // B.2.2.4 Object.prototype.__lookupGetter__(P)
 __webpack_require__(10) && $export($export.P + __webpack_require__(114), 'Object', {
@@ -50884,8 +50884,8 @@ __webpack_require__(10) && $export($export.P + __webpack_require__(114), 'Object
 var $export = __webpack_require__(0);
 var toObject = __webpack_require__(14);
 var toPrimitive = __webpack_require__(42);
-var getPrototypeOf = __webpack_require__(31);
-var getOwnPropertyDescriptor = __webpack_require__(30).f;
+var getPrototypeOf = __webpack_require__(32);
+var getOwnPropertyDescriptor = __webpack_require__(31).f;
 
 // B.2.2.5 Object.prototype.__lookupSetter__(P)
 __webpack_require__(10) && $export($export.P + __webpack_require__(114), 'Object', {
@@ -51010,7 +51010,7 @@ $export($export.S, 'System', { global: __webpack_require__(4) });
 
 // https://github.com/ljharb/proposal-is-error
 var $export = __webpack_require__(0);
-var cof = __webpack_require__(36);
+var cof = __webpack_require__(37);
 
 $export($export.S, 'Error', {
   isError: function isError(it) {
@@ -51287,7 +51287,7 @@ metadata.exp({ deleteMetadata: function deleteMetadata(metadataKey, target /* , 
 
 var metadata = __webpack_require__(52);
 var anObject = __webpack_require__(3);
-var getPrototypeOf = __webpack_require__(31);
+var getPrototypeOf = __webpack_require__(32);
 var ordinaryHasOwnMetadata = metadata.has;
 var ordinaryGetOwnMetadata = metadata.get;
 var toMetaKey = metadata.key;
@@ -51312,7 +51312,7 @@ var Set = __webpack_require__(230);
 var from = __webpack_require__(239);
 var metadata = __webpack_require__(52);
 var anObject = __webpack_require__(3);
-var getPrototypeOf = __webpack_require__(31);
+var getPrototypeOf = __webpack_require__(32);
 var ordinaryOwnMetadataKeys = metadata.keys;
 var toMetaKey = metadata.key;
 
@@ -51364,7 +51364,7 @@ metadata.exp({ getOwnMetadataKeys: function getOwnMetadataKeys(target /* , targe
 
 var metadata = __webpack_require__(52);
 var anObject = __webpack_require__(3);
-var getPrototypeOf = __webpack_require__(31);
+var getPrototypeOf = __webpack_require__(32);
 var ordinaryHasOwnMetadata = metadata.has;
 var toMetaKey = metadata.key;
 
@@ -51424,7 +51424,7 @@ $metadata.exp({ metadata: function metadata(metadataKey, metadataValue) {
 var $export = __webpack_require__(0);
 var microtask = __webpack_require__(166)();
 var process = __webpack_require__(4).process;
-var isNode = __webpack_require__(36)(process) == 'process';
+var isNode = __webpack_require__(37)(process) == 'process';
 
 $export($export.G, {
   asap: function asap(fn) {
@@ -53570,7 +53570,7 @@ var _classCallCheck2 = __webpack_require__(13);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(34);
+var _createClass2 = __webpack_require__(35);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
@@ -54179,7 +54179,7 @@ module.exports = ReactChildren;
 
 var _prodInvariant = __webpack_require__(85);
 
-var invariant = __webpack_require__(28);
+var invariant = __webpack_require__(29);
 
 /**
  * Static poolers. Several custom versions for each potential number of
@@ -54298,9 +54298,9 @@ var ReactCurrentOwner = __webpack_require__(119);
 var REACT_ELEMENT_TYPE = __webpack_require__(250);
 
 var getIteratorFn = __webpack_require__(251);
-var invariant = __webpack_require__(28);
+var invariant = __webpack_require__(29);
 var KeyEscapeUtils = __webpack_require__(566);
-var warning = __webpack_require__(33);
+var warning = __webpack_require__(34);
 
 var SEPARATOR = '.';
 var SUBSEPARATOR = ':';
@@ -54712,8 +54712,8 @@ var _prodInvariant = __webpack_require__(85);
 var ReactPropTypeLocationNames = __webpack_require__(569);
 var ReactPropTypesSecret = __webpack_require__(570);
 
-var invariant = __webpack_require__(28);
-var warning = __webpack_require__(33);
+var invariant = __webpack_require__(29);
+var warning = __webpack_require__(34);
 
 var ReactComponentTreeHook;
 
@@ -54941,10 +54941,10 @@ module.exports = factory(Component, isValidElement, ReactNoopUpdateQueue);
 var _assign = __webpack_require__(48);
 
 var emptyObject = __webpack_require__(78);
-var _invariant = __webpack_require__(28);
+var _invariant = __webpack_require__(29);
 
 if (process.env.NODE_ENV !== 'production') {
-  var warning = __webpack_require__(33);
+  var warning = __webpack_require__(34);
 }
 
 var MIXINS_KEY = 'mixins';
@@ -55819,7 +55819,7 @@ var _prodInvariant = __webpack_require__(85);
 
 var ReactElement = __webpack_require__(74);
 
-var invariant = __webpack_require__(28);
+var invariant = __webpack_require__(29);
 
 /**
  * Returns the first child in a collection of children and verifies that there
@@ -55858,7 +55858,7 @@ module.exports = onlyChild;
 
 
 var emptyFunction = __webpack_require__(49);
-var invariant = __webpack_require__(28);
+var invariant = __webpack_require__(29);
 var ReactPropTypesSecret = __webpack_require__(130);
 
 module.exports = function() {
@@ -55927,7 +55927,7 @@ var _classCallCheck2 = __webpack_require__(13);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(34);
+var _createClass2 = __webpack_require__(35);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
@@ -56050,7 +56050,7 @@ var _classCallCheck2 = __webpack_require__(13);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(34);
+var _createClass2 = __webpack_require__(35);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
@@ -56108,19 +56108,19 @@ var _Border = __webpack_require__(587);
 
 var _Border2 = _interopRequireDefault(_Border);
 
-var _Selector = __webpack_require__(754);
+var _Selector = __webpack_require__(755);
 
 var _Selector2 = _interopRequireDefault(_Selector);
 
-var _Spacing = __webpack_require__(756);
+var _Spacing = __webpack_require__(757);
 
 var _Spacing2 = _interopRequireDefault(_Spacing);
 
-var _Styles = __webpack_require__(757);
+var _Styles = __webpack_require__(758);
 
 var _Styles2 = _interopRequireDefault(_Styles);
 
-var _Typography = __webpack_require__(758);
+var _Typography = __webpack_require__(761);
 
 var _Typography2 = _interopRequireDefault(_Typography);
 
@@ -56440,7 +56440,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactIconBase = __webpack_require__(38);
+var _reactIconBase = __webpack_require__(27);
 
 var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
 
@@ -56478,7 +56478,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactIconBase = __webpack_require__(38);
+var _reactIconBase = __webpack_require__(27);
 
 var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
 
@@ -56516,7 +56516,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactIconBase = __webpack_require__(38);
+var _reactIconBase = __webpack_require__(27);
 
 var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
 
@@ -56554,7 +56554,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactIconBase = __webpack_require__(38);
+var _reactIconBase = __webpack_require__(27);
 
 var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
 
@@ -56592,7 +56592,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactIconBase = __webpack_require__(38);
+var _reactIconBase = __webpack_require__(27);
 
 var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
 
@@ -56630,7 +56630,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactIconBase = __webpack_require__(38);
+var _reactIconBase = __webpack_require__(27);
 
 var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
 
@@ -56993,7 +56993,7 @@ var _classCallCheck2 = __webpack_require__(13);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(34);
+var _createClass2 = __webpack_require__(35);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
@@ -57341,7 +57341,7 @@ exports.default = flattenNames;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(75),
-    isArray = __webpack_require__(32),
+    isArray = __webpack_require__(33),
     isObjectLike = __webpack_require__(76);
 
 /** `Object#toString` result references. */
@@ -57817,7 +57817,7 @@ module.exports = isPlainObject;
 var baseMatches = __webpack_require__(606),
     baseMatchesProperty = __webpack_require__(648),
     identity = __webpack_require__(265),
-    isArray = __webpack_require__(32),
+    isArray = __webpack_require__(33),
     property = __webpack_require__(658);
 
 /**
@@ -58646,7 +58646,7 @@ var Stack = __webpack_require__(179),
     equalByTag = __webpack_require__(640),
     equalObjects = __webpack_require__(641),
     getTag = __webpack_require__(277),
-    isArray = __webpack_require__(32),
+    isArray = __webpack_require__(33),
     isBuffer = __webpack_require__(175),
     isTypedArray = __webpack_require__(261);
 
@@ -59441,7 +59441,7 @@ module.exports = toString;
 
 var Symbol = __webpack_require__(94),
     arrayMap = __webpack_require__(266),
-    isArray = __webpack_require__(32),
+    isArray = __webpack_require__(33),
     isSymbol = __webpack_require__(126);
 
 /** Used as references for various `Number` constants. */
@@ -59543,7 +59543,7 @@ module.exports = baseHasIn;
 
 var castPath = __webpack_require__(281),
     isArguments = __webpack_require__(259),
-    isArray = __webpack_require__(32),
+    isArray = __webpack_require__(33),
     isIndex = __webpack_require__(260),
     isLength = __webpack_require__(176),
     toKey = __webpack_require__(127);
@@ -59829,7 +59829,7 @@ var Stack = __webpack_require__(179),
     initCloneArray = __webpack_require__(676),
     initCloneByTag = __webpack_require__(677),
     initCloneObject = __webpack_require__(686),
-    isArray = __webpack_require__(32),
+    isArray = __webpack_require__(33),
     isBuffer = __webpack_require__(175),
     isObject = __webpack_require__(53),
     keys = __webpack_require__(95);
@@ -61587,7 +61587,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(27);
+var _propTypes = __webpack_require__(28);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -62088,7 +62088,7 @@ module.exports = __webpack_require__(705);
 var arrayEach = __webpack_require__(283),
     baseEach = __webpack_require__(282),
     castFunction = __webpack_require__(264),
-    isArray = __webpack_require__(32);
+    isArray = __webpack_require__(33);
 
 /**
  * Iterates over elements of `collection` and invokes `iteratee` for each element.
@@ -63545,7 +63545,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(27);
+var _propTypes = __webpack_require__(28);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -63770,7 +63770,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(27);
+var _propTypes = __webpack_require__(28);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -63953,7 +63953,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(27);
+var _propTypes = __webpack_require__(28);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -64600,7 +64600,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(27);
+var _propTypes = __webpack_require__(28);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -64941,7 +64941,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(27);
+var _propTypes = __webpack_require__(28);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -65453,7 +65453,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(27);
+var _propTypes = __webpack_require__(28);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -66124,7 +66124,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(27);
+var _propTypes = __webpack_require__(28);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -66502,7 +66502,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(27);
+var _propTypes = __webpack_require__(28);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -66900,7 +66900,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(27);
+var _propTypes = __webpack_require__(28);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -67199,7 +67199,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(27);
+var _propTypes = __webpack_require__(28);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -67415,7 +67415,7 @@ var _classCallCheck2 = __webpack_require__(13);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(34);
+var _createClass2 = __webpack_require__(35);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
@@ -67792,7 +67792,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var React = __webpack_require__(1);
-var PropTypes = __webpack_require__(27);
+var PropTypes = __webpack_require__(28);
 
 var _require = __webpack_require__(131),
     findDOMNode = _require.findDOMNode;
@@ -68988,7 +68988,7 @@ var _classCallCheck2 = __webpack_require__(13);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(34);
+var _createClass2 = __webpack_require__(35);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
@@ -69010,7 +69010,7 @@ var _closeCircled = __webpack_require__(293);
 
 var _closeCircled2 = _interopRequireDefault(_closeCircled);
 
-var _GradientParser = __webpack_require__(768);
+var _GradientParser = __webpack_require__(752);
 
 var _GradientParser2 = _interopRequireDefault(_GradientParser);
 
@@ -69607,13 +69607,94 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _classCallCheck2 = __webpack_require__(13);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/**
+ * Class for parsing CSS Gradient rule
+ *
+ * @author jason.xie@victheme.com
+ */
+var GradientParser = function GradientParser(rule) {
+    (0, _classCallCheck3['default'])(this, GradientParser);
+
+    _initialiseProps.call(this);
+
+    return this.parseGradient(rule);
+};
+
+var _initialiseProps = function _initialiseProps() {
+    var _this = this;
+
+    this.tokens = {
+        shape: /(closest\-side|closest\-corner|farthest\-side|farthest\-corner|contain|cover|circle|ellipse)/i,
+        mode: /(linear|radial)/i,
+        repeat: /(repeating)/i,
+        position: /at (.*?),/i,
+        angle: /\((.*)deg/i,
+        size: /\((.*),/i,
+        sizeWithPosition: /\((.*) at/i,
+        color: /^(#[0-9a-f]{6}|#[0-9a-f]{3}|#(?:[0-9a-f]{2}){2,4}|(rgb|hsl)a?\((-?\d+%?[,\s]+){2,3}\s*[\d\.]+%?\))/i,
+        stops: /, (?![^(]*\))(?![^"']*["'](?:[^"']*["'][^"']*["'])*[^"']*$)/i
+    };
+
+    this.parseGradient = function (rule) {
+        var tokens = _this.tokens;
+
+        var angle = rule.match(tokens['angle']);
+        var shape = rule.match(tokens['shape']);
+        var position = rule.match(tokens['position']);
+        var size = rule.match(tokens['size']);
+        var sizeWithPosition = rule.match(tokens['sizeWithPosition']);
+        var stops = rule.substring(rule.indexOf('(') + 1, rule.lastIndexOf(')')).split(tokens['stops']);
+        var mode = rule.match(tokens['mode']);
+        var repeat = rule.match(tokens['repeat']);
+
+        var results = {
+            mode: mode && mode[1] ? mode[1] : '',
+            repeat: repeat && repeat[1] ? 'repeat' : 'none',
+            rotate: angle && angle[1] ? parseInt(angle[1]) : 0,
+            shape: shape && shape[1] ? shape[1] : 'custom-size',
+            position: position && position[1] ? position[1] : '',
+            size: position && position[1] ? sizeWithPosition && sizeWithPosition[1] ? sizeWithPosition[1] : '' : size && size[1] ? size[1] : '',
+            stops: []
+        };
+
+        stops && forEach(stops, function (stop) {
+            var color = stop.trim().match(tokens['color']);
+            color && color[1] && results.stops.push({
+                color: color[1],
+                position: parseInt(stop.replace(color[1], '').replace('%', '').trim())
+            });
+        });
+
+        return results;
+    };
+};
+
+exports['default'] = GradientParser;
+
+/***/ }),
+/* 753 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactIconBase = __webpack_require__(38);
+var _reactIconBase = __webpack_require__(27);
 
 var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
 
@@ -69635,7 +69716,7 @@ exports.default = FaUnlock;
 module.exports = exports['default'];
 
 /***/ }),
-/* 753 */
+/* 754 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69651,7 +69732,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactIconBase = __webpack_require__(38);
+var _reactIconBase = __webpack_require__(27);
 
 var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
 
@@ -69673,7 +69754,7 @@ exports.default = FaLock;
 module.exports = exports['default'];
 
 /***/ }),
-/* 754 */
+/* 755 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69691,7 +69772,7 @@ var _classCallCheck2 = __webpack_require__(13);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(34);
+var _createClass2 = __webpack_require__(35);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
@@ -69707,7 +69788,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _chevronRight = __webpack_require__(755);
+var _chevronRight = __webpack_require__(756);
 
 var _chevronRight2 = _interopRequireDefault(_chevronRight);
 
@@ -69955,7 +70036,7 @@ var Selector = function (_React$Component) {
 exports['default'] = Selector;
 
 /***/ }),
-/* 755 */
+/* 756 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69971,7 +70052,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactIconBase = __webpack_require__(38);
+var _reactIconBase = __webpack_require__(27);
 
 var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
 
@@ -69993,7 +70074,7 @@ exports.default = IoChevronRight;
 module.exports = exports['default'];
 
 /***/ }),
-/* 756 */
+/* 757 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70080,7 +70161,7 @@ var Spacing = function (_BasePanel) {
 exports['default'] = Spacing;
 
 /***/ }),
-/* 757 */
+/* 758 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70114,11 +70195,11 @@ var _Panel = __webpack_require__(120);
 
 var _Panel2 = _interopRequireDefault(_Panel);
 
-var _toggleOn = __webpack_require__(767);
+var _toggleOn = __webpack_require__(759);
 
 var _toggleOn2 = _interopRequireDefault(_toggleOn);
 
-var _toggleOff = __webpack_require__(766);
+var _toggleOff = __webpack_require__(760);
 
 var _toggleOff2 = _interopRequireDefault(_toggleOff);
 
@@ -70263,7 +70344,83 @@ var Styles = function (_BasePanel) {
 exports['default'] = Styles;
 
 /***/ }),
-/* 758 */
+/* 759 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactIconBase = __webpack_require__(27);
+
+var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var FaToggleOn = function FaToggleOn(props) {
+    return _react2.default.createElement(
+        _reactIconBase2.default,
+        _extends({ viewBox: '0 0 40 40' }, props),
+        _react2.default.createElement(
+            'g',
+            null,
+            _react2.default.createElement('path', { d: 'm0 20q0-2.5 1-4.8t2.6-4 4-2.6 4.8-1h14.9q2.6 0 4.9 1t3.9 2.6 2.7 4 1 4.8-1 4.8-2.7 4-3.9 2.6-4.9 1h-14.9q-2.5 0-4.8-1t-4-2.6-2.6-4-1-4.8z m27.3 9.9q2 0 3.9-0.7t3.2-2.2 2.1-3.1 0.8-3.9-0.8-3.9-2.1-3.1-3.2-2.2-3.9-0.7-3.8 0.7-3.2 2.2-2.1 3.1-0.8 3.9 0.8 3.9 2.1 3.1 3.2 2.2 3.8 0.7z' })
+        )
+    );
+};
+
+exports.default = FaToggleOn;
+module.exports = exports['default'];
+
+/***/ }),
+/* 760 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _react = __webpack_require__(1);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactIconBase = __webpack_require__(27);
+
+var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var FaToggleOff = function FaToggleOff(props) {
+    return _react2.default.createElement(
+        _reactIconBase2.default,
+        _extends({ viewBox: '0 0 40 40' }, props),
+        _react2.default.createElement(
+            'g',
+            null,
+            _react2.default.createElement('path', { d: 'm22.4 20q0-2-0.8-3.9t-2.2-3.1-3.1-2.2-3.9-0.7-3.8 0.7-3.2 2.2-2.1 3.1-0.8 3.9 0.8 3.9 2.1 3.1 3.2 2.2 3.8 0.7 3.9-0.7 3.1-2.2 2.2-3.1 0.8-3.9z m14.9 0q0-2-0.8-3.9t-2.1-3.1-3.2-2.2-3.9-0.7h-7.5q2.3 1.7 3.7 4.3t1.3 5.6-1.3 5.6-3.7 4.3h7.5q2 0 3.9-0.7t3.2-2.2 2.1-3.1 0.8-3.9z m2.5 0q0 2.5-1 4.8t-2.7 4-3.9 2.6-4.9 1h-14.9q-2.5 0-4.8-1t-4-2.6-2.6-4-1-4.8 1-4.8 2.6-4 4-2.6 4.8-1h14.9q2.6 0 4.9 1t3.9 2.6 2.7 4 1 4.8z' })
+        )
+    );
+};
+
+exports.default = FaToggleOff;
+module.exports = exports['default'];
+
+/***/ }),
+/* 761 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70392,7 +70549,7 @@ var Typography = function (_BasePanel) {
 exports['default'] = Typography;
 
 /***/ }),
-/* 759 */
+/* 762 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70414,7 +70571,7 @@ var _classCallCheck2 = __webpack_require__(13);
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _createClass2 = __webpack_require__(34);
+var _createClass2 = __webpack_require__(35);
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
@@ -70638,13 +70795,13 @@ var Overlay = function (_React$Component) {
 exports['default'] = Overlay;
 
 /***/ }),
-/* 760 */
+/* 763 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(761);
+var content = __webpack_require__(764);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -70652,7 +70809,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(763)(content, options);
+var update = __webpack_require__(766)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -70669,21 +70826,21 @@ if(false) {
 }
 
 /***/ }),
-/* 761 */
+/* 764 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(762)(undefined);
+exports = module.exports = __webpack_require__(765)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, "/**\n  Main Variables\n  @todo Convert more into mixin and less friendly\n  **/\n/**\n  Generic Styling for both vertical and horizontal\n  **/\n.stylizer-inspector {\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  z-index: 99999;\n  background: #051017;\n  width: 100%;\n  height: 320px;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  border-bottom: 3px solid #000000;\n  margin: 0;\n  padding: 0;\n  line-height: 140%;\n  vertical-align: middle;\n  box-sizing: border-box;\n  font-size: 14px;\n  font-family: Arial, Helvetica, Verdana, sans-serif;\n  /**\n    Styling Reset\n    **/\n  /**\n    Inspector Mode\n    **/\n  /**\n    Form Items\n    **/\n  /** Form Hacks **/\n  /**\n    Tabs\n    **/\n  /**\n    Scroll bar\n    **/\n  /**\n    Overlay Box for Inspector Tools\n    **/\n  /**\n    Main Panels Structures\n    Used in both iterator and editor\n    **/\n  /**\n    Iterator Panel\n    **/\n  /**\n    Editor Panel\n    **/\n}\n.stylizer-inspector * {\n  margin: 0;\n  padding: 0;\n  line-height: 140%;\n  vertical-align: middle;\n  box-sizing: border-box;\n  font-size: 14px;\n  font-family: Arial, Helvetica, Verdana, sans-serif;\n}\n.stylizer-inspector.minimize {\n  height: 34px;\n}\n.stylizer-inspector.minimize .stylizer-tabs-wrapper,\n.stylizer-inspector.minimize .stylizer-dom-panel {\n  display: none;\n}\n.stylizer-inspector .stylizer-font-element-dropdown-item,\n.stylizer-inspector .stylizer-font-element-dropdown,\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select,\n.stylizer-inspector textarea {\n  background: #213946;\n  border: 1px solid #040f15;\n  color: #d3f7ff;\n  padding: 0 7px;\n  line-height: 29px;\n  min-height: 0;\n  height: auto;\n  font-size: 13px;\n  border-radius: 0;\n  margin: 0;\n  width: 100%;\n}\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select {\n  height: 29px;\n}\n.stylizer-inspector textarea {\n  padding: 6px 7px;\n}\n.stylizer-inspector input[type=range] {\n  -webkit-appearance: none;\n  width: 100%;\n  background: transparent;\n  padding-top: 10px;\n  padding-left: 10px;\n  padding-right: 10px;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-thumb {\n  -webkit-appearance: none;\n}\n.stylizer-inspector input[type=range]:focus {\n  outline: none;\n}\n.stylizer-inspector input[type=range]::-ms-track {\n  width: 100%;\n  cursor: pointer;\n  background: transparent;\n  border-color: transparent;\n  color: transparent;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-thumb {\n  -webkit-appearance: none;\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-moz-range-thumb {\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-ms-thumb {\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-runnable-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-webkit-slider-runnable-track {\n  background: #213946;\n}\n.stylizer-inspector input[type=range]::-moz-range-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]::-ms-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: transparent;\n  border-color: transparent;\n  border-width: 16px 0;\n  color: transparent;\n}\n.stylizer-inspector input[type=range]::-ms-fill-lower {\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-ms-fill-lower {\n  background: #213946;\n}\n.stylizer-inspector input[type=range]::-ms-fill-upper {\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-ms-fill-upper {\n  background: #213946;\n}\n.stylizer-inspector input[disabled] {\n  background: #192b35;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete {\n  position: relative;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete > * {\n  display: block !important;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: auto;\n  max-height: 160px;\n  min-width: 160px;\n  overflow-y: auto;\n  cursor: pointer;\n  border: 1px solid #040f15 !important;\n  overflow-x: hidden;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown .stylizer-font-element-dropdown-item {\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown .stylizer-font-element-dropdown-item:hover {\n  color: #0f82aa !important;\n}\n.stylizer-inspector select {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n}\n.stylizer-inspector select:focus {\n  outline: none;\n}\n.stylizer-inspector select > option {\n  background-color: #213946;\n  border: 1px solid #040f15;\n  cursor: pointer;\n}\n.stylizer-inspector select > option:hover {\n  background-color: #192b35;\n  color: #d3f7ff;\n}\n.stylizer-inspector label {\n  font-size: 12px;\n  margin-bottom: 3px;\n  font-weight: 300;\n  display: block;\n}\n.stylizer-inspector :focus {\n  outline: 0;\n}\n.stylizer-inspector ::-ms-reveal,\n.stylizer-inspector ::-ms-clear,\n.stylizer-inspector ::-ms-expand {\n  display: none !important;\n}\n@media screen and (min-width: \"0\\0\") {\n  .stylizer-inspector select {\n    background-image: none\\9;\n  }\n}\n.stylizer-inspector .stylizer-form-item {\n  margin-bottom: 5px;\n}\n.stylizer-inspector .stylizer-form-header {\n  font-size: 12px;\n  margin-bottom: 8px;\n  padding-bottom: 4px;\n  color: #d3f7ff;\n  font-weight: 300;\n  border-bottom: 1px solid #040d12;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  align-items: center;\n  justify-content: space-between;\n}\n.stylizer-inspector .stylizer-form-header svg {\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-form-label {\n  text-transform: capitalize;\n}\n.stylizer-inspector .stylizer-form-group {\n  margin-bottom: 18px;\n}\n.stylizer-inspector .stylizer-form-row {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  flex-wrap: nowrap;\n}\n.stylizer-inspector .stylizer-form-row > * {\n  padding: 0 7px;\n}\n.stylizer-inspector .stylizer-form-row > *:first-child {\n  padding-left: 0;\n}\n.stylizer-inspector .stylizer-form-row > *:last-child {\n  padding-right: 0;\n}\n.stylizer-inspector .stylizer-has-error input[role=\"combobox\"],\n.stylizer-inspector .stylizer-has-error .stylizer-form-input {\n  border-color: #c50313 !important;\n}\n.stylizer-inspector .stylizer-error-bag {\n  font-size: 13px;\n  padding: 3px;\n  color: #c50313;\n}\n.stylizer-inspector .stylizer-label-inline {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-form-input {\n  max-width: 120px;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-form-label {\n  margin-right: 20px;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-error-bag {\n  margin-left: 10px;\n}\n.stylizer-inspector .stylizer-color-element {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-inspector .stylizer-color-element input[type=\"text\"] {\n  border-left: none;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-preview {\n  width: 30px;\n  min-width: 30px;\n  height: 29px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-right: none;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-preview > .stylizer-color-preview-content {\n  border-radius: 100%;\n  width: 10px;\n  height: 10px;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-closer {\n  max-width: 39px;\n  height: 29px;\n  width: 39px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-left: none;\n  margin-left: -1px;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-gradient-element {\n  margin-top: 30px;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-canvas {\n  width: 100%;\n  height: 40px;\n  border: 1px solid #040f15;\n  background-color: #213946;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-wrapper {\n  width: 100%;\n  height: 40px;\n  position: relative;\n  margin-top: -40px;\n  margin-bottom: 40px;\n  z-index: 1;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  width: 8px;\n  height: 40px;\n  background: #195e8a;\n  cursor: move;\n  z-index: 2;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-closer {\n  margin-top: -16px;\n  margin-left: -2px;\n  height: 14px;\n  width: 14px;\n  display: block;\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-color {\n  margin-top: 41px;\n  margin-left: -6px;\n  height: 20px;\n  width: 20px;\n  display: block;\n  cursor: pointer;\n  border: 1px solid #195e8a;\n  background-color: #000101;\n}\n.stylizer-inspector .stylizer-selector-badges {\n  font-size: 12px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge {\n  display: flex;\n  flex-direction: row;\n  margin: 5px 0;\n  cursor: pointer;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .stylizer-selector-badges-text {\n  background: #040f15;\n  color: #6d8d95;\n  padding: 4px 8px;\n  border-radius: 4px;\n  max-width: 100px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .active .stylizer-selector-badges-text {\n  background: #137fad;\n  color: #d3f7ff;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .stylizer-selector-badges-separator {\n  margin: 0 5px;\n}\n.stylizer-inspector .chrome-picker {\n  background: #041e2b !important;\n  color: #6d8d95;\n  border: 1px solid #040f15;\n  box-shadow: none !important;\n}\n.stylizer-inspector .chrome-picker svg {\n  background: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker span {\n  color: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker input {\n  background: #213946;\n  border: 1px solid #040f15 !important;\n  color: #d3f7ff !important;\n  box-shadow: none !important;\n  font-size: 13px !important;\n  height: auto !important;\n}\n.stylizer-inspector .stylizer-tabs-wrapper {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs {\n  background: #03141d;\n  color: #6d8d95;\n  max-width: 150px;\n  min-width: 150px;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-evenly;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element {\n  padding: 10px 15px;\n  font-size: 13px;\n  display: block;\n  cursor: pointer;\n  text-transform: capitalize;\n  flex-grow: 1;\n  border-bottom: 1px solid #040d12;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element.active {\n  background: #081c27;\n  color: #13a6d9;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs-contents {\n  background: #081c27;\n  flex-grow: 1;\n  display: flex;\n  flex-direction: column;\n  padding: 0;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs-contents.has-vertical-scrollbar {\n  padding-right: 15px;\n}\n.stylizer-inspector .scrollarea .scrollarea-content {\n  width: auto;\n  display: table;\n  min-width: 100%;\n}\n.stylizer-inspector .scrollarea .scrollbar-container {\n  background: #082739;\n  opacity: 1 !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container:hover {\n  background: #082739;\n  opacity: 1 !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container .scrollbar {\n  background: #051118;\n  cursor: pointer;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.vertical {\n  width: 16px;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.vertical .scrollbar {\n  width: 16px;\n  margin: 0;\n  min-height: 20px !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.horizontal {\n  height: 16px;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.horizontal .scrollbar {\n  height: 16px;\n  margin: 0;\n  min-width: 20px !important;\n}\n.stylizer-inspector .stylizer-overlay-box {\n  pointer-events: none;\n  position: fixed;\n  z-index: 0;\n  top: 0;\n  left: 0;\n  background: #ff929a;\n  opacity: 0.4;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-margin {\n  margin: 0;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-padding {\n  background: #ffbf80;\n  padding: 0;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-content {\n  background: #edff7b;\n  width: 0;\n  height: 0;\n}\n.stylizer-inspector .stylizer-panels {\n  width: 30%;\n  background: #051017;\n  color: #d3f7ff;\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n  z-index: 9999;\n}\n.stylizer-inspector .stylizer-panels.minimize {\n  max-width: 30px;\n}\n.stylizer-inspector .stylizer-panels.minimize > :not(.stylizer-header) {\n  display: none;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header {\n  padding: 8px 15px;\n  background: #000000;\n  font-size: 14px;\n  font-weight: 300;\n  text-transform: uppercase;\n  display: flex;\n  flex-direction: row;\n  min-height: 35px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-text {\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-actions svg {\n  cursor: pointer;\n  opacity: 0.8;\n  margin: 0 5px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-actions svg:hover {\n  opacity: 1;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content {\n  padding: 15px;\n  width: 100%;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content-flex {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content-flex > * {\n  padding: 15px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-selector-empty {\n  font-size: 14px;\n  text-align: center;\n  display: flex;\n  align-self: center;\n  justify-content: center;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator {\n  flex-grow: 1;\n  overflow: hidden;\n  display: block;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth] {\n  margin-left: 150px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"0\"] {\n  margin-left: 0px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"1\"] {\n  margin-left: 15px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"2\"] {\n  margin-left: 30px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"3\"] {\n  margin-left: 45px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"4\"] {\n  margin-left: 60px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"5\"] {\n  margin-left: 75px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"6\"] {\n  margin-left: 90px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"7\"] {\n  margin-left: 105px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"8\"] {\n  margin-left: 120px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"9\"] {\n  margin-left: 135px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"10\"] {\n  margin-left: 150px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element {\n  background: #071c2a;\n  color: #d3f7ff;\n  padding: 6px 10px;\n  margin-bottom: 8px;\n  white-space: nowrap;\n  cursor: pointer;\n  width: fit-content;\n  font-size: 12px;\n  font-weight: 300;\n  border-left: 5px solid #071c2a;\n  min-width: 100%;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.overridden {\n  background: #000000;\n  border-left: 3px solid #4c2503 !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.active {\n  background: #4b9701;\n  border-left: 3px solid #4b9701 !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.changed {\n  background: #7d3d05;\n  border-left: 3px solid #11415f !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.parents:not(.processed) {\n  border-left: 3px solid #196597;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.parents.processed {\n  border-left: 3px solid #0d334d;\n}\n.stylizer-inspector .stylizer-editor-panel {\n  background: #081c27;\n  color: #9abdc5;\n  width: 70%;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-header {\n  background: #020709;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-left-space,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-right-space {\n  background: #081c27;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-center-space {\n  display: flex;\n  flex-wrap: wrap;\n  flex-grow: 1;\n  padding: 15px 0;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item {\n  padding: 0;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) input {\n  border-right-color: transparent;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-group {\n  padding: 0 15px;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-group--radius,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-group--outline {\n  width: 50%;\n  min-width: 330px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border [class*=\"stylizer-group--border-\"] {\n  width: 25%;\n  min-width: 260px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border [class*=\"stylizer-field--border-\"] input {\n  min-width: 50px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-top-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-left-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-right-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-bottom-color input {\n  min-width: 70px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border select {\n  min-width: 80px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--spacing .stylizer-form-group {\n  width: 25%;\n  min-width: 260px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-form-group {\n  width: 25%;\n  min-width: 320px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-group--background {\n  width: 50%;\n  min-width: 490px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-image input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-size input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-position input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--opacity input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--display input {\n  min-width: 60px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-color input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-repeat select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--visibility select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--overflow select {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-form-group {\n  width: 50%;\n  min-width: 350px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-group--font {\n  min-width: 590px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-family input {\n  min-width: 100px;\n  width: 100%;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-size input {\n  min-width: 60px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--letter-spacing input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-weight input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--white-space select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--vertical-align select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-weight select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-style select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-variant select {\n  min-width: 100px;\n}\n/**\n  Vertical Overrides\n  **/\nbody[stylizer-vertical=\"true\"] [stylizer-active=\"false\"] {\n  padding-left: 380px;\n}\nbody[stylizer-vertical=\"true\"] [stylizer-active=\"true\"] {\n  padding-left: 34px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector {\n  top: 0;\n  bottom: 0;\n  width: 390px;\n  flex-direction: column;\n  height: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector.minimize {\n  height: 100%;\n  width: 34px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize {\n  max-width: none;\n  max-height: 35px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-header-actions svg {\n  margin: 0 0 5px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-selector-empty {\n  flex-direction: column;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-panel-left-space {\n  position: absolute;\n  top: 0;\n  left: 100%;\n  bottom: 0;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.stylizer-dom-panel {\n  max-height: 40%;\n  height: 40%;\n  min-height: 40%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.stylizer-editor-panel {\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-label-inline {\n  align-items: flex-start;\n  max-width: 25%;\n  flex-wrap: wrap;\n  flex-direction: column;\n  flex-grow: 1;\n  padding: 0 7px;\n  margin-bottom: 10px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-row {\n  flex-wrap: wrap;\n  margin: 0 -7px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-item {\n  margin-bottom: 20px;\n  display: block;\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-item > * {\n  width: 100%;\n  max-width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector input[type=\"text\"],\nbody[stylizer-vertical=\"true\"] .stylizer-inspector select {\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-color-element input[type=\"text\"] {\n  max-width: 100%;\n  flex-grow: 1;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper {\n  flex-direction: column;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs {\n  flex-direction: row;\n  max-width: 100%;\n  min-width: 100%;\n  min-height: 35px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element {\n  border-bottom: none;\n  padding: 10px 14px;\n  font-size: 10px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content {\n  flex-direction: column;\n  position: relative;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-panel-center-space .stylizer-form-row {\n  margin: 0;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-panel-center-space .stylizer-form-group {\n  width: 100%;\n  min-width: 1px;\n}\n/**\n  Horizontal Overrides\n  **/\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"false\"] {\n  padding-bottom: 323px;\n}\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header .stylizer-header-actions svg {\n  margin: 0 0 5px;\n}\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\nbody[stylizer-vertical=\"false\"] [stylizer-active=\"true\"] {\n  padding-bottom: 34px;\n}\nbody[stylizer-vertical=\"false\"] .stylizer-tabs-wrapper {\n  max-height: 280px;\n}\n", ""]);
+exports.push([module.i, "/**\n  Main Variables\n  @todo Convert more into mixin and less friendly\n  **/\n/**\n  Generic Styling for both vertical and horizontal\n  **/\n.stylizer-inspector {\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  z-index: 99999;\n  background: #051017;\n  width: 100%;\n  height: 320px;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  border-bottom: 3px solid #000000;\n  margin: 0;\n  padding: 0;\n  line-height: 140%;\n  vertical-align: middle;\n  box-sizing: border-box;\n  font-size: 14px;\n  font-family: Arial, Helvetica, Verdana, sans-serif;\n  /**\n    Styling Reset\n    **/\n  /**\n    Inspector Mode\n    **/\n  /**\n    Form Items\n    **/\n  /** Form Hacks **/\n  /**\n    Tabs\n    **/\n  /**\n    Scroll bar\n    **/\n  /**\n    Overlay Box for Inspector Tools\n    **/\n  /**\n    Main Panels Structures\n    Used in both iterator and editor\n    **/\n  /**\n    Iterator Panel\n    **/\n  /**\n    Editor Panel\n    **/\n}\n.stylizer-inspector * {\n  margin: 0;\n  padding: 0;\n  line-height: 140%;\n  vertical-align: middle;\n  box-sizing: border-box;\n  font-size: 14px;\n  font-family: Arial, Helvetica, Verdana, sans-serif;\n}\n.stylizer-inspector.minimize {\n  height: 34px;\n}\n.stylizer-inspector.minimize .stylizer-tabs-wrapper,\n.stylizer-inspector.minimize .stylizer-dom-panel {\n  display: none;\n}\n.stylizer-inspector .stylizer-font-element-dropdown-item,\n.stylizer-inspector .stylizer-font-element-dropdown,\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select,\n.stylizer-inspector textarea {\n  background: #213946;\n  border: 1px solid #040f15;\n  color: #d3f7ff;\n  padding: 0 7px;\n  line-height: 29px;\n  min-height: 0;\n  height: auto;\n  font-size: 13px;\n  border-radius: 0;\n  margin: 0;\n  width: 100%;\n}\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select {\n  height: 29px;\n}\n.stylizer-inspector textarea {\n  padding: 6px 7px;\n}\n.stylizer-inspector input[type=range] {\n  -webkit-appearance: none;\n  width: 100%;\n  background: transparent;\n  padding-top: 10px;\n  padding-left: 10px;\n  padding-right: 10px;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-thumb {\n  -webkit-appearance: none;\n}\n.stylizer-inspector input[type=range]:focus {\n  outline: none;\n}\n.stylizer-inspector input[type=range]::-ms-track {\n  width: 100%;\n  cursor: pointer;\n  background: transparent;\n  border-color: transparent;\n  color: transparent;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-thumb {\n  -webkit-appearance: none;\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-moz-range-thumb {\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-ms-thumb {\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-runnable-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-webkit-slider-runnable-track {\n  background: #213946;\n}\n.stylizer-inspector input[type=range]::-moz-range-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]::-ms-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: transparent;\n  border-color: transparent;\n  border-width: 16px 0;\n  color: transparent;\n}\n.stylizer-inspector input[type=range]::-ms-fill-lower {\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-ms-fill-lower {\n  background: #213946;\n}\n.stylizer-inspector input[type=range]::-ms-fill-upper {\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-ms-fill-upper {\n  background: #213946;\n}\n.stylizer-inspector input[disabled] {\n  background: #192b35;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete {\n  position: relative;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete > * {\n  display: block !important;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: auto;\n  max-height: 160px;\n  min-width: 160px;\n  overflow-y: auto;\n  cursor: pointer;\n  border: 1px solid #040f15 !important;\n  overflow-x: hidden;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown .stylizer-font-element-dropdown-item {\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown .stylizer-font-element-dropdown-item:hover {\n  color: #0f82aa !important;\n}\n.stylizer-inspector select {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n}\n.stylizer-inspector select:focus {\n  outline: none;\n}\n.stylizer-inspector select > option {\n  background-color: #213946;\n  border: 1px solid #040f15;\n  cursor: pointer;\n}\n.stylizer-inspector select > option:hover {\n  background-color: #192b35;\n  color: #d3f7ff;\n}\n.stylizer-inspector label {\n  font-size: 12px;\n  margin-bottom: 3px;\n  font-weight: 300;\n  display: block;\n}\n.stylizer-inspector :focus {\n  outline: 0;\n}\n.stylizer-inspector ::-ms-reveal,\n.stylizer-inspector ::-ms-clear,\n.stylizer-inspector ::-ms-expand {\n  display: none !important;\n}\n@media screen and (min-width: \"0\\0\") {\n  .stylizer-inspector select {\n    background-image: none\\9;\n  }\n}\n.stylizer-inspector .stylizer-form-item {\n  margin-bottom: 5px;\n}\n.stylizer-inspector .stylizer-form-header {\n  font-size: 12px;\n  margin-bottom: 8px;\n  padding-bottom: 4px;\n  color: #d3f7ff;\n  font-weight: 300;\n  border-bottom: 1px solid #040d12;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  align-items: center;\n  justify-content: space-between;\n}\n.stylizer-inspector .stylizer-form-header svg {\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-form-label {\n  text-transform: capitalize;\n}\n.stylizer-inspector .stylizer-form-group {\n  margin-bottom: 18px;\n}\n.stylizer-inspector .stylizer-form-row {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  flex-wrap: nowrap;\n}\n.stylizer-inspector .stylizer-form-row > * {\n  padding: 0 7px;\n}\n.stylizer-inspector .stylizer-form-row > *:first-child {\n  padding-left: 0;\n}\n.stylizer-inspector .stylizer-form-row > *:last-child {\n  padding-right: 0;\n}\n.stylizer-inspector .stylizer-has-error input[role=\"combobox\"],\n.stylizer-inspector .stylizer-has-error .stylizer-form-input {\n  border-color: #c50313 !important;\n}\n.stylizer-inspector .stylizer-error-bag {\n  font-size: 13px;\n  padding: 3px;\n  color: #c50313;\n}\n.stylizer-inspector .stylizer-label-inline {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-form-input {\n  max-width: 120px;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-form-label {\n  margin-right: 20px;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-error-bag {\n  margin-left: 10px;\n}\n.stylizer-inspector .stylizer-color-element {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-inspector .stylizer-color-element input[type=\"text\"] {\n  border-left: none;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-preview {\n  width: 30px;\n  min-width: 30px;\n  height: 29px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-right: none;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-preview > .stylizer-color-preview-content {\n  border-radius: 100%;\n  width: 10px;\n  height: 10px;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-closer {\n  max-width: 39px;\n  height: 29px;\n  width: 39px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-left: none;\n  margin-left: -1px;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-gradient-element {\n  margin-top: 30px;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-canvas {\n  width: 100%;\n  height: 40px;\n  border: 1px solid #040f15;\n  background-color: #213946;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-wrapper {\n  width: 100%;\n  height: 40px;\n  position: relative;\n  margin-top: -40px;\n  margin-bottom: 40px;\n  z-index: 1;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  width: 8px;\n  height: 40px;\n  background: #195e8a;\n  cursor: move;\n  z-index: 2;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-closer {\n  margin-top: -16px;\n  margin-left: -2px;\n  height: 14px;\n  width: 14px;\n  display: block;\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-color {\n  margin-top: 41px;\n  margin-left: -6px;\n  height: 20px;\n  width: 20px;\n  display: block;\n  cursor: pointer;\n  border: 1px solid #195e8a;\n  background-color: #000101;\n}\n.stylizer-inspector .stylizer-selector-badges {\n  font-size: 12px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge {\n  display: flex;\n  flex-direction: row;\n  margin: 5px 0;\n  cursor: pointer;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .stylizer-selector-badges-text {\n  background: #040f15;\n  color: #6d8d95;\n  padding: 4px 8px;\n  border-radius: 4px;\n  max-width: 100px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .active .stylizer-selector-badges-text {\n  background: #137fad;\n  color: #d3f7ff;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .stylizer-selector-badges-separator {\n  margin: 0 5px;\n}\n.stylizer-inspector .chrome-picker {\n  background: #041e2b !important;\n  color: #6d8d95;\n  border: 1px solid #040f15;\n  box-shadow: none !important;\n}\n.stylizer-inspector .chrome-picker svg {\n  background: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker span {\n  color: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker input {\n  background: #213946;\n  border: 1px solid #040f15 !important;\n  color: #d3f7ff !important;\n  box-shadow: none !important;\n  font-size: 13px !important;\n  height: auto !important;\n}\n.stylizer-inspector .stylizer-tabs-wrapper {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs {\n  background: #03141d;\n  color: #6d8d95;\n  max-width: 150px;\n  min-width: 150px;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-evenly;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element {\n  padding: 10px 15px;\n  font-size: 13px;\n  display: block;\n  cursor: pointer;\n  text-transform: capitalize;\n  flex-grow: 1;\n  border-bottom: 1px solid #040d12;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element.active {\n  background: #081c27;\n  color: #13a6d9;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs-contents {\n  background: #081c27;\n  flex-grow: 1;\n  display: flex;\n  flex-direction: column;\n  padding: 0;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs-contents.has-vertical-scrollbar {\n  padding-right: 15px;\n}\n.stylizer-inspector .scrollarea .scrollarea-content {\n  width: auto;\n  display: table;\n  min-width: 100%;\n}\n.stylizer-inspector .scrollarea .scrollbar-container {\n  background: #082739;\n  opacity: 1 !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container:hover {\n  background: #082739;\n  opacity: 1 !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container .scrollbar {\n  background: #051118;\n  cursor: pointer;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.vertical {\n  width: 16px;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.vertical .scrollbar {\n  width: 16px;\n  margin: 0;\n  min-height: 20px !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.horizontal {\n  height: 16px;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.horizontal .scrollbar {\n  height: 16px;\n  margin: 0;\n  min-width: 20px !important;\n}\n.stylizer-inspector .stylizer-overlay-box {\n  pointer-events: none;\n  position: fixed;\n  z-index: 0;\n  top: 0;\n  left: 0;\n  background: #ff929a;\n  opacity: 0.4;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-margin {\n  margin: 0;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-padding {\n  background: #ffbf80;\n  padding: 0;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-content {\n  background: #edff7b;\n  width: 0;\n  height: 0;\n}\n.stylizer-inspector .stylizer-panels {\n  width: 30%;\n  background: #051017;\n  color: #d3f7ff;\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n  z-index: 9999;\n}\n.stylizer-inspector .stylizer-panels.minimize {\n  max-width: 30px;\n}\n.stylizer-inspector .stylizer-panels.minimize > :not(.stylizer-header) {\n  display: none;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header {\n  padding: 8px 15px;\n  background: #000000;\n  font-size: 14px;\n  font-weight: 300;\n  text-transform: uppercase;\n  display: flex;\n  flex-direction: row;\n  min-height: 35px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-text {\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-actions svg {\n  cursor: pointer;\n  opacity: 0.8;\n  margin: 0 5px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-actions svg:hover {\n  opacity: 1;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content {\n  padding: 15px;\n  width: 100%;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content-flex {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content-flex > * {\n  padding: 15px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-selector-empty {\n  font-size: 14px;\n  text-align: center;\n  display: flex;\n  align-self: center;\n  justify-content: center;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator {\n  flex-grow: 1;\n  overflow: hidden;\n  display: block;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth] {\n  margin-left: 150px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"0\"] {\n  margin-left: 0px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"1\"] {\n  margin-left: 15px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"2\"] {\n  margin-left: 30px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"3\"] {\n  margin-left: 45px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"4\"] {\n  margin-left: 60px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"5\"] {\n  margin-left: 75px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"6\"] {\n  margin-left: 90px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"7\"] {\n  margin-left: 105px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"8\"] {\n  margin-left: 120px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"9\"] {\n  margin-left: 135px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"10\"] {\n  margin-left: 150px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element {\n  background: #071c2a;\n  color: #d3f7ff;\n  padding: 6px 10px;\n  margin-bottom: 8px;\n  white-space: nowrap;\n  cursor: pointer;\n  width: fit-content;\n  font-size: 12px;\n  font-weight: 300;\n  border-left: 5px solid #071c2a;\n  min-width: 100%;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.overridden {\n  background: #000000;\n  border-left: 3px solid #4c2503 !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.active {\n  background: #4b9701;\n  border-left: 3px solid #4b9701 !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.changed {\n  background: #7d3d05;\n  border-left: 3px solid #11415f !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.parents:not(.processed) {\n  border-left: 3px solid #196597;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.parents.processed {\n  border-left: 3px solid #0d334d;\n}\n.stylizer-inspector .stylizer-editor-panel {\n  background: #081c27;\n  color: #9abdc5;\n  width: 70%;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-header {\n  background: #020709;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-left-space,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-right-space {\n  background: #081c27;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-center-space {\n  display: flex;\n  flex-wrap: wrap;\n  flex-grow: 1;\n  padding: 15px 0;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item {\n  padding: 0;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) input {\n  border-right-color: transparent;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-group {\n  padding: 0 15px;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-group--radius,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-group--outline {\n  width: 50%;\n  min-width: 330px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border [class*=\"stylizer-group--border-\"] {\n  width: 25%;\n  min-width: 260px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border [class*=\"stylizer-field--border-\"] input {\n  min-width: 50px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-top-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-left-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-right-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-bottom-color input {\n  min-width: 70px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border select {\n  min-width: 80px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--spacing .stylizer-form-group {\n  width: 25%;\n  min-width: 260px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-form-group {\n  width: 25%;\n  min-width: 320px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-group--background {\n  width: 50%;\n  min-width: 490px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-image input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-size input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-position input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--opacity input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--display input {\n  min-width: 60px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-color input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-repeat select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--visibility select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--overflow select {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-form-group {\n  width: 50%;\n  min-width: 350px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-group--font {\n  min-width: 590px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-family input {\n  min-width: 100px;\n  width: 100%;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-size input {\n  min-width: 60px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--letter-spacing input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-weight input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--white-space select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--vertical-align select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-weight select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-style select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-variant select {\n  min-width: 100px;\n}\n/**\n  Vertical Overrides\n  **/\nbody[stylizer-vertical=\"true\"][stylizer-active=\"false\"] {\n  padding-left: 380px;\n}\nbody[stylizer-vertical=\"true\"][stylizer-active=\"true\"] {\n  padding-left: 34px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector {\n  top: 0;\n  bottom: 0;\n  width: 390px;\n  flex-direction: column;\n  height: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector.minimize {\n  height: 100%;\n  width: 34px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize {\n  max-width: none;\n  max-height: 35px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-header-actions svg {\n  margin: 0 0 5px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-selector-empty {\n  flex-direction: column;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize .stylizer-editor-panel .stylizer-panel-left-space {\n  position: absolute;\n  top: 0;\n  left: 100%;\n  bottom: 0;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.stylizer-dom-panel {\n  max-height: 40%;\n  height: 40%;\n  min-height: 40%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.stylizer-editor-panel {\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-label-inline {\n  align-items: flex-start;\n  max-width: 25%;\n  flex-wrap: wrap;\n  flex-direction: column;\n  flex-grow: 1;\n  padding: 0 7px;\n  margin-bottom: 10px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-row {\n  flex-wrap: wrap;\n  margin: 0 -7px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-item {\n  margin-bottom: 20px;\n  display: block;\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-item > * {\n  width: 100%;\n  max-width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector input[type=\"text\"],\nbody[stylizer-vertical=\"true\"] .stylizer-inspector select {\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-color-element input[type=\"text\"] {\n  max-width: 100%;\n  flex-grow: 1;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper {\n  flex-direction: column;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs {\n  flex-direction: row;\n  max-width: 100%;\n  min-width: 100%;\n  min-height: 35px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element {\n  border-bottom: none;\n  padding: 10px 14px;\n  font-size: 10px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content {\n  flex-direction: column;\n  position: relative;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-panel-center-space .stylizer-form-row {\n  margin: 0;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-panel-center-space .stylizer-form-group {\n  width: 100%;\n  min-width: 1px;\n}\n/**\n  Horizontal Overrides\n  **/\nbody[stylizer-vertical=\"false\"][stylizer-active=\"false\"] {\n  padding-bottom: 323px;\n}\nbody[stylizer-vertical=\"false\"][stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\nbody[stylizer-vertical=\"false\"][stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header .stylizer-header-actions svg {\n  margin: 0 0 5px;\n}\nbody[stylizer-vertical=\"false\"][stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\nbody[stylizer-vertical=\"false\"][stylizer-active=\"true\"] {\n  padding-bottom: 34px;\n}\nbody[stylizer-vertical=\"false\"] .stylizer-tabs-wrapper {\n  max-height: 280px;\n}\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 762 */
+/* 765 */
 /***/ (function(module, exports) {
 
 /*
@@ -70765,7 +70922,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 763 */
+/* 766 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -70821,7 +70978,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(764);
+var	fixUrls = __webpack_require__(767);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -71137,7 +71294,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 764 */
+/* 767 */
 /***/ (function(module, exports) {
 
 
@@ -71230,164 +71387,6 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
-
-/***/ }),
-/* 765 */,
-/* 766 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactIconBase = __webpack_require__(38);
-
-var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var FaToggleOff = function FaToggleOff(props) {
-    return _react2.default.createElement(
-        _reactIconBase2.default,
-        _extends({ viewBox: '0 0 40 40' }, props),
-        _react2.default.createElement(
-            'g',
-            null,
-            _react2.default.createElement('path', { d: 'm22.4 20q0-2-0.8-3.9t-2.2-3.1-3.1-2.2-3.9-0.7-3.8 0.7-3.2 2.2-2.1 3.1-0.8 3.9 0.8 3.9 2.1 3.1 3.2 2.2 3.8 0.7 3.9-0.7 3.1-2.2 2.2-3.1 0.8-3.9z m14.9 0q0-2-0.8-3.9t-2.1-3.1-3.2-2.2-3.9-0.7h-7.5q2.3 1.7 3.7 4.3t1.3 5.6-1.3 5.6-3.7 4.3h7.5q2 0 3.9-0.7t3.2-2.2 2.1-3.1 0.8-3.9z m2.5 0q0 2.5-1 4.8t-2.7 4-3.9 2.6-4.9 1h-14.9q-2.5 0-4.8-1t-4-2.6-2.6-4-1-4.8 1-4.8 2.6-4 4-2.6 4.8-1h14.9q2.6 0 4.9 1t3.9 2.6 2.7 4 1 4.8z' })
-        )
-    );
-};
-
-exports.default = FaToggleOff;
-module.exports = exports['default'];
-
-/***/ }),
-/* 767 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactIconBase = __webpack_require__(38);
-
-var _reactIconBase2 = _interopRequireDefault(_reactIconBase);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var FaToggleOn = function FaToggleOn(props) {
-    return _react2.default.createElement(
-        _reactIconBase2.default,
-        _extends({ viewBox: '0 0 40 40' }, props),
-        _react2.default.createElement(
-            'g',
-            null,
-            _react2.default.createElement('path', { d: 'm0 20q0-2.5 1-4.8t2.6-4 4-2.6 4.8-1h14.9q2.6 0 4.9 1t3.9 2.6 2.7 4 1 4.8-1 4.8-2.7 4-3.9 2.6-4.9 1h-14.9q-2.5 0-4.8-1t-4-2.6-2.6-4-1-4.8z m27.3 9.9q2 0 3.9-0.7t3.2-2.2 2.1-3.1 0.8-3.9-0.8-3.9-2.1-3.1-3.2-2.2-3.9-0.7-3.8 0.7-3.2 2.2-2.1 3.1-0.8 3.9 0.8 3.9 2.1 3.1 3.2 2.2 3.8 0.7z' })
-        )
-    );
-};
-
-exports.default = FaToggleOn;
-module.exports = exports['default'];
-
-/***/ }),
-/* 768 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _classCallCheck2 = __webpack_require__(13);
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/**
- * Class for parsing CSS Gradient rule
- *
- * @author jason.xie@victheme.com
- */
-var GradientParser = function GradientParser(rule) {
-    (0, _classCallCheck3['default'])(this, GradientParser);
-
-    _initialiseProps.call(this);
-
-    return this.parseGradient(rule);
-};
-
-var _initialiseProps = function _initialiseProps() {
-    var _this = this;
-
-    this.tokens = {
-        shape: /(closest\-side|closest\-corner|farthest\-side|farthest\-corner|contain|cover|circle|ellipse)/i,
-        mode: /(linear|radial)/i,
-        repeat: /(repeating)/i,
-        position: /at (.*?),/i,
-        angle: /\((.*)deg/i,
-        size: /\((.*),/i,
-        sizeWithPosition: /\((.*) at/i,
-        color: /^(#[0-9a-f]{6}|#[0-9a-f]{3}|#(?:[0-9a-f]{2}){2,4}|(rgb|hsl)a?\((-?\d+%?[,\s]+){2,3}\s*[\d\.]+%?\))/i,
-        stops: /, (?![^(]*\))(?![^"']*["'](?:[^"']*["'][^"']*["'])*[^"']*$)/i
-    };
-
-    this.parseGradient = function (rule) {
-        var tokens = _this.tokens;
-
-        var angle = rule.match(tokens['angle']);
-        var shape = rule.match(tokens['shape']);
-        var position = rule.match(tokens['position']);
-        var size = rule.match(tokens['size']);
-        var sizeWithPosition = rule.match(tokens['sizeWithPosition']);
-        var stops = rule.substring(rule.indexOf('(') + 1, rule.lastIndexOf(')')).split(tokens['stops']);
-        var mode = rule.match(tokens['mode']);
-        var repeat = rule.match(tokens['repeat']);
-
-        var results = {
-            mode: mode && mode[1] ? mode[1] : '',
-            repeat: repeat && repeat[1] ? 'repeat' : 'none',
-            rotate: angle && angle[1] ? parseInt(angle[1]) : 0,
-            shape: shape && shape[1] ? shape[1] : 'custom-size',
-            position: position && position[1] ? position[1] : '',
-            size: position && position[1] ? sizeWithPosition && sizeWithPosition[1] ? sizeWithPosition[1] : '' : size && size[1] ? size[1] : '',
-            stops: []
-        };
-
-        stops && forEach(stops, function (stop) {
-            var color = stop.trim().match(tokens['color']);
-            color && color[1] && results.stops.push({
-                color: color[1],
-                position: parseInt(stop.replace(color[1], '').replace('%', '').trim())
-            });
-        });
-
-        return results;
-    };
-};
-
-exports['default'] = GradientParser;
 
 /***/ })
 /******/ ]);
