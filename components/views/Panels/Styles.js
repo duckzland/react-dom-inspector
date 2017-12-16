@@ -31,29 +31,6 @@ export default class Styles extends BasePanel {
                 type: 'group'
             },
             {
-                key: 'advanced',
-                title: 'Background Adjustment',
-                type: 'group',
-                elements: [
-                    {title: 'attachment', target: 'background-attachment', type: 'element', field: 'select', options: {
-                        scroll: 'Scroll',
-                        fixed: 'Fixed',
-                        local: 'Local'
-                    }, default: '', inline: false},
-                    {title: 'clip', target: 'background-clip', type: 'element', field: 'select', options: {
-                        'border-box': 'Border Box',
-                        'padding-box': 'Padding Box',
-                        'content-box': 'Content Box'
-                    }, default: '', inline: false},
-
-                    {title: 'origin', target: 'background-origin', type: 'element', field: 'select', options: {
-                        'padding-box': 'Padding Box',
-                        'border-box': 'Border Box',
-                        'content-box': 'Content Box'
-                    }, default: '', inline: false}
-                ]
-            },
-            {
                 key: 'visibility',
                 title: 'Visibility',
                 type: 'group',
@@ -90,8 +67,8 @@ export default class Styles extends BasePanel {
 
     generateToggle = (element) => {
         const { onToggleLock } = this;
-        this.toggleOpenIcon = (<ToggleOpenIcon onClick={ () => onToggleLock(element) }/>);
-        this.toggleCloseIcon = (<ToggleLockedIcon onClick={ () => onToggleLock(element) }/>);
+        this.toggleOpenIcon = (<ToggleOpenIcon size={ 16 } onClick={ () => onToggleLock(element) }/>);
+        this.toggleCloseIcon = (<ToggleLockedIcon size={ 16 } onClick={ () => onToggleLock(element) }/>);
     };
 
     detectBackgroundGradient = (Rules) => {
@@ -107,7 +84,7 @@ export default class Styles extends BasePanel {
     };
 
     generateBackgroundFields = () => {
-        forEach(this.fields, (field, delta) => {
+        forEach(this.fields, (field) => {
             if (field.key === 'background') {
                 field.toggle = 'off';
                 field.elements = [
@@ -123,24 +100,47 @@ export default class Styles extends BasePanel {
                         'no-repeat': 'Don\'t Repeat'
                     }, default: '', inline: false}
                 ];
-
-                return false;
             }
-        })
+        });
+
+        this.fields.splice(1, 0, {
+            key: 'advanced',
+            title: 'Background Adjustment',
+            type: 'group',
+            elements: [
+                {title: 'attachment', target: 'background-attachment', type: 'element', field: 'select', options: {
+                    scroll: 'Scroll',
+                    fixed: 'Fixed',
+                    local: 'Local'
+                }, default: '', inline: false},
+                {title: 'clip', target: 'background-clip', type: 'element', field: 'select', options: {
+                    'border-box': 'Border Box',
+                    'padding-box': 'Padding Box',
+                    'content-box': 'Content Box'
+                }, default: '', inline: false},
+
+                {title: 'origin', target: 'background-origin', type: 'element', field: 'select', options: {
+                    'padding-box': 'Padding Box',
+                    'border-box': 'Border Box',
+                    'content-box': 'Content Box'
+                }, default: '', inline: false}
+            ]
+        });
     };
 
     generateGradientFields = () => {
-        forEach(this.fields, (field, delta) => {
+        forEach(this.fields, (field) => {
             if (field.key === 'background') {
                 field.toggle = 'on';
                 field.elements = [ { title: 'gradient', target: 'background-image', type: 'element', field: 'gradient', default: '', inline: false} ];
-
-                return false;
             }
-        })
+        });
+
+        this.fields.splice(1, 1);
     };
 
     onToggleLock = (element) => {
+        this.mutateSpace('left', null, null, true);
         this.state.gradient = !this.state.gradient;
         this.state.gradient ? this.generateGradientFields() : this.generateBackgroundFields();
         this.setState(this.state);

@@ -218,8 +218,8 @@ export default class Panel extends React.Component {
 
     generateToggle = (element) => {
         const { onToggleLock } = this;
-        this.toggleOpenIcon = (<ToggleOpenIcon onClick={ () => onToggleLock(element) }/>);
-        this.toggleCloseIcon = (<ToggleLockedIcon onClick={ () => onToggleLock(element) }/>);
+        this.toggleOpenIcon = (<ToggleOpenIcon size={ 14 } onClick={ () => onToggleLock(element) }/>);
+        this.toggleCloseIcon = (<ToggleLockedIcon size={ 14 } onClick={ () => onToggleLock(element) }/>);
     };
 
     generateGroup = (element) => {
@@ -376,7 +376,7 @@ export default class Panel extends React.Component {
                 { leftSpace.content && <div { ...leftSpaceProps }>{ leftSpace.content }</div> }
                 <ScrollArea { ...scrollAreaProps }>
                     <div { ...centerSpaceProps}>
-                        { fields.map( (element) => {
+                        { this.fields.map((element) => {
                             switch (element.type) {
                                 case 'group' :
                                     return generateGroup(element);

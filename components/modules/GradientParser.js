@@ -44,7 +44,7 @@ export default class GradientParser {
             stops: []
         };
         
-        stops && forEach(stops, (stop) => {
+        stops && stops.map((stop) => {
             let color = stop.trim().match(tokens['color']);
             color && color[1] && results.stops.push({
                 color: color[1],

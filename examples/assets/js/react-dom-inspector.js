@@ -21251,10 +21251,10 @@ var Panel = function (_React$Component) {
         _this.generateToggle = function (element) {
             var onToggleLock = _this.onToggleLock;
 
-            _this.toggleOpenIcon = _react2['default'].createElement(_unlock2['default'], { onClick: function onClick() {
+            _this.toggleOpenIcon = _react2['default'].createElement(_unlock2['default'], { size: 14, onClick: function onClick() {
                     return onToggleLock(element);
                 } });
-            _this.toggleCloseIcon = _react2['default'].createElement(_lock2['default'], { onClick: function onClick() {
+            _this.toggleCloseIcon = _react2['default'].createElement(_lock2['default'], { size: 14, onClick: function onClick() {
                     return onToggleLock(element);
                 } });
         };
@@ -21490,7 +21490,7 @@ var Panel = function (_React$Component) {
                     _react2['default'].createElement(
                         'div',
                         centerSpaceProps,
-                        fields.map(function (element) {
+                        this.fields.map(function (element) {
                             switch (element.type) {
                                 case 'group':
                                     return generateGroup(element);
@@ -69663,7 +69663,7 @@ var _initialiseProps = function _initialiseProps() {
             stops: []
         };
 
-        stops && forEach(stops, function (stop) {
+        stops && stops.map(function (stop) {
             var color = stop.trim().match(tokens['color']);
             color && color[1] && results.stops.push({
                 color: color[1],
@@ -70224,10 +70224,10 @@ var Styles = function (_BasePanel) {
         _this.generateToggle = function (element) {
             var onToggleLock = _this.onToggleLock;
 
-            _this.toggleOpenIcon = _react2['default'].createElement(_toggleOn2['default'], { onClick: function onClick() {
+            _this.toggleOpenIcon = _react2['default'].createElement(_toggleOn2['default'], { size: 16, onClick: function onClick() {
                     return onToggleLock(element);
                 } });
-            _this.toggleCloseIcon = _react2['default'].createElement(_toggleOff2['default'], { onClick: function onClick() {
+            _this.toggleCloseIcon = _react2['default'].createElement(_toggleOff2['default'], { size: 16, onClick: function onClick() {
                     return onToggleLock(element);
                 } });
         };
@@ -70245,7 +70245,7 @@ var Styles = function (_BasePanel) {
         };
 
         _this.generateBackgroundFields = function () {
-            (0, _lodash.forEach)(_this.fields, function (field, delta) {
+            (0, _lodash.forEach)(_this.fields, function (field) {
                 if (field.key === 'background') {
                     field.toggle = 'off';
                     field.elements = [{ title: 'color', target: 'background-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'image', target: 'background-image', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'position', target: 'background-position', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'size', target: 'background-size', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'repeat', target: 'background-repeat', type: 'element', field: 'select', options: {
@@ -70255,24 +70255,42 @@ var Styles = function (_BasePanel) {
                             'repeat-y': 'Vertically',
                             'no-repeat': 'Don\'t Repeat'
                         }, 'default': '', inline: false }];
-
-                    return false;
                 }
+            });
+
+            _this.fields.splice(1, 0, {
+                key: 'advanced',
+                title: 'Background Adjustment',
+                type: 'group',
+                elements: [{ title: 'attachment', target: 'background-attachment', type: 'element', field: 'select', options: {
+                        scroll: 'Scroll',
+                        fixed: 'Fixed',
+                        local: 'Local'
+                    }, 'default': '', inline: false }, { title: 'clip', target: 'background-clip', type: 'element', field: 'select', options: {
+                        'border-box': 'Border Box',
+                        'padding-box': 'Padding Box',
+                        'content-box': 'Content Box'
+                    }, 'default': '', inline: false }, { title: 'origin', target: 'background-origin', type: 'element', field: 'select', options: {
+                        'padding-box': 'Padding Box',
+                        'border-box': 'Border Box',
+                        'content-box': 'Content Box'
+                    }, 'default': '', inline: false }]
             });
         };
 
         _this.generateGradientFields = function () {
-            (0, _lodash.forEach)(_this.fields, function (field, delta) {
+            (0, _lodash.forEach)(_this.fields, function (field) {
                 if (field.key === 'background') {
                     field.toggle = 'on';
                     field.elements = [{ title: 'gradient', target: 'background-image', type: 'element', field: 'gradient', 'default': '', inline: false }];
-
-                    return false;
                 }
             });
+
+            _this.fields.splice(1, 1);
         };
 
         _this.onToggleLock = function (element) {
+            _this.mutateSpace('left', null, null, true);
             _this.state.gradient = !_this.state.gradient;
             _this.state.gradient ? _this.generateGradientFields() : _this.generateBackgroundFields();
             _this.setState(_this.state);
@@ -70293,23 +70311,6 @@ var Styles = function (_BasePanel) {
             key: 'background',
             title: 'Background',
             type: 'group'
-        }, {
-            key: 'advanced',
-            title: 'Background Adjustment',
-            type: 'group',
-            elements: [{ title: 'attachment', target: 'background-attachment', type: 'element', field: 'select', options: {
-                    scroll: 'Scroll',
-                    fixed: 'Fixed',
-                    local: 'Local'
-                }, 'default': '', inline: false }, { title: 'clip', target: 'background-clip', type: 'element', field: 'select', options: {
-                    'border-box': 'Border Box',
-                    'padding-box': 'Padding Box',
-                    'content-box': 'Content Box'
-                }, 'default': '', inline: false }, { title: 'origin', target: 'background-origin', type: 'element', field: 'select', options: {
-                    'padding-box': 'Padding Box',
-                    'border-box': 'Border Box',
-                    'content-box': 'Content Box'
-                }, 'default': '', inline: false }]
         }, {
             key: 'visibility',
             title: 'Visibility',

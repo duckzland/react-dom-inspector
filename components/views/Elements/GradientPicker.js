@@ -393,17 +393,15 @@ export default class GradientPicker extends React.Component {
                     <span { ...handleColorProps } />
                 </div>
             );
-
         });
 
         return (
-            <div { ...mainProps } >
+            <div { ...mainProps }>
                 <div { ...previewProps } />
                 <div { ...handleElementProps }>
                     { Stops }
                 </div>
                 <div { ...rowProps }>
-
                     <div { ...wrapperProps }>
                         <label { ...labelProps }>Repeat</label>
                         <select { ...repeatElementProps }>
@@ -411,7 +409,6 @@ export default class GradientPicker extends React.Component {
                             <option key="gradient-repeat" value="repeat">Repeat</option>
                         </select>
                     </div>
-
                     <div { ...wrapperProps }>
                         <label { ...labelProps }>Mode</label>
                         <select { ...modeElementProps }>
