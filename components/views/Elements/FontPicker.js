@@ -32,11 +32,6 @@ export default class FontPicker extends React.Component {
 
         if ('config' in props)  {
             Object.assign(this.config, props.config);
-
-            this.loader = new FontLoader(get(this.config, 'googleFontAPI'));
-            if (!this.loader.validate(get(props, 'family', ''), get(props, 'style', ''), get(props, 'weight', ''))) {
-                props.root.setError(props.name);
-            }
         }
 
         if ('root' in props) {
@@ -55,9 +50,26 @@ export default class FontPicker extends React.Component {
             this.state.weight = props.weight;
         }
 
+        this.loader = props.fontLoaderObject
+            ? props.fontLoaderObject
+            : new FontLoader(get(this.config, 'googleFontAPI', false));
+
+        if (!this.loader.validate(
+                get(props, 'family', ''),
+                get(props, 'style', ''),
+                get(props, 'weight', ''))
+        ) {
+            props.root.setError(props.name);
+        }
+
         if ('mode' in props && this.loader) {
             this.mode = props.mode;
-            this.generateOptions(props.mode, get(props, 'family', ''), get(props, 'style', ''), get(props, 'weight', ''));
+            this.generateOptions(
+                props.mode,
+                get(props, 'family', ''),
+                get(props, 'style', ''),
+                get(props, 'weight', '')
+            );
         }
     };
 

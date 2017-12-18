@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import Iterator from './modules/Iterator';
 import DOMHelper from './modules/DOMHelper';
 import FontLoader from './modules/FontLoader';
+import ImageLoader from './modules/ImageLoader';
 import InspectorPanel from './views/Inspector';
 import EditorPanel from './views/Editor';
 import Overlay from './views/Overlay';
@@ -22,7 +23,7 @@ export default class Inspector extends React.Component {
         node: false,
         hover: false,
         saving: false,
-        vertical: false,
+        vertical: true,
         refresh: false,
         overlay: {}
     };
@@ -37,27 +38,29 @@ export default class Inspector extends React.Component {
     };
 
     allowNavigator = true;
-    iterator = false;
+    iteratorHelper = false;
     DOMHelper = false;
     hoverCache = false;
+    fontLoader = false;
 
     constructor(props) {
         super(props);
+
         if ('minimize' in props) {
             this.state.minimize = props.minimize;
         }
+
         if ('allowNavigator' in props) {
             this.allowNavigator = props.allowNavigator;
         }
+
         if ('config' in props) {
             this.config = props.config;
         }
-        this.iterator = new Iterator();
-        this.DOMHelper = new DOMHelper();
 
-        if (this.config.googleFontAPI) {
-            this.fontLoader = new FontLoader(this.config.googleFontApi);
-        }
+        this.iteratorHelper = new Iterator();
+        this.DOMHelper = new DOMHelper();
+        this.fontLoader = new FontLoader(get(this, 'config.googleFontApi', false));
 
         this.cloneSheet();
     };
@@ -120,7 +123,7 @@ export default class Inspector extends React.Component {
         if (unmount) {
             this.destroyEvent();
             document.body.removeAttribute('stylizer-active');
-            this.iterator.destroy();
+            this.iteratorHelper.destroy();
         }
     };
 
@@ -210,12 +213,12 @@ export default class Inspector extends React.Component {
     retrieveOrBuildStorage = (node) => {
         let tracker = this.DOMHelper.closest(node, {hasAttribute: 'stylizer-uuid'}, 'both');
         if (tracker.depth > 1) {
-            let Store = this.iterator.find(tracker.node.getAttribute('stylizer-uuid'));
-            this.iterator.iterate(tracker.node, Store, Store.depth, Store.depth + tracker.depth, Store.tree);
+            let Store = this.iteratorHelper.find(tracker.node.getAttribute('stylizer-uuid'));
+            this.iteratorHelper.iterate(tracker.node, Store, Store.depth, Store.depth + tracker.depth, Store.tree);
         }
 
         tracker = null;
-        let targetNode = this.iterator.find(node.getAttribute('stylizer-uuid'));
+        let targetNode = this.iteratorHelper.find(node.getAttribute('stylizer-uuid'));
         return targetNode ? targetNode : false;
     };
 
@@ -262,7 +265,7 @@ export default class Inspector extends React.Component {
     };
 
     render() {
-        const { config, state, props, allowNavigator } = this;
+        const { config, state, props, allowNavigator, fontLoader, imageLoader, DOMHelper, iteratorHelper } = this;
         const { iterator, editor } = props;
 
         const inspectorProps = get(config, 'inspectorProps', {
@@ -275,7 +278,7 @@ export default class Inspector extends React.Component {
             key: 'stylizer-inspector-element',
             config: iterator,
             root: this,
-            iterator: this.iterator,
+            iterator: iteratorHelper,
             node: state.node,
             refresh: state.refresh
         });
@@ -285,6 +288,7 @@ export default class Inspector extends React.Component {
             config: editor,
             root: this,
             node: state.node,
+            DOMHelper: DOMHelper,
             refresh: state.refresh
         });
 

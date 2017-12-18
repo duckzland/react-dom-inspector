@@ -1,7 +1,7 @@
 import React from 'react';
 import BasePanel from '../Panel';
-import ToggleOpenIcon from '../../../node_modules/react-icons/lib/fa/toggle-on';
-import ToggleLockedIcon from '../../../node_modules/react-icons/lib/fa/toggle-off';
+import CloseIcon from '../../../node_modules/react-icons/lib/io/close-circled';
+import BackgroundImage from '../Fields/BackgroundImage';
 import { get, forEach } from 'lodash';
 
 /**
@@ -11,24 +11,61 @@ import { get, forEach } from 'lodash';
  * @author jason.xie@victheme.com
  */
 export default class Styles extends BasePanel {
+
     constructor(props) {
         super(props);
         this.state = {
             node: false,
             errors: {},
             values: {},
-            gradient: false
+            picker: false
         };
 
         this.config = {
             type: 'styles',
             empty: null
         };
-        this.fields = [
+        this.defaultFields = [
             {
                 key: 'background',
                 title: 'Background',
-                type: 'group'
+                type: 'group',
+                elements:  [
+                    { title: 'color', target: 'background-color', type: 'element', field: 'color', default: '', inline: false},
+                    { title: 'image', target: 'background-image', type: 'element', field: 'background-image', default: '', inline: false},
+                    { title: 'position', target: 'background-position', type: 'element', field: 'text', default: '', inline: false},
+                    { title: 'size', target: 'background-size', type: 'element', field: 'text', default: '', inline: false},
+                    { title: 'repeat', target: 'background-repeat', type: 'element', field: 'select', options: {
+                        initial: 'None',
+                        repeat : 'Repeat All',
+                        'repeat-x' : 'Horizontally',
+                        'repeat-y' : 'Vertically',
+                        'no-repeat': 'Don\'t Repeat'
+                    }, default: '', inline: false}
+                ]
+            },
+            {
+                key: 'advanced',
+                title: 'Background Adjustment',
+                type: 'group',
+                elements: [
+                    {title: 'attachment', target: 'background-attachment', type: 'element', field: 'select', options: {
+                        scroll: 'Scroll',
+                        fixed: 'Fixed',
+                        local: 'Local'
+                    }, default: '', inline: false},
+                    {title: 'clip', target: 'background-clip', type: 'element', field: 'select', options: {
+                        'border-box': 'Border Box',
+                        'padding-box': 'Padding Box',
+                        'content-box': 'Content Box'
+                    }, default: '', inline: false},
+
+                    {title: 'origin', target: 'background-origin', type: 'element', field: 'select', options: {
+                        'padding-box': 'Padding Box',
+                        'border-box': 'Border Box',
+                        'content-box': 'Content Box'
+                    }, default: '', inline: false}
+                ]
             },
             {
                 key: 'visibility',
@@ -58,91 +95,58 @@ export default class Styles extends BasePanel {
             }
         ];
 
-        this.state.gradient = this.detectBackgroundGradient(get(props, 'node.styles', {}));
+        this.gradientPickerFields = [{
+            key: 'background',
+            title: 'Create Gradient',
+            type: 'group',
+            toggle: 'off',
+            elements:  [{ title: false, target: 'background-image', type: 'element', field: 'gradient', default: '', inline: false}]
+        }];
 
-        this.state.gradient ? this.generateGradientFields() : this.generateBackgroundFields();
+        this.imagePickerFields = [{
+            key: 'background',
+            title: 'Select Image',
+            type: 'group',
+            toggle: 'off',
+            elements:  [{ title: false, target: 'background-image', type: 'element', field: 'image', default: '', inline: false}]
+        }];
+
+        this.generateBackgroundFields(false);
 
         this.initialize(props);
     }
 
     generateToggle = (element) => {
-        const { onToggleLock } = this;
-        this.toggleOpenIcon = (<ToggleOpenIcon size={ 16 } onClick={ () => onToggleLock(element) }/>);
-        this.toggleCloseIcon = (<ToggleLockedIcon size={ 16 } onClick={ () => onToggleLock(element) }/>);
+        const { onToggleLock, state } = this;
+        this.toggleOpenIcon = false;
+        this.toggleCloseIcon = state.picker ? (<CloseIcon size={ 16 } onClick={ () => onToggleLock(element) }/>) : null;
     };
 
-    detectBackgroundGradient = (Rules) => {
-        let isGradient = false;
-        forEach(['background-image', 'background'], (key) =>  {
-            if (Rules[key] && Rules[key].indexOf('gradient') !== -1) {
-                isGradient = true;
-                return false;
-            }
-        });
-
-        return isGradient;
+    generateBackgroundFields = (refresh = false) => {
+        this.fields = this.defaultFields;
+        refresh && this.setState({ picker: false });
     };
 
-    generateBackgroundFields = () => {
-        forEach(this.fields, (field) => {
-            if (field.key === 'background') {
-                field.toggle = 'off';
-                field.elements = [
-                    { title: 'color', target: 'background-color', type: 'element', field: 'color', default: '', inline: false},
-                    { title: 'image', target: 'background-image', type: 'element', field: 'text', default: '', inline: false},
-                    { title: 'position', target: 'background-position', type: 'element', field: 'text', default: '', inline: false},
-                    { title: 'size', target: 'background-size', type: 'element', field: 'text', default: '', inline: false},
-                    { title: 'repeat', target: 'background-repeat', type: 'element', field: 'select', options: {
-                        initial: 'None',
-                        repeat : 'Repeat All',
-                        'repeat-x' : 'Horizontally',
-                        'repeat-y' : 'Vertically',
-                        'no-repeat': 'Don\'t Repeat'
-                    }, default: '', inline: false}
-                ];
-            }
-        });
-
-        this.fields.splice(1, 0, {
-            key: 'advanced',
-            title: 'Background Adjustment',
-            type: 'group',
-            elements: [
-                {title: 'attachment', target: 'background-attachment', type: 'element', field: 'select', options: {
-                    scroll: 'Scroll',
-                    fixed: 'Fixed',
-                    local: 'Local'
-                }, default: '', inline: false},
-                {title: 'clip', target: 'background-clip', type: 'element', field: 'select', options: {
-                    'border-box': 'Border Box',
-                    'padding-box': 'Padding Box',
-                    'content-box': 'Content Box'
-                }, default: '', inline: false},
-
-                {title: 'origin', target: 'background-origin', type: 'element', field: 'select', options: {
-                    'padding-box': 'Padding Box',
-                    'border-box': 'Border Box',
-                    'content-box': 'Content Box'
-                }, default: '', inline: false}
-            ]
-        });
+    generateGradientFields = (refresh = false) => {
+        this.fields = this.gradientPickerFields;
+        refresh && this.setState({ picker: 'gradient' });
     };
 
-    generateGradientFields = () => {
-        forEach(this.fields, (field) => {
-            if (field.key === 'background') {
-                field.toggle = 'on';
-                field.elements = [ { title: 'gradient', target: 'background-image', type: 'element', field: 'gradient', default: '', inline: false} ];
-            }
-        });
-
-        this.fields.splice(1, 1);
+    generateImageFields = (refresh = false) => {
+        this.fields = this.imagePickerFields;
+        refresh && this.setState({ picker: 'image' });
     };
 
     onToggleLock = (element) => {
         this.mutateSpace('left', null, null, true);
-        this.state.gradient = !this.state.gradient;
-        this.state.gradient ? this.generateGradientFields() : this.generateBackgroundFields();
-        this.setState(this.state);
+        this.generateBackgroundFields(true);
+        this.setState({ picker: false });
+    };
+
+    hookBeforeElementRender = (element, inputElement, inputProps) => {
+        if (element.field === 'background-image') {
+            inputProps.type = 'text';
+            inputElement.push( <BackgroundImage { ...inputProps} /> );
+        }
     };
 }

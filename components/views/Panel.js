@@ -3,6 +3,7 @@ import ScrollArea from 'react-scrollbar';
 import ColorPicker  from './Elements/ColorPicker';
 import FontPicker from './Elements/FontPicker';
 import GradientPicker from './Elements/GradientPicker';
+import ImagePicker from './Elements/ImagePicker';
 import ToggleOpenIcon from '../../node_modules/react-icons/lib/fa/unlock';
 import ToggleLockedIcon from '../../node_modules/react-icons/lib/fa/lock';
 import { get, forEach, camelCase } from 'lodash';
@@ -132,7 +133,7 @@ export default class Panel extends React.Component {
     };
 
     generateElement = (element) => {
-        const { onKeypress, onSubmit, state, hasError, config } = this;
+        const { onKeypress, onSubmit, state, props, hasError, config, hookBeforeElementRender } = this;
         const elementProps = get(config, camelCase('PanelFieldElementProps_'  + element.target), {
             key: 'stylizer-element-' + element.target + '-' + state.node.uuid,
             className: [
@@ -177,6 +178,7 @@ export default class Panel extends React.Component {
 
             case 'font' :
                 inputProps.mode = element.mode;
+                inputProps.fontLoaderObject = props.fontLoaderObject;
                 inputProps.family = get(state, 'values.font-family');
                 inputProps.weight = get(state, 'values.font-weight');
                 inputProps.style = get(state, 'values.font-style');
@@ -205,7 +207,14 @@ export default class Panel extends React.Component {
             case 'gradient' :
                 InputElement.push( <GradientPicker { ...inputProps } /> );
                 break;
+
+            case 'image' :
+                inputProps.imageLoaderObject = props.imageLoaderObject;
+                InputElement.push( <ImagePicker { ...inputProps } /> );
+                break;
         }
+
+        hookBeforeElementRender && hookBeforeElementRender(element, InputElement, inputProps);
 
         return (
             <div { ...elementProps }>
@@ -376,7 +385,7 @@ export default class Panel extends React.Component {
                 { leftSpace.content && <div { ...leftSpaceProps }>{ leftSpace.content }</div> }
                 <ScrollArea { ...scrollAreaProps }>
                     <div { ...centerSpaceProps}>
-                        { this.fields.map((element) => {
+                        { fields.map((element) => {
                             switch (element.type) {
                                 case 'group' :
                                     return generateGroup(element);

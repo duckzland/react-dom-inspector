@@ -2,9 +2,18 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Inspector from './components';
 
+const Element = document.getElementById('dom-inspector');
 ReactDOM.render(
-    <Inspector iterator={ { maxDepth: 2 } } editor={{
-        googleFontAPI: 'AIzaSyBGkmctzcaXne1HFbZKYz6iq9i6ROrVeaE'
-    }} />,
-    document.getElementById('dom-inspector')
+    <Inspector
+        iterator={{
+            maxDepth: Element.getAttribute('data-iterator-max-depth')
+        }}
+        editor={{
+            domID: Element.getAttribute('id'),
+            googleFontAPI: Element.getAttribute('data-google-font-api'),
+            imageLoader: JSON.parse(Element.getAttribute('data-image-loader')),
+            imageLibrary: JSON.parse(Element.getAttribute('data-image-library'))
+        }}
+    />,
+    Element
 );
