@@ -3,6 +3,7 @@ import ScrollArea from 'react-scrollbar';
 import { get } from 'lodash';
 import HamburgerIcon from '../../node_modules/react-icons/lib/io/navicon-round';
 import Iterator from '../modules/Iterator';
+import Configurator from '../modules/Config';
 import Items from './Items';
 
 /**
@@ -16,19 +17,23 @@ export default class Inspector extends React.Component {
         active: false,
         minimize: false
     };
-
-    config = {
-        InspectorPanelStartingDepth: 2,
-        InspectorPanelHeaderText: 'Navigator'
-    };
-
+    
+    config = false;
+    
     constructor(props) {
         super(props);
+        this.config = new Configurator({
+            InspectorPanelStartingDepth: 2,
+            InspectorPanelHeaderText: 'Navigator'
+        });
+        
         this.iterator = 'iterator' in props ? props.iterator : new Iterator();
+        
         if ('config' in props)  {
-            Object.assign(this.config, props.config);
+           this.config.insert(props.config);
         }
-        this.iterator.iterate(document.body, false, 0, this.config.InspectorPanelStartingDepth, []);
+        
+        this.iterator.iterate(document.body, false, 0, this.config.get('InspectorPanelStartingDepth'), []);
     };
 
     componentWillReceiveProps(nextProps) {
@@ -121,32 +126,32 @@ export default class Inspector extends React.Component {
 
         const { iterator, state, config, onScroll, moveScrollBar } = this;
 
-        const panelProps = get(config, 'inspectorPanelProps', {
+        const panelProps = config.get('inspectorPanelProps', {
             key: 'stylizer-iterator-panel',
             className: [ 'stylizer-panels', 'stylizer-dom-panel', state.minimize ? 'minimize' : ''].join(' ')
         });
 
-        const headerProps = get(config, 'inspectorPanelHeaderProps', {
+        const headerProps = config.get('inspectorPanelHeaderProps', {
             key: 'stylizer-iterator-header',
             className: 'stylizer-header'
         });
 
-        const headerTextProps = get(config, 'inspectorPanelHeaderTextProps', {
+        const headerTextProps = config.get('inspectorPanelHeaderTextProps', {
             key: 'stylizer-iterator-header-text',
             className: 'stylizer-header-text'
         });
 
-        const headerActionProps = get(config, 'inspectorPanelHeaderActionProps', {
+        const headerActionProps = config.get('inspectorPanelHeaderActionProps', {
             key: 'stylizer-iterator-header-actions',
             className: 'stylizer-header-actions'
         });
 
-        const hamburgerIconProps = get(config, 'inspectorPanelHamburgerIconProps', {
+        const hamburgerIconProps = config.get('inspectorPanelHamburgerIconProps', {
             size: 16,
             onClick: () => { this.setState({ minimize: !this.state.minimize }); }
         });
 
-        const scrollAreaProps = get(config, 'inspectorPanelScrollAreaProps', {
+        const scrollAreaProps = config.get('inspectorPanelScrollAreaProps', {
             key: 'stylizer-iterator',
             ref: (el) => { moveScrollBar(el) },
             speed: 0.8,
@@ -164,7 +169,7 @@ export default class Inspector extends React.Component {
         return (
             <div { ...panelProps }>
                 <h3 { ...headerProps }>
-                    <span { ...headerTextProps }>{ config.InspectorPanelHeaderText }</span>
+                    <span { ...headerTextProps }>{ config.get('InspectorPanelHeaderText') }</span>
                     <span { ...headerActionProps }><HamburgerIcon { ...hamburgerIconProps } /></span>
                 </h3>
                 <ScrollArea { ...scrollAreaProps }>

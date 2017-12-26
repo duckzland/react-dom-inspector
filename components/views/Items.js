@@ -1,4 +1,5 @@
 import React from 'react';
+import Configurator from '../modules/Config';
 import { get } from 'lodash';
 
 /**
@@ -8,9 +9,14 @@ import { get } from 'lodash';
  */
 export default class Items extends React.Component {
 
+    config = false;
+
     constructor(props) {
         super(props);
-        this.config = get(props, 'config', {});
+        this.config = new Configurator();
+        if ('config' in props)  {
+            this.config.insert(props.config);
+        }
     };
 
     isLoaded(node) {
@@ -36,7 +42,7 @@ export default class Items extends React.Component {
     render() {
         const { isParent, isProcessed, isChanged, isLoaded, isActive, props, config } = this;
         const { node, root } = props;
-        const itemProps = get(config, 'InspectorItemsItemProps', {
+        const itemProps = config.get('InspectorItemsItemProps', {
             key: 'item-' + node.uuid,
             className: [
                 'stylizer-element',

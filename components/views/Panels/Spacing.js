@@ -15,10 +15,11 @@ export default class Spacing extends BasePanel {
             values: {}
         };
 
-        this.config = {
+        this.config.insert({
             type: 'spacing',
             empty: null
-        };
+        });
+
         this.fields = [
             {
                 key: 'width',
@@ -63,6 +64,7 @@ export default class Spacing extends BasePanel {
                 ]
             }
         ];
+
         this.initialize(props);
     }
 }

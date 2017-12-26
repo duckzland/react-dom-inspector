@@ -1,4 +1,5 @@
 import React from 'react';
+import Configurator from '../modules/Config';
 import { get } from 'lodash';
 
 /**
@@ -38,7 +39,16 @@ export default class Overlay extends React.Component {
         }
     };
 
-    config = {};
+    config = false;
+
+    constructor(props) {
+        super(props);
+
+        this.config = new Configurator();
+        if ('config' in props)  {
+            this.config.insert(props.config);
+        }
+    };
 
     detectSize = (node) => {
         const result = {};
@@ -160,25 +170,25 @@ export default class Overlay extends React.Component {
     render() {
 
         const { state, config } = this;
-        const overlayBoxProps = get(config, 'overlayBoxProps', {
+        const overlayBoxProps = config.get('overlayBoxProps', {
             key: 'overlay-box',
             className: 'stylizer-overlay-box',
             style: state.position
         });
 
-        const overlayMarginProps = get(config, 'overlayMarginProps', {
+        const overlayMarginProps = config.get('overlayMarginProps', {
             key: 'overlay-margin',
             className: 'stylizer-overlay-margin',
             style: state.margin
         });
 
-        const overlayPaddingProps = get(config, 'overlayPaddingProps', {
+        const overlayPaddingProps = config.get('overlayPaddingProps', {
             key: 'overlay-padding',
             className: 'stylizer-overlay-padding',
             style: Object.assign({}, state.padding, state.border)
         });
 
-        const overlayContentProps = get(config, 'overlayContentProps', {
+        const overlayContentProps = config.get('overlayContentProps', {
             key: 'overlay-content',
             className: 'stylizer-overlay-content',
             style: state.size

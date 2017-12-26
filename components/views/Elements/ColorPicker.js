@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChromePicker } from 'react-color';
 import CloseIcon from '../../../node_modules/react-icons/lib/io/close-circled';
+import Configurator from '../../modules/Config';
 import { get } from 'lodash';
 
 /**
@@ -14,7 +15,7 @@ export default class ColorPicker extends React.Component {
         value: '',
         color: {}
     };
-    config = {};
+    config = false;
 
     constructor(props) {
         super(props);
@@ -22,8 +23,11 @@ export default class ColorPicker extends React.Component {
             this.state.value = props.value;
         }
 
+
+        this.config = new Configurator();
+
         if ('config' in props)  {
-            Object.assign(this.config, props.config);
+            this.config.insert(props.config);
         }
 
         if ('root' in props) {
@@ -45,7 +49,7 @@ export default class ColorPicker extends React.Component {
     show = () => {
         const { props, state, config, change, isOpen } = this;
         if (!isOpen()) {
-            const chromeProps = get(config, 'ElementsColorPickerChromeProps', {
+            const chromeProps = config.get('ElementsColorPickerChromeProps', {
                 color: state.color,
                 onChange: change
             });
@@ -99,35 +103,35 @@ export default class ColorPicker extends React.Component {
 
     render() {
         const { props, state, config, toggle, show, close, isOpen } = this;
-        const mainProps = get(config, 'ElementColorPickerMainProps', {
+        const mainProps = config.get('ElementColorPickerMainProps', {
             className: props.className + ' stylizer-color-element'
         });
 
-        const inputProps = get(config, 'ElementColorPickerInputProps', {
+        const inputProps = config.get('ElementColorPickerInputProps', {
             type: 'text',
             value: state.value,
             onChange: props.onChange,
             onFocus: show
         });
 
-        const spanPickerConst = get(config, 'ElementColorPickerSpanPickerConst', {
+        const spanPickerConst = config.get('ElementColorPickerSpanPickerConst', {
             className: 'stylizer-color-preview',
             onClick: toggle
         });
 
-        const spanPickerContentConst = get(config, 'ElementColorPickerSpanPickerConst', {
+        const spanPickerContentConst = config.get('ElementColorPickerSpanPickerConst', {
             style: {
                 backgroundColor: state.value
             },
             className: 'stylizer-color-preview-content'
         });
 
-        const spanCloserConst = get(config, 'ElementColorPickerSpanCloserConst', {
+        const spanCloserConst = config.get('ElementColorPickerSpanCloserConst', {
             className: 'stylizer-color-closer',
             onClick: close
         });
 
-        const closeIconProps = get(config, 'ElementColorPickerCloseIconProps', {
+        const closeIconProps = config.get('ElementColorPickerCloseIconProps', {
             size: 13
         });
 

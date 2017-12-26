@@ -1,5 +1,6 @@
 import React from 'react';
 import ScrollArea from 'react-scrollbar';
+import Configurator from '../modules/Config';
 import ColorPicker  from './Elements/ColorPicker';
 import FontPicker from './Elements/FontPicker';
 import GradientPicker from './Elements/GradientPicker';
@@ -25,12 +26,13 @@ export default class Panel extends React.Component {
         content: null
     };
 
-    config = {
-        PanelGroupEmpty: null
-    };
+    config = false;
 
     constructor(props) {
         super(props);
+        this.config = new Configurator({
+            PanelGroupEmpty: null
+        });
     };
 
     initialize(props) {
@@ -41,13 +43,9 @@ export default class Panel extends React.Component {
             this.state.values = this.getValues();
             this.state.errors = this.validateValues();
         }
-
-        if ('config' in props && props.config) {
-            Object.assign(this.config, props.config);
-        }
-
-        if (!'config' in this) {
-            this.config = {};
+        
+        if ('config' in props)  {
+            this.config.insert(props.config);
         }
 
         if (!'fields' in this) {
@@ -134,7 +132,7 @@ export default class Panel extends React.Component {
 
     generateElement = (element) => {
         const { onKeypress, onSubmit, state, props, hasError, config, hookBeforeElementRender } = this;
-        const elementProps = get(config, camelCase('PanelFieldElementProps_'  + element.target), {
+        const elementProps = config.get(camelCase('PanelFieldElementProps_'  + element.target), {
             key: 'stylizer-element-' + element.target + '-' + state.node.uuid,
             className: [
                 'stylizer-form-item',
@@ -144,11 +142,11 @@ export default class Panel extends React.Component {
             ].join(' ')
         });
 
-        const labelProps = get(config, camelCase('PanelFieldLabelProps_' + element.target), {
+        const labelProps = config.get(camelCase('PanelFieldLabelProps_' + element.target), {
             className: 'stylizer-form-label'
         });
 
-        const inputProps = get(config, camelCase('PanelFieldInputProps_' + element.target), {
+        const inputProps = config.get(camelCase('PanelFieldInputProps_' + element.target), {
             key: 'input-' + element.target + '-' + state.node.uuid,
             uuid: 'input-' + element.target + '-' + state.node.uuid,
             className: 'stylizer-form-input',
@@ -156,11 +154,10 @@ export default class Panel extends React.Component {
             name: element.target,
             value: get(state, 'values.' + element.target, element.default),
             root: this,
-            onChange: onSubmit,
-            config: config
+            onChange: onSubmit
         });
 
-        const errorProps = get(config, camelCase('PanelFieldErrorProps_' + element.target), {
+        const errorProps = config.get(camelCase('PanelFieldErrorProps_' + element.target), {
             key: 'input-' + element.target + '-error-' + state.node.uuid,
             className: 'stylizer-error-bag'
         });
@@ -188,13 +185,13 @@ export default class Panel extends React.Component {
             case 'select' :
                 let options = [];
                 if (element.options) {
-                    const optionEmptyProps = get(config, 'PanelFieldSelectOptionEmptyProps', {
+                    const optionEmptyProps = config.get('PanelFieldSelectOptionEmptyProps', {
                         key: 'stylizer-option-' + element.target + '-empty',
                         value: ''
                     });
                     options.push( <option { ...optionEmptyProps }>{ null }</option> );
                     forEach(element.options, (text, value) => {
-                        const optionProps = get(config, camelCase('PanelFieldSelectOptionProps ' + element.target), {
+                        const optionProps = config.get(camelCase('PanelFieldSelectOptionProps ' + element.target), {
                             key: 'stylizer-option-' + element.target + text.replace(' ', '-'),
                             value: value
                         });
@@ -236,16 +233,16 @@ export default class Panel extends React.Component {
         this.generateToggle(element);
 
         const { state, config, generateElement, toggleOpenIcon, toggleCloseIcon} = this;
-        const elementProps = get(config, camelCase('PanelGroupElementProps ' + element.key), {
+        const elementProps = config.get(camelCase('PanelGroupElementProps ' + element.key), {
             key: 'stylizer-group-' + element.title + '-' + state.node.uuid,
             className: ['stylizer-form-group', 'stylizer-group--' + element.key.replace(' ', '-'), element.inline ? 'stylizer-label-inline' : ''].join(' ')
         });
 
-        const headingProps = get(config, camelCase('PanelGroupHeadingProps ' + element.key), {
+        const headingProps = config.get(camelCase('PanelGroupHeadingProps ' + element.key), {
             className: 'stylizer-form-header'
         });
 
-        const wrapperProps = get(config, camelCase('PanelGroupWrapperProps ' + element.key), {
+        const wrapperProps = config.get(camelCase('PanelGroupWrapperProps ' + element.key), {
             className: 'stylizer-form-row'
         });
 
@@ -261,7 +258,7 @@ export default class Panel extends React.Component {
                 <div { ...wrapperProps }>
                     { element.elements
                         ? element.elements.map( (child) => { return generateElement(child) })
-                        : config.PanelGroupEmpty
+                        : config.get('PanelGroupEmpty')
                     }
                 </div>
             </div>
@@ -345,27 +342,27 @@ export default class Panel extends React.Component {
 
         const { leftSpace, rightSpace, fields, config, state, generateGroup, generateElement, onScroll, hookBeforeRender } = this;
 
-        const tabProps = get(config, 'PanelTabProps', {
-            key: 'stylizer-tab-' + config.type + '-' + state.node.uuid,
-            className: 'stylizer-tab-content stylizer-content-flex stylizer-tab-panel--' + config.type
+        const tabProps = config.get('PanelTabProps', {
+            key: 'stylizer-tab-' + config.get('type') + '-' + state.node.uuid,
+            className: 'stylizer-tab-content stylizer-content-flex stylizer-tab-panel--' + config.get('type')
         });
 
-        const leftSpaceProps = get(config, 'PanelLeftSpaceProps', {
+        const leftSpaceProps = config.get('PanelLeftSpaceProps', {
             key: 'stylizer-panel-left-space',
             className: 'stylizer-panel-left-space'
         });
 
-        const centerSpaceProps = get(config, 'PanelCenterSpaceProps', {
+        const centerSpaceProps = config.get('PanelCenterSpaceProps', {
             key: 'stylizer-panel-center-space',
             className: 'stylizer-panel-center-space'
         });
 
-        const rightSpaceProps = get(config, 'PanelRightSpaceProps', {
+        const rightSpaceProps = config.get('PanelRightSpaceProps', {
             key: 'stylizer-panel-right-space',
             className: 'stylizer-panel-right-space'
         });
 
-        const scrollAreaProps = get(config, 'EditorPanelScrollAreaProps', {
+        const scrollAreaProps = config.get('EditorPanelScrollAreaProps', {
             key: "stylizer-tab-contents",
             speed: 0.8,
             className: [

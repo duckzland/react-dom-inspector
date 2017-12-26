@@ -21,7 +21,7 @@ export default class Border extends BasePanel {
             }
         };
 
-        this.config = {
+        this.config.insert({
             type: 'border',
             empty: null,
             borderOptions: {
@@ -36,7 +36,7 @@ export default class Border extends BasePanel {
                 inset : 'Inset',
                 outset : 'Outset'
             }
-        };
+        });
 
         this.fields = [];
         this.state.grouped.border = this.detectBorderGroup(get(props, 'node.styles', {}));
@@ -101,7 +101,7 @@ export default class Border extends BasePanel {
                 elements: [
                     { title: 'color', target: 'border-color', type: 'element', field: 'color', default: '', inline: false },
                     { title: 'width', target: 'border-width', type: 'element', field: 'text', default: '', inline: false },
-                    { title: 'style', target: 'border-style', type: 'element', field: 'select', options: config.borderOptions, default: '', inline: false }
+                    { title: 'style', target: 'border-style', type: 'element', field: 'select', options: config.get('borderOptions'), default: '', inline: false }
                 ]
              })
             : forEach({
@@ -118,7 +118,7 @@ export default class Border extends BasePanel {
                     elements: [
                         { title: 'color', target:  Key + '-color', type: 'element', field: 'color', default: '', inline: false },
                         { title: 'width', target: Key + '-width', type: 'element', field: 'text', default: '', inline: false },
-                        { title: 'style', target: Key + '-style', type: 'element', field: 'select', options: config.borderOptions, default: '', inline: false }
+                        { title: 'style', target: Key + '-style', type: 'element', field: 'select', options: config.get('borderOptions'), default: '', inline: false }
                     ]
                 })
             });
@@ -165,7 +165,7 @@ export default class Border extends BasePanel {
                 {title: 'color', target: 'outline-color', type: 'element', field: 'color', default: '', inline: false},
                 {title: 'width', target: 'outline-width', type: 'element', field: 'text', default: '', inline: false},
                 {title: 'offset', target: 'outline-offset', type: 'element', field: 'text', default: '', inline: false},
-                {title: 'style', target: 'outline-style', type: 'element', field: 'select', options: config.borderOptions, default: '', inline: false }
+                {title: 'style', target: 'outline-style', type: 'element', field: 'select', options: config.get('borderOptions'), default: '', inline: false }
             ]
         });
     };

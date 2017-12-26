@@ -21,10 +21,11 @@ export default class Styles extends BasePanel {
             picker: false
         };
 
-        this.config = {
+        this.config.insert({
             type: 'styles',
             empty: null
-        };
+        });
+
         this.defaultFields = [
             {
                 key: 'background',

@@ -1,8 +1,9 @@
 import React from 'react';
 import ScrollArea from 'react-scrollbar';
 import ImageLoader from '../../modules/ImageLoader';
+import Configurator from '../../modules/Config';
 import CloseIcon from '../../../node_modules/react-icons/lib/io/close-circled';
-import { get, set, forEach } from 'lodash';
+import { get, set, forEach, size } from 'lodash';
 
 /**
  * Class for building the Editor ImagePicker elements
@@ -21,7 +22,7 @@ export default class ImagePicker extends React.Component {
         showCount: 0
     };
 
-    config = {};
+    config = false;
     loader = null;
 
     progressElement = null;
@@ -38,28 +39,40 @@ export default class ImagePicker extends React.Component {
             this.state.value = props.value;
         }
 
+        this.config = new Configurator({
+            imageLoader: {
+                upload: {
+                    onError: () => { error('Error when uploading file') },
+                    onFailed: () => { error('Failed uploading File') },
+                    onComplete: () => { refresh() }
+                },
+                fetch: {
+                    onError: () => { error('Error when retrieving file') },
+                    onFailed: () => { error('Failed retrieving file') },
+                    onComplete: () => { refresh() }
+                },
+                remove: {
+                    onError: () => { error('Error removing File') },
+                    onFailed:  () => { error('Failed when removing file') },
+                    onComplete: () => { refresh() }
+                }
+                
+            }
+        });
+
         if ('config' in props)  {
-            Object.assign(this.config, props.config);
-
-            set(this, 'config.imageLoader.upload.onComplete', () => { refresh() });
-            set(this, 'config.imageLoader.fetch.onComplete', () => { refresh() });
-            set(this, 'config.imageLoader.remove.onComplete', () => { refresh() });
-
-            set(this, 'config.imageLoader.upload.onFailed', () => { error('Failed uploading File') });
-            set(this, 'config.imageLoader.upload.onError', () => { error('Error when uploading file') });
-            set(this, 'config.imageLoader.fetch.onFailed', () => { error('Failed retrieving file') });
-            set(this, 'config.imageLoader.fetch.onError', () => { error('Error when retrieving file') });
-            set(this, 'config.imageLoader.remove.onFailed', () => { error('Failed uploading File') });
-            set(this, 'config.imageLoader.remove.onError', () => { error('Error when removing file') });
+            this.config.insert(props.config);
         }
 
         if ('root' in props) {
             this.state.root = props.root;
         }
 
-        this.loader = props.imageLoaderObject ? props.imageLoaderObject : new ImageLoader(
-            get(this.config, 'imageLoader', {}),
-            get(this.config, 'imageLibrary', false)
+        this.loader = props.imageLoaderObject 
+            ? props.imageLoaderObject 
+            : new ImageLoader(
+                this.config.get('imageLoader', {}),
+                this.config.get('imageLibrary', false)
         );
 
         const maybeImage = this.loader.find(this.state.value.replace('url(', '').replace(')', '').split('/').pop().split('#')[0].split('?')[0]);
@@ -104,6 +117,7 @@ export default class ImagePicker extends React.Component {
             error: false,
             progress: true
         });
+        
         forEach(e.target.files, (file) => {
             this.loader.upload(file, this.progressElement);
         });
@@ -121,12 +135,13 @@ export default class ImagePicker extends React.Component {
     };
 
     onScroll = (value) => {
+
         if (this.state.images.length === this.state.showCount) {
             return false;
         }
 
         const leftPosition = value.leftPosition ? value.leftPosition : 0;
-        const singleWidth = value.realWidth / this.state.images.length;
+        const singleWidth = value.realWidth / size(this.state.images);
         let showCount = Math.ceil((leftPosition + value.containerWidth) / singleWidth);
 
         if (showCount > this.state.images.length) {
@@ -137,7 +152,7 @@ export default class ImagePicker extends React.Component {
         }
 
         this.delayedState = setTimeout(() => {
-            this.setState({showCount: showCount });
+            this.setState({ showCount: showCount });
         }, 2);
     };
 
@@ -158,28 +173,28 @@ export default class ImagePicker extends React.Component {
 
     render() {
         const { props, state, config, loader, onSelect, onRemove, onSearch, onUpload, onScroll } = this;
-        const mainAreaProps = get(config, 'ElementImagePickerMainProps', {
+        const mainAreaProps = config.get('ElementImagePickerMainProps', {
             className: props.className + ' stylizer-image-picker-element'
         });
 
-        const elementProps = get(config, 'ElementImagePickerElementProps', {
+        const elementProps = config.get('ElementImagePickerElementProps', {
             className: 'stylizer-form-item'
         });
 
-        const errorProps = get(config, 'ElementImagePickerErrorProps', {
+        const errorProps = config.get('ElementImagePickerErrorProps', {
             className: 'stylizer-error-bag'
         });
 
-        const progressProps = get(config, 'ElementImagePickerProgressProps', {
+        const progressProps = config.get('ElementImagePickerProgressProps', {
             className: 'stylizer-progress-bar',
             ref: (element) => { this.progressElement = element }
         });
 
-        const boxProps = get(config, 'ElementImagePickerBoxProps', {
+        const boxProps = config.get('ElementImagePickerBoxProps', {
             className: 'stylizer-form-search-upload'
         });
 
-        const searchInputProps = get(config, 'ElementImagePickerSearchInputProps', {
+        const searchInputProps = config.get('ElementImagePickerSearchInputProps', {
             type: 'text',
             className: 'stylizer-form-input',
             name: 'search',
@@ -188,11 +203,11 @@ export default class ImagePicker extends React.Component {
             onChange: onSearch
         });
 
-        const uploadElementProps = get(config, 'ElementImagePickerUploadElementProps', {
+        const uploadElementProps = config.get('ElementImagePickerUploadElementProps', {
             className: 'stylizer-form-input-file stylizer-form-button'
         });
 
-        const uploadInputProps = get(config, 'ElementImagePickerUploadInputProps', {
+        const uploadInputProps = config.get('ElementImagePickerUploadInputProps', {
             type: 'file',
             className: 'stylizer-form-input',
             accept: 'image/*',
@@ -200,7 +215,7 @@ export default class ImagePicker extends React.Component {
             onChange: onUpload
         });
 
-        const scrollAreaProps = get(config, 'ElementImagePickerScrollAreaProps', {
+        const scrollAreaProps = config.get('ElementImagePickerScrollAreaProps', {
             speed: 0.8,
             contentClassName: "content",
             onScroll: (value) => { onScroll(value) },
@@ -208,14 +223,14 @@ export default class ImagePicker extends React.Component {
             vertical: false
         });
 
-        const scrollAreaContentProps = get(config, 'ElementImagePickerScrollAreaContentProps', {
+        const scrollAreaContentProps = config.get('ElementImagePickerScrollAreaContentProps', {
             className: 'stylizer-image-picker-images',
             ref: (element) => { this.imagesElement = element }
         });
 
         let Images = [];
         forEach(state.images, (image, delta) => {
-            const thumbnailProps = get(config, 'ElementImagePickerThumbnailProps', {
+            const thumbnailProps = config.get('ElementImagePickerThumbnailProps', {
                 key: 'image-picker-' + delta,
                 className: ['stylizer-image-picker-thumbnail',
                     (state.id === image.id ? 'active' : ''),
@@ -223,17 +238,17 @@ export default class ImagePicker extends React.Component {
                 onClick: (e) => { onSelect(e, image.id) }
             });
 
-            const thumbnailCloseProps = get(config, 'ElementImagePickerThumbnailCloseProps', {
+            const thumbnailCloseProps = config.get('ElementImagePickerThumbnailCloseProps', {
                 className: 'stylizer-image-picker-thumbnail-close',
                 onClick: (e) => { onRemove(e, image.id) }
             });
 
-            const closeIconProps = get(config, 'ElementImagePickerCloseIconProps', {
+            const closeIconProps = config.get('ElementImagePickerCloseIconProps', {
                 size: 16
             });
 
-            const thumbnailImageProps = get(config, 'ElementImagePickerThumbnailImageProps', {
-                src: (delta < state.showCount) ? loader.thumbnail(image) : ''
+            const thumbnailImageProps = config.get('ElementImagePickerThumbnailImageProps', {
+                src: (delta < this.state.showCount) ? loader.thumbnail(image) : ''
             });
 
             Images.push(

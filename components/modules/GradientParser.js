@@ -52,7 +52,11 @@ export default class GradientParser {
             });
         });
 
-        return results;
+        return this.validate(results) ? results : false;
     }
+
+    validate = (rules) => {
+        return rules.mode && rules.shape.length !== 0 ? true : false;
+    };
 
 }

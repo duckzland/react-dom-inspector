@@ -15,10 +15,11 @@ export default class Typography extends BasePanel {
             values: {}
         };
 
-        this.config = {
+        this.config.insert({
             type: 'typography',
             empty: null
-        };
+        });
+
         this.fields = [
             {
                 key: 'font',
@@ -116,6 +117,7 @@ export default class Typography extends BasePanel {
                 ]
             }
         ];
+
         this.initialize(props);
     }
 }

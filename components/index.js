@@ -5,6 +5,7 @@ import Iterator from './modules/Iterator';
 import DOMHelper from './modules/DOMHelper';
 import FontLoader from './modules/FontLoader';
 import ImageLoader from './modules/ImageLoader';
+import Configurator from './modules/Config';
 import InspectorPanel from './views/Inspector';
 import EditorPanel from './views/Editor';
 import Overlay from './views/Overlay';
@@ -33,10 +34,7 @@ export default class Inspector extends React.Component {
         mousemove: false
     };
 
-    config = {
-        domID: 'dom-inspector'
-    };
-
+    config = false;
     allowNavigator = true;
     iteratorHelper = false;
     DOMHelper = false;
@@ -54,10 +52,14 @@ export default class Inspector extends React.Component {
             this.allowNavigator = props.allowNavigator;
         }
 
+        this.config = new Configurator({
+            domID: 'dom-inspector'
+        });
+        
         if ('config' in props) {
-            this.config = props.config;
+            this.config.insert(props.config);
         }
-
+        
         this.iteratorHelper = new Iterator();
         this.DOMHelper = new DOMHelper();
         this.fontLoader = new FontLoader(get(this, 'config.googleFontApi', false));
@@ -118,7 +120,8 @@ export default class Inspector extends React.Component {
     };
 
     killApp = () => {
-        const mountNode = ReactDOM.findDOMNode(document.getElementById(this.config.domID));
+        const { config } = this;
+        const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
         const unmount = ReactDOM.unmountComponentAtNode(mountNode);
         if (unmount) {
             this.destroyEvent();
@@ -265,16 +268,16 @@ export default class Inspector extends React.Component {
     };
 
     render() {
-        const { config, state, props, allowNavigator, fontLoader, imageLoader, DOMHelper, iteratorHelper } = this;
+        const { config, state, props, allowNavigator, DOMHelper, iteratorHelper } = this;
         const { iterator, editor } = props;
 
-        const inspectorProps = get(config, 'inspectorProps', {
+        const inspectorProps = config.get('inspectorProps', {
             key: 'stylizer-inspector',
             className: [ 'stylizer-inspector', state.minimize ? 'minimize' : null, !allowNavigator ? 'no-navigator' : null ].join(' '),
             'stylizer-inspector': "true"
         });
 
-        const inspectorPanelProps = get(config, 'inspectorPanelProps', {
+        const inspectorPanelProps = config.get('inspectorPanelProps', {
             key: 'stylizer-inspector-element',
             config: iterator,
             root: this,
@@ -283,7 +286,7 @@ export default class Inspector extends React.Component {
             refresh: state.refresh
         });
 
-        const editorPanelProps = get(config, 'editorPanelProps', {
+        const editorPanelProps = config.get('editorPanelProps', {
             key: 'stylizer-editor-element',
             config: editor,
             root: this,
@@ -292,7 +295,7 @@ export default class Inspector extends React.Component {
             refresh: state.refresh
         });
 
-        const overlayProps = get(config, 'overlayProps', {
+        const overlayProps = config.get('overlayProps', {
             node: state.overlay
         });
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { ChromePicker } from 'react-color';
 import CloseIcon from '../../../node_modules/react-icons/lib/io/close-circled';
 import GradientParser from '../../modules/GradientParser';
+import Configurator from '../../modules/Config';
 import { get, set, forEach, orderBy } from 'lodash';
 
 /**
@@ -29,7 +30,7 @@ export default class GradientPicker extends React.Component {
             }
         ]
     };
-    config = {};
+    config = false;
     prefix = '';
 
     handleElement = null;
@@ -48,8 +49,10 @@ export default class GradientPicker extends React.Component {
             });
         }
 
+        this.config = new Configurator();
+
         if ('config' in props)  {
-            Object.assign(this.config, props.config);
+            this.config.insert(props.config);
         }
 
         if ('root' in props) {
@@ -255,7 +258,7 @@ export default class GradientPicker extends React.Component {
         }
         else {
             state.activePicker = delta;
-            const chromeProps = get(config, 'ElementsGradientPickerChromeProps', {
+            const chromeProps = config.get('ElementsGradientPickerChromeProps', {
                 ref: (element) => { this.pickerElement = element },
                 color: data.color ? data.color : '',
                 onChange: onChangePicker
@@ -284,42 +287,42 @@ export default class GradientPicker extends React.Component {
 
     render() {
         const { props, state, config, onChange, onKeypress, onDragStart, onDragExit, onDragMove, onTogglePicker, onAddStop, onRemoveStop } = this;
-        const mainProps = get(config, 'ElementGradientPickerMainProps', {
+        const mainProps = config.get('ElementGradientPickerMainProps', {
             className: props.className + ' stylizer-gradient-element'
         });
 
-        const previewProps = get(config, 'ElementGradientPickerCanvasProps', {
+        const previewProps = config.get('ElementGradientPickerCanvasProps', {
             className: 'stylizer-gradient-canvas',
             ref: (element) => { this.previewElement = element }
         });
 
-        const rowProps = get(config, 'ElementGradientPickerModeLabelProps', {
+        const rowProps = config.get('ElementGradientPickerModeLabelProps', {
             className: 'stylizer-form-row'
         });
 
-        const labelProps = get(config, 'ElementGradientPickerLabelProps', {
+        const labelProps = config.get('ElementGradientPickerLabelProps', {
             className: 'stylizer-form-label'
         });
 
-        const wrapperProps = get(config, 'ElementGradientPickerWrapperProps', {
+        const wrapperProps = config.get('ElementGradientPickerWrapperProps', {
             className: 'stylizer-form-item'
         });
 
-        const repeatElementProps = get(config, 'ElementGradientPickerRepeatElementProps', {
+        const repeatElementProps = config.get('ElementGradientPickerRepeatElementProps', {
             className: 'stylizer-form-input',
             value: state.repeat,
             name: 'repeat',
             onChange: onChange
         });
 
-        const modeElementProps = get(config, 'ElementGradientPickerModeElementProps', {
+        const modeElementProps = config.get('ElementGradientPickerModeElementProps', {
             className: 'stylizer-form-input',
             value: state.mode,
             name: 'mode',
             onChange: onChange
         });
 
-        const rotateElementProps = get(config, 'ElementGradientPickerRotateProps', {
+        const rotateElementProps = config.get('ElementGradientPickerRotateProps', {
             type: 'text',
             className: 'stylizer-form-input',
             name: 'rotate',
@@ -328,14 +331,14 @@ export default class GradientPicker extends React.Component {
             onChange: onChange
         });
 
-        const shapeElementProps = get(config, 'ElementGradientPickerShapeProps', {
+        const shapeElementProps = config.get('ElementGradientPickerShapeProps', {
             className: 'stylizer-form-input',
             name: 'shape',
             value: state.shape,
             onChange: onChange
         });
 
-        const sizeElementProps = get(config, 'ElementGradientPickerSizeProps', {
+        const sizeElementProps = config.get('ElementGradientPickerSizeProps', {
             type: 'text',
             className: 'stylizer-form-input',
             name: 'size',
@@ -343,7 +346,7 @@ export default class GradientPicker extends React.Component {
             onChange: onChange
         });
 
-        const positionElementProps = get(config, 'ElementGradientPickerOffsetProps', {
+        const positionElementProps = config.get('ElementGradientPickerOffsetProps', {
             type: 'text',
             className: 'stylizer-form-input',
             name: 'position',
@@ -351,7 +354,7 @@ export default class GradientPicker extends React.Component {
             onChange: onChange
         });
 
-        const handleElementProps = get(config, 'ElementGradientPickerHandleWrapperProps', {
+        const handleElementProps = config.get('ElementGradientPickerHandleWrapperProps', {
             className: 'stylizer-gradient-handle-wrapper',
             ref: (element) => { this.handleElement = element },
             onMouseMove: onDragMove,
@@ -362,7 +365,7 @@ export default class GradientPicker extends React.Component {
 
         let Stops = [];
         forEach(state.stops, (stop, delta) => {
-            const handleProps = get(config, 'ElementGradientPickerHandleProps', {
+            const handleProps = config.get('ElementGradientPickerHandleProps', {
                 className: 'stylizer-gradient-handle',
                 target: delta,
                 name: 'gradient-stops-drag',
@@ -372,14 +375,14 @@ export default class GradientPicker extends React.Component {
                 onMouseUp: onDragExit
             });
 
-            const handleCloserProps = get(config, 'ElementGradientPickerHandleCloserProps', {
+            const handleCloserProps = config.get('ElementGradientPickerHandleCloserProps', {
                 key: 'gradient-stops-closer',
                 name: 'gradient-stops-delete',
                 className: 'stylizer-gradient-handle-closer',
                 onClick: () => { onRemoveStop(delta) }
             });
 
-            const handleColorProps = get(config, 'ElementGradientPickerHandleColorProps', {
+            const handleColorProps = config.get('ElementGradientPickerHandleColorProps', {
                 key: 'gradient-stops-color',
                 name: 'gradient-stops-color',
                 className: 'stylizer-gradient-handle-color',

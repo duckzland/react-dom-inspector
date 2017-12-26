@@ -21004,10 +21004,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _assign = __webpack_require__(28);
-
-var _assign2 = _interopRequireDefault(_assign);
-
 var _getPrototypeOf = __webpack_require__(16);
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -21035,6 +21031,10 @@ var _react2 = _interopRequireDefault(_react);
 var _reactScrollbar = __webpack_require__(118);
 
 var _reactScrollbar2 = _interopRequireDefault(_reactScrollbar);
+
+var _Config = __webpack_require__(771);
+
+var _Config2 = _interopRequireDefault(_Config);
 
 var _ColorPicker = __webpack_require__(589);
 
@@ -21079,6 +21079,9 @@ var Panel = function (_React$Component) {
 
         _initialiseProps.call(_this);
 
+        _this.config = new _Config2['default']({
+            PanelGroupEmpty: null
+        });
         return _this;
     }
 
@@ -21093,12 +21096,8 @@ var Panel = function (_React$Component) {
                 this.state.errors = this.validateValues();
             }
 
-            if ('config' in props && props.config) {
-                (0, _assign2['default'])(this.config, props.config);
-            }
-
-            if (!'config' in this) {
-                this.config = {};
+            if ('config' in props) {
+                this.config.insert(props.config);
             }
 
             if (!'fields' in this) {
@@ -21168,27 +21167,27 @@ var Panel = function (_React$Component) {
                 hookBeforeRender = this.hookBeforeRender;
 
 
-            var tabProps = (0, _lodash.get)(config, 'PanelTabProps', {
-                key: 'stylizer-tab-' + config.type + '-' + state.node.uuid,
-                className: 'stylizer-tab-content stylizer-content-flex stylizer-tab-panel--' + config.type
+            var tabProps = config.get('PanelTabProps', {
+                key: 'stylizer-tab-' + config.get('type') + '-' + state.node.uuid,
+                className: 'stylizer-tab-content stylizer-content-flex stylizer-tab-panel--' + config.get('type')
             });
 
-            var leftSpaceProps = (0, _lodash.get)(config, 'PanelLeftSpaceProps', {
+            var leftSpaceProps = config.get('PanelLeftSpaceProps', {
                 key: 'stylizer-panel-left-space',
                 className: 'stylizer-panel-left-space'
             });
 
-            var centerSpaceProps = (0, _lodash.get)(config, 'PanelCenterSpaceProps', {
+            var centerSpaceProps = config.get('PanelCenterSpaceProps', {
                 key: 'stylizer-panel-center-space',
                 className: 'stylizer-panel-center-space'
             });
 
-            var rightSpaceProps = (0, _lodash.get)(config, 'PanelRightSpaceProps', {
+            var rightSpaceProps = config.get('PanelRightSpaceProps', {
                 key: 'stylizer-panel-right-space',
                 className: 'stylizer-panel-right-space'
             });
 
-            var scrollAreaProps = (0, _lodash.get)(config, 'EditorPanelScrollAreaProps', {
+            var scrollAreaProps = config.get('EditorPanelScrollAreaProps', {
                 key: "stylizer-tab-contents",
                 speed: 0.8,
                 className: ['stylizer-tabs-contents', state.hasHorizontalScrollbar ? 'horizontal-scrollbar' : '', state.hasVerticalScrollbar > 0 ? 'has-vertical-scrollbar' : ''].join(' '),
@@ -21245,9 +21244,7 @@ var _initialiseProps = function _initialiseProps() {
         ownerKey: null,
         content: null
     };
-    this.config = {
-        PanelGroupEmpty: null
-    };
+    this.config = false;
 
     this.hasError = function (key) {
         return _this2.state.errors[key] ? _this2.state.errors[key] : false;
@@ -21323,16 +21320,16 @@ var _initialiseProps = function _initialiseProps() {
             config = _this2.config,
             hookBeforeElementRender = _this2.hookBeforeElementRender;
 
-        var elementProps = (0, _lodash.get)(config, (0, _lodash.camelCase)('PanelFieldElementProps_' + element.target), {
+        var elementProps = config.get((0, _lodash.camelCase)('PanelFieldElementProps_' + element.target), {
             key: 'stylizer-element-' + element.target + '-' + state.node.uuid,
             className: ['stylizer-form-item', 'stylizer-field--' + element.target.replace(' ', '-'), element.inline ? 'stylizer-label-inline' : '', hasError(element.target) ? 'stylizer-has-error' : ''].join(' ')
         });
 
-        var labelProps = (0, _lodash.get)(config, (0, _lodash.camelCase)('PanelFieldLabelProps_' + element.target), {
+        var labelProps = config.get((0, _lodash.camelCase)('PanelFieldLabelProps_' + element.target), {
             className: 'stylizer-form-label'
         });
 
-        var inputProps = (0, _lodash.get)(config, (0, _lodash.camelCase)('PanelFieldInputProps_' + element.target), {
+        var inputProps = config.get((0, _lodash.camelCase)('PanelFieldInputProps_' + element.target), {
             key: 'input-' + element.target + '-' + state.node.uuid,
             uuid: 'input-' + element.target + '-' + state.node.uuid,
             className: 'stylizer-form-input',
@@ -21340,11 +21337,10 @@ var _initialiseProps = function _initialiseProps() {
             name: element.target,
             value: (0, _lodash.get)(state, 'values.' + element.target, element['default']),
             root: _this2,
-            onChange: onSubmit,
-            config: config
+            onChange: onSubmit
         });
 
-        var errorProps = (0, _lodash.get)(config, (0, _lodash.camelCase)('PanelFieldErrorProps_' + element.target), {
+        var errorProps = config.get((0, _lodash.camelCase)('PanelFieldErrorProps_' + element.target), {
             key: 'input-' + element.target + '-error-' + state.node.uuid,
             className: 'stylizer-error-bag'
         });
@@ -21372,7 +21368,7 @@ var _initialiseProps = function _initialiseProps() {
             case 'select':
                 var options = [];
                 if (element.options) {
-                    var optionEmptyProps = (0, _lodash.get)(config, 'PanelFieldSelectOptionEmptyProps', {
+                    var optionEmptyProps = config.get('PanelFieldSelectOptionEmptyProps', {
                         key: 'stylizer-option-' + element.target + '-empty',
                         value: ''
                     });
@@ -21382,7 +21378,7 @@ var _initialiseProps = function _initialiseProps() {
                         null
                     ));
                     (0, _lodash.forEach)(element.options, function (text, value) {
-                        var optionProps = (0, _lodash.get)(config, (0, _lodash.camelCase)('PanelFieldSelectOptionProps ' + element.target), {
+                        var optionProps = config.get((0, _lodash.camelCase)('PanelFieldSelectOptionProps ' + element.target), {
                             key: 'stylizer-option-' + element.target + text.replace(' ', '-'),
                             value: value
                         });
@@ -21450,16 +21446,16 @@ var _initialiseProps = function _initialiseProps() {
             toggleOpenIcon = _this2.toggleOpenIcon,
             toggleCloseIcon = _this2.toggleCloseIcon;
 
-        var elementProps = (0, _lodash.get)(config, (0, _lodash.camelCase)('PanelGroupElementProps ' + element.key), {
+        var elementProps = config.get((0, _lodash.camelCase)('PanelGroupElementProps ' + element.key), {
             key: 'stylizer-group-' + element.title + '-' + state.node.uuid,
             className: ['stylizer-form-group', 'stylizer-group--' + element.key.replace(' ', '-'), element.inline ? 'stylizer-label-inline' : ''].join(' ')
         });
 
-        var headingProps = (0, _lodash.get)(config, (0, _lodash.camelCase)('PanelGroupHeadingProps ' + element.key), {
+        var headingProps = config.get((0, _lodash.camelCase)('PanelGroupHeadingProps ' + element.key), {
             className: 'stylizer-form-header'
         });
 
-        var wrapperProps = (0, _lodash.get)(config, (0, _lodash.camelCase)('PanelGroupWrapperProps ' + element.key), {
+        var wrapperProps = config.get((0, _lodash.camelCase)('PanelGroupWrapperProps ' + element.key), {
             className: 'stylizer-form-row'
         });
 
@@ -21478,7 +21474,7 @@ var _initialiseProps = function _initialiseProps() {
                 wrapperProps,
                 element.elements ? element.elements.map(function (child) {
                     return generateElement(child);
-                }) : config.PanelGroupEmpty
+                }) : config.get('PanelGroupEmpty')
             )
         );
     };
@@ -26128,6 +26124,10 @@ var _promise = __webpack_require__(244);
 
 var _promise2 = _interopRequireDefault(_promise);
 
+var _values = __webpack_require__(772);
+
+var _values2 = _interopRequireDefault(_values);
+
 var _assign = __webpack_require__(28);
 
 var _assign2 = _interopRequireDefault(_assign);
@@ -26202,7 +26202,7 @@ var _initialiseProps = function _initialiseProps() {
     };
 
     this.set = function (images) {
-        ImageLoader.images = images;
+        ImageLoader.images = (0, _lodash.isObject)(images) ? (0, _values2['default'])(images) : !(0, _lodash.isArray)(images) ? [images] : images;
     };
 
     this.get = function (id) {
@@ -46515,6 +46515,10 @@ var _ImageLoader = __webpack_require__(250);
 
 var _ImageLoader2 = _interopRequireDefault(_ImageLoader);
 
+var _Config = __webpack_require__(771);
+
+var _Config2 = _interopRequireDefault(_Config);
+
 var _Inspector = __webpack_require__(561);
 
 var _Inspector2 = _interopRequireDefault(_Inspector);
@@ -46556,8 +46560,12 @@ var Inspector = function (_React$Component) {
             _this.allowNavigator = props.allowNavigator;
         }
 
+        _this.config = new _Config2['default']({
+            domID: 'dom-inspector'
+        });
+
         if ('config' in props) {
-            _this.config = props.config;
+            _this.config.insert(props.config);
         }
 
         _this.iteratorHelper = new _Iterator2['default']();
@@ -46593,21 +46601,19 @@ var Inspector = function (_React$Component) {
                 state = this.state,
                 props = this.props,
                 allowNavigator = this.allowNavigator,
-                fontLoader = this.fontLoader,
-                imageLoader = this.imageLoader,
                 DOMHelper = this.DOMHelper,
                 iteratorHelper = this.iteratorHelper;
             var iterator = props.iterator,
                 editor = props.editor;
 
 
-            var inspectorProps = (0, _lodash.get)(config, 'inspectorProps', {
+            var inspectorProps = config.get('inspectorProps', {
                 key: 'stylizer-inspector',
                 className: ['stylizer-inspector', state.minimize ? 'minimize' : null, !allowNavigator ? 'no-navigator' : null].join(' '),
                 'stylizer-inspector': "true"
             });
 
-            var inspectorPanelProps = (0, _lodash.get)(config, 'inspectorPanelProps', {
+            var inspectorPanelProps = config.get('inspectorPanelProps', {
                 key: 'stylizer-inspector-element',
                 config: iterator,
                 root: this,
@@ -46616,7 +46622,7 @@ var Inspector = function (_React$Component) {
                 refresh: state.refresh
             });
 
-            var editorPanelProps = (0, _lodash.get)(config, 'editorPanelProps', {
+            var editorPanelProps = config.get('editorPanelProps', {
                 key: 'stylizer-editor-element',
                 config: editor,
                 root: this,
@@ -46625,7 +46631,7 @@ var Inspector = function (_React$Component) {
                 refresh: state.refresh
             });
 
-            var overlayProps = (0, _lodash.get)(config, 'overlayProps', {
+            var overlayProps = config.get('overlayProps', {
                 node: state.overlay
             });
 
@@ -46657,9 +46663,7 @@ var _initialiseProps = function _initialiseProps() {
         click: false,
         mousemove: false
     };
-    this.config = {
-        domID: 'dom-inspector'
-    };
+    this.config = false;
     this.allowNavigator = true;
     this.iteratorHelper = false;
     this.DOMHelper = false;
@@ -46707,7 +46711,9 @@ var _initialiseProps = function _initialiseProps() {
     };
 
     this.killApp = function () {
-        var mountNode = _reactDom2['default'].findDOMNode(document.getElementById(_this2.config.domID));
+        var config = _this2.config;
+
+        var mountNode = _reactDom2['default'].findDOMNode(document.getElementById(config.get('domID')));
         var unmount = _reactDom2['default'].unmountComponentAtNode(mountNode);
         if (unmount) {
             _this2.destroyEvent();
@@ -53883,10 +53889,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _assign = __webpack_require__(28);
-
-var _assign2 = _interopRequireDefault(_assign);
-
 var _getPrototypeOf = __webpack_require__(16);
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -53925,6 +53927,10 @@ var _Iterator = __webpack_require__(242);
 
 var _Iterator2 = _interopRequireDefault(_Iterator);
 
+var _Config = __webpack_require__(771);
+
+var _Config2 = _interopRequireDefault(_Config);
+
 var _Items = __webpack_require__(579);
 
 var _Items2 = _interopRequireDefault(_Items);
@@ -53946,11 +53952,18 @@ var Inspector = function (_React$Component) {
 
         _initialiseProps.call(_this);
 
+        _this.config = new _Config2['default']({
+            InspectorPanelStartingDepth: 2,
+            InspectorPanelHeaderText: 'Navigator'
+        });
+
         _this.iterator = 'iterator' in props ? props.iterator : new _Iterator2['default']();
+
         if ('config' in props) {
-            (0, _assign2['default'])(_this.config, props.config);
+            _this.config.insert(props.config);
         }
-        _this.iterator.iterate(document.body, false, 0, _this.config.InspectorPanelStartingDepth, []);
+
+        _this.iterator.iterate(document.body, false, 0, _this.config.get('InspectorPanelStartingDepth'), []);
         return _this;
     }
 
@@ -53988,34 +54001,34 @@ var Inspector = function (_React$Component) {
                 moveScrollBar = this.moveScrollBar;
 
 
-            var panelProps = (0, _lodash.get)(config, 'inspectorPanelProps', {
+            var panelProps = config.get('inspectorPanelProps', {
                 key: 'stylizer-iterator-panel',
                 className: ['stylizer-panels', 'stylizer-dom-panel', state.minimize ? 'minimize' : ''].join(' ')
             });
 
-            var headerProps = (0, _lodash.get)(config, 'inspectorPanelHeaderProps', {
+            var headerProps = config.get('inspectorPanelHeaderProps', {
                 key: 'stylizer-iterator-header',
                 className: 'stylizer-header'
             });
 
-            var headerTextProps = (0, _lodash.get)(config, 'inspectorPanelHeaderTextProps', {
+            var headerTextProps = config.get('inspectorPanelHeaderTextProps', {
                 key: 'stylizer-iterator-header-text',
                 className: 'stylizer-header-text'
             });
 
-            var headerActionProps = (0, _lodash.get)(config, 'inspectorPanelHeaderActionProps', {
+            var headerActionProps = config.get('inspectorPanelHeaderActionProps', {
                 key: 'stylizer-iterator-header-actions',
                 className: 'stylizer-header-actions'
             });
 
-            var hamburgerIconProps = (0, _lodash.get)(config, 'inspectorPanelHamburgerIconProps', {
+            var hamburgerIconProps = config.get('inspectorPanelHamburgerIconProps', {
                 size: 16,
                 onClick: function onClick() {
                     _this2.setState({ minimize: !_this2.state.minimize });
                 }
             });
 
-            var scrollAreaProps = (0, _lodash.get)(config, 'inspectorPanelScrollAreaProps', {
+            var scrollAreaProps = config.get('inspectorPanelScrollAreaProps', {
                 key: 'stylizer-iterator',
                 ref: function ref(el) {
                     moveScrollBar(el);
@@ -54036,7 +54049,7 @@ var Inspector = function (_React$Component) {
                     _react2['default'].createElement(
                         'span',
                         headerTextProps,
-                        config.InspectorPanelHeaderText
+                        config.get('InspectorPanelHeaderText')
                     ),
                     _react2['default'].createElement(
                         'span',
@@ -54065,10 +54078,7 @@ var _initialiseProps = function _initialiseProps() {
         active: false,
         minimize: false
     };
-    this.config = {
-        InspectorPanelStartingDepth: 2,
-        InspectorPanelHeaderText: 'Navigator'
-    };
+    this.config = false;
 
     this.scrollToItem = function (node) {
         var DOMNode = node.trackNode();
@@ -56268,6 +56278,10 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _Config = __webpack_require__(771);
+
+var _Config2 = _interopRequireDefault(_Config);
+
 var _lodash = __webpack_require__(14);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -56285,7 +56299,12 @@ var Items = function (_React$Component) {
 
         var _this = (0, _possibleConstructorReturn3['default'])(this, (Items.__proto__ || (0, _getPrototypeOf2['default'])(Items)).call(this, props));
 
-        _this.config = (0, _lodash.get)(props, 'config', {});
+        _this.config = false;
+
+        _this.config = new _Config2['default']();
+        if ('config' in props) {
+            _this.config.insert(props.config);
+        }
         return _this;
     }
 
@@ -56327,7 +56346,7 @@ var Items = function (_React$Component) {
             var node = props.node,
                 root = props.root;
 
-            var itemProps = (0, _lodash.get)(config, 'InspectorItemsItemProps', {
+            var itemProps = config.get('InspectorItemsItemProps', {
                 key: 'item-' + node.uuid,
                 className: ['stylizer-element', isLoaded(node) ? 'loaded' : '', isActive(node) ? 'active' : '', isChanged(node) ? 'changed' : '', isParent(node) ? 'parents' : '', isProcessed(node) ? 'processed' : ''].join(' '),
                 'data-depth': node.depth,
@@ -56358,10 +56377,6 @@ exports['default'] = Items;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-var _extends2 = __webpack_require__(581);
-
-var _extends3 = _interopRequireDefault(_extends2);
 
 var _assign = __webpack_require__(28);
 
@@ -56429,6 +56444,10 @@ var _DOMHelper = __webpack_require__(171);
 
 var _DOMHelper2 = _interopRequireDefault(_DOMHelper);
 
+var _Config = __webpack_require__(771);
+
+var _Config2 = _interopRequireDefault(_Config);
+
 var _Border = __webpack_require__(588);
 
 var _Border2 = _interopRequireDefault(_Border);
@@ -56471,10 +56490,7 @@ var Editor = function (_React$Component) {
             errors: {}
         };
         _this.styleElement = false;
-        _this.config = {
-            EditorPanelHeaderText: 'Editor',
-            EditorPanelEmptyText: 'No Element Selected'
-        };
+        _this.config = false;
 
         _this.getStyling = function () {
             _this.state.node && 'generateStyling' in _this.state.node && _this.state.node.generateStyling();
@@ -56506,11 +56522,17 @@ var Editor = function (_React$Component) {
             _this.setState({ active: tabKey });
         };
 
-        _this.styleElement = new _DOMHelper2['default']().styleSheet({ id: 'stylizer-source' }, 'style');
+        _this.config = new _Config2['default']({
+            stylizerID: 'stylizer-source',
+            EditorPanelHeaderText: 'Editor',
+            EditorPanelEmptyText: 'No Element Selected'
+        });
 
         if ('config' in props) {
-            (0, _assign2['default'])(_this.config, props.config);
+            _this.config.insert(props.config);
         }
+
+        _this.styleElement = new _DOMHelper2['default']().styleSheet({ id: _this.config.get('stylizerID') }, 'style');
 
         if ('node' in props) {
             _this.state.node = props.node;
@@ -56535,38 +56557,40 @@ var Editor = function (_React$Component) {
         key: 'render',
         value: function render() {
             var onChangeTab = this.onChangeTab,
+                props = this.props,
                 state = this.state,
                 config = this.config;
 
             var ActivePanel = [];
 
-            var root = state.root,
-                node = state.node;
+            var root = props.root;
+            var node = state.node;
             var minimize = root.state.minimize;
+
 
             var AllowedTabs = ['selector', 'spacing', 'border', 'styles', 'typography'];
 
-            var editorProps = (0, _lodash.get)(config, 'EditorPanelEditorProps', {
+            var editorProps = config.get('EditorPanelEditorProps', {
                 key: 'stylizer-editor-panel',
                 className: 'stylizer-panels stylizer-editor-panel'
             });
 
-            var headerProps = (0, _lodash.get)(config, 'EditorPanelHeaderProps', {
+            var headerProps = config.get('EditorPanelHeaderProps', {
                 key: 'stylizer-editor-header',
                 className: 'stylizer-header'
             });
 
-            var headerTextProps = (0, _lodash.get)(config, 'EditorPanelHeaderTextProps', {
+            var headerTextProps = config.get('EditorPanelHeaderTextProps', {
                 key: 'stylizer-editor-header-text',
                 className: 'stylizer-header-text'
             });
 
-            var headerActionProps = (0, _lodash.get)(config, 'EditorPanelHeaderActionProps', {
+            var headerActionProps = config.get('EditorPanelHeaderActionProps', {
                 key: 'stylizer-editor-header-actions',
                 className: 'stylizer-header-actions'
             });
 
-            var layoutIconProps = (0, _lodash.get)(config, 'EditorPanelLayoutIconProps', {
+            var layoutIconProps = config.get('EditorPanelLayoutIconProps', {
                 size: 16,
                 transform: root.state.vertical === false ? 'rotate(90)' : '',
                 onClick: function onClick() {
@@ -56574,7 +56598,7 @@ var Editor = function (_React$Component) {
                 }
             });
 
-            var hoverIconProps = (0, _lodash.get)(config, 'EditorPanelHoverIconProps', {
+            var hoverIconProps = config.get('EditorPanelHoverIconProps', {
                 size: 16,
                 color: root.state.hover ? '#13a6d9' : '',
                 onClick: function onClick() {
@@ -56582,77 +56606,76 @@ var Editor = function (_React$Component) {
                 }
             });
 
-            var revertIconProps = (0, _lodash.get)(config, 'EditorPanelRevertIconProps', {
+            var revertIconProps = config.get('EditorPanelRevertIconProps', {
                 size: 16,
                 onClick: function onClick() {
                     return root.revertData();
                 }
             });
 
-            var deleteIconProps = (0, _lodash.get)(config, 'EditorPanelDeleteIconProps', {
+            var deleteIconProps = config.get('EditorPanelDeleteIconProps', {
                 size: 16,
                 onClick: function onClick() {
                     return root.wipeData();
                 }
             });
 
-            var saveIconProps = (0, _lodash.get)(config, 'EditorPanelSaveIconProps', {
+            var saveIconProps = config.get('EditorPanelSaveIconProps', {
                 size: 16,
                 onClick: function onClick() {
                     return root.saveData();
                 }
             });
 
-            var closeIconProps = (0, _lodash.get)(config, 'EditorPanelCloseIconProps', {
+            var closeIconProps = config.get('EditorPanelCloseIconProps', {
                 size: 16,
                 onClick: function onClick() {
                     return root.killApp();
                 }
             });
 
-            var hamburgerIconProps = (0, _lodash.get)(config, 'EditorPanelHamburgerIconProps', {
+            var hamburgerIconProps = config.get('EditorPanelHamburgerIconProps', {
                 size: 16,
                 onClick: function onClick() {
                     return root.toggleMinimize();
                 }
             });
 
-            var tabsWrapperProps = (0, _lodash.get)(config, 'EditorPanelTabsWrapperProps', {
+            var tabsWrapperProps = config.get('EditorPanelTabsWrapperProps', {
                 key: 'stylizer-tabs-wrapper',
                 className: 'stylizer-tabs-wrapper'
             });
 
-            var tabsProps = (0, _lodash.get)(config, 'EditorPanelTabsProps', {
+            var tabsProps = config.get('EditorPanelTabsProps', {
                 key: 'stylizer-tabs',
                 className: 'stylizer-tabs'
             });
 
-            var emptyProps = (0, _lodash.get)(config, 'EditorPanelEmptyProps', {
+            var emptyProps = config.get('EditorPanelEmptyProps', {
                 className: 'stylizer-selector-empty'
             });
 
-            var panelProps = (0, _lodash.get)(config, 'EditorPanelPanelProps', {
+            var panelProps = config.get('EditorPanelPanelProps', (0, _assign2['default'])(state, {
                 key: 'stylizer-active-panel-' + (node && node.uuid ? node.uuid : 'empty'),
                 root: this,
-                scroll: state.scroll,
-                config: this.config
-            });
+                scroll: state.scroll
+            }));
 
             switch (state.active) {
                 case 'selector':
-                    ActivePanel.push(_react2['default'].createElement(_Selector2['default'], (0, _extends3['default'])({}, state, panelProps)));
+                    ActivePanel.push(_react2['default'].createElement(_Selector2['default'], panelProps));
                     break;
                 case 'border':
-                    ActivePanel.push(_react2['default'].createElement(_Border2['default'], (0, _extends3['default'])({}, state, panelProps)));
+                    ActivePanel.push(_react2['default'].createElement(_Border2['default'], panelProps));
                     break;
                 case 'spacing':
-                    ActivePanel.push(_react2['default'].createElement(_Spacing2['default'], (0, _extends3['default'])({}, state, panelProps)));
+                    ActivePanel.push(_react2['default'].createElement(_Spacing2['default'], panelProps));
                     break;
                 case 'styles':
-                    ActivePanel.push(_react2['default'].createElement(_Styles2['default'], (0, _extends3['default'])({}, state, panelProps)));
+                    ActivePanel.push(_react2['default'].createElement(_Styles2['default'], panelProps));
                     break;
                 case 'typography':
-                    ActivePanel.push(_react2['default'].createElement(_Typography2['default'], (0, _extends3['default'])({}, state, panelProps)));
+                    ActivePanel.push(_react2['default'].createElement(_Typography2['default'], panelProps));
                     break;
             }
 
@@ -56665,7 +56688,7 @@ var Editor = function (_React$Component) {
                     _react2['default'].createElement(
                         'span',
                         headerTextProps,
-                        config.EditorPanelHeaderText
+                        config.get('EditorPanelHeaderText')
                     ),
                     _react2['default'].createElement(
                         'span',
@@ -56686,9 +56709,9 @@ var Editor = function (_React$Component) {
                         'div',
                         tabsProps,
                         AllowedTabs.map(function (TabKey) {
-                            var selectorItemProps = (0, _lodash.get)(config, 'EditorPanelSelectorItemProps', {
-                                key: (0, _lodash.get)(config, 'EditorPanelPanelItemPrefix', 'stylizer-tab-') + TabKey,
-                                className: [(0, _lodash.get)(config, 'EditorPanelPanelItemPrefix', 'stylizer-tab-') + 'element', state.active === TabKey ? 'active' : null].join(' '),
+                            var selectorItemProps = config.get('EditorPanelSelectorItemProps', {
+                                key: config.get('EditorPanelPanelItemPrefix', 'stylizer-tab-') + TabKey,
+                                className: [config.get('EditorPanelPanelItemPrefix', 'stylizer-tab-') + 'element', state.active === TabKey ? 'active' : null].join(' '),
                                 onClick: function onClick() {
                                     return onChangeTab(TabKey);
                                 }
@@ -56708,7 +56731,7 @@ var Editor = function (_React$Component) {
                     _react2['default'].createElement(
                         'div',
                         emptyProps,
-                        config.EditorPanelEmptyText
+                        config.get('EditorPanelEmptyText')
                     )
                 )
             );
@@ -56720,35 +56743,7 @@ var Editor = function (_React$Component) {
 exports['default'] = Editor;
 
 /***/ }),
-/* 581 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _assign = __webpack_require__(28);
-
-var _assign2 = _interopRequireDefault(_assign);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _assign2.default || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
-
-/***/ }),
+/* 581 */,
 /* 582 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -57080,7 +57075,7 @@ var Border = function (_BasePanel) {
                 title: 'Border',
                 type: 'group',
                 toggle: 'off',
-                elements: [{ title: 'color', target: 'border-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'width', target: 'border-width', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'style', target: 'border-style', type: 'element', field: 'select', options: config.borderOptions, 'default': '', inline: false }]
+                elements: [{ title: 'color', target: 'border-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'width', target: 'border-width', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'style', target: 'border-style', type: 'element', field: 'select', options: config.get('borderOptions'), 'default': '', inline: false }]
             }) : (0, _lodash.forEach)({
                 'border-top': 'Border Top',
                 'border-left': 'Border Left',
@@ -57092,7 +57087,7 @@ var Border = function (_BasePanel) {
                     title: Title,
                     type: 'group',
                     toggle: 'on',
-                    elements: [{ title: 'color', target: Key + '-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'width', target: Key + '-width', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'style', target: Key + '-style', type: 'element', field: 'select', options: config.borderOptions, 'default': '', inline: false }]
+                    elements: [{ title: 'color', target: Key + '-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'width', target: Key + '-width', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'style', target: Key + '-style', type: 'element', field: 'select', options: config.get('borderOptions'), 'default': '', inline: false }]
                 });
             });
         };
@@ -57127,7 +57122,7 @@ var Border = function (_BasePanel) {
                 key: 'outline',
                 title: 'Outline',
                 type: 'group',
-                elements: [{ title: 'color', target: 'outline-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'width', target: 'outline-width', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'offset', target: 'outline-offset', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'style', target: 'outline-style', type: 'element', field: 'select', options: config.borderOptions, 'default': '', inline: false }]
+                elements: [{ title: 'color', target: 'outline-color', type: 'element', field: 'color', 'default': '', inline: false }, { title: 'width', target: 'outline-width', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'offset', target: 'outline-offset', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'style', target: 'outline-style', type: 'element', field: 'select', options: config.get('borderOptions'), 'default': '', inline: false }]
             });
         };
 
@@ -57261,7 +57256,7 @@ var Border = function (_BasePanel) {
             }
         };
 
-        _this.config = {
+        _this.config.insert({
             type: 'border',
             empty: null,
             borderOptions: {
@@ -57276,7 +57271,7 @@ var Border = function (_BasePanel) {
                 inset: 'Inset',
                 outset: 'Outset'
             }
-        };
+        });
 
         _this.fields = [];
         _this.state.grouped.border = _this.detectBorderGroup((0, _lodash.get)(props, 'node.styles', {}));
@@ -57305,10 +57300,6 @@ exports['default'] = Border;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-var _assign = __webpack_require__(28);
-
-var _assign2 = _interopRequireDefault(_assign);
 
 var _getPrototypeOf = __webpack_require__(16);
 
@@ -57340,6 +57331,10 @@ var _closeCircled = __webpack_require__(130);
 
 var _closeCircled2 = _interopRequireDefault(_closeCircled);
 
+var _Config = __webpack_require__(771);
+
+var _Config2 = _interopRequireDefault(_Config);
+
 var _lodash = __webpack_require__(14);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -57363,8 +57358,10 @@ var ColorPicker = function (_React$Component) {
             _this.state.value = props.value;
         }
 
+        _this.config = new _Config2['default']();
+
         if ('config' in props) {
-            (0, _assign2['default'])(_this.config, props.config);
+            _this.config.insert(props.config);
         }
 
         if ('root' in props) {
@@ -57397,35 +57394,35 @@ var ColorPicker = function (_React$Component) {
                 close = this.close,
                 isOpen = this.isOpen;
 
-            var mainProps = (0, _lodash.get)(config, 'ElementColorPickerMainProps', {
+            var mainProps = config.get('ElementColorPickerMainProps', {
                 className: props.className + ' stylizer-color-element'
             });
 
-            var inputProps = (0, _lodash.get)(config, 'ElementColorPickerInputProps', {
+            var inputProps = config.get('ElementColorPickerInputProps', {
                 type: 'text',
                 value: state.value,
                 onChange: props.onChange,
                 onFocus: show
             });
 
-            var spanPickerConst = (0, _lodash.get)(config, 'ElementColorPickerSpanPickerConst', {
+            var spanPickerConst = config.get('ElementColorPickerSpanPickerConst', {
                 className: 'stylizer-color-preview',
                 onClick: toggle
             });
 
-            var spanPickerContentConst = (0, _lodash.get)(config, 'ElementColorPickerSpanPickerConst', {
+            var spanPickerContentConst = config.get('ElementColorPickerSpanPickerConst', {
                 style: {
                     backgroundColor: state.value
                 },
                 className: 'stylizer-color-preview-content'
             });
 
-            var spanCloserConst = (0, _lodash.get)(config, 'ElementColorPickerSpanCloserConst', {
+            var spanCloserConst = config.get('ElementColorPickerSpanCloserConst', {
                 className: 'stylizer-color-closer',
                 onClick: close
             });
 
-            var closeIconProps = (0, _lodash.get)(config, 'ElementColorPickerCloseIconProps', {
+            var closeIconProps = config.get('ElementColorPickerCloseIconProps', {
                 size: 13
             });
 
@@ -57457,7 +57454,7 @@ var _initialiseProps = function _initialiseProps() {
         value: '',
         color: {}
     };
-    this.config = {};
+    this.config = false;
 
     this.show = function () {
         var props = _this2.props,
@@ -57467,7 +57464,7 @@ var _initialiseProps = function _initialiseProps() {
             isOpen = _this2.isOpen;
 
         if (!isOpen()) {
-            var chromeProps = (0, _lodash.get)(config, 'ElementsColorPickerChromeProps', {
+            var chromeProps = config.get('ElementsColorPickerChromeProps', {
                 color: state.color,
                 onChange: change
             });
@@ -67728,10 +67725,6 @@ var _keys = __webpack_require__(745);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _assign = __webpack_require__(28);
-
-var _assign2 = _interopRequireDefault(_assign);
-
 var _getPrototypeOf = __webpack_require__(16);
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -67787,8 +67780,10 @@ var FontPicker = function (_React$Component) {
             _this.state.value = props.value;
         }
 
+        _this.config = new Configurator();
+
         if ('config' in props) {
-            (0, _assign2['default'])(_this.config, props.config);
+            _this.config.insert(props.config);
         }
 
         if ('root' in props) {
@@ -67807,7 +67802,7 @@ var FontPicker = function (_React$Component) {
             _this.state.weight = props.weight;
         }
 
-        _this.loader = props.fontLoaderObject ? props.fontLoaderObject : new _FontLoader2['default']((0, _lodash.get)(_this.config, 'googleFontAPI', false));
+        _this.loader = props.fontLoaderObject ? props.fontLoaderObject : new _FontLoader2['default'](_this.config.get('googleFontAPI', false));
 
         if (!_this.loader.validate((0, _lodash.get)(props, 'family', ''), (0, _lodash.get)(props, 'style', ''), (0, _lodash.get)(props, 'weight', ''))) {
             props.root.setError(props.name);
@@ -67855,11 +67850,11 @@ var FontPicker = function (_React$Component) {
                 mode = this.mode,
                 change = this.change;
 
-            var mainProps = (0, _lodash.get)(config, 'ElementFontPickerMainProps', {
+            var mainProps = config.get('ElementFontPickerMainProps', {
                 className: props.className + ' stylizer-font-element stylizer-font-element--' + mode
             });
 
-            var inputProps = (0, _lodash.get)(config, 'ElementFontPickerInputProps', {
+            var inputProps = config.get('ElementFontPickerInputProps', {
                 name: 'font-' + mode,
                 value: state.value,
                 onChange: change
@@ -67883,14 +67878,14 @@ var FontPicker = function (_React$Component) {
                         return item.label.toLowerCase().indexOf(value.toLowerCase()) !== -1;
                     };
                     inputProps.renderMenu = function (items, value, style) {
-                        var menuProps = (0, _lodash.get)(config, 'ElementFontPickerDropdownMenuProps', {
+                        var menuProps = config.get('ElementFontPickerDropdownMenuProps', {
                             className: 'stylizer-font-element-dropdown',
                             children: items
                         });
                         return _react2['default'].createElement('div', menuProps);
                     };
                     inputProps.renderItem = function (item, isHighlighted) {
-                        var optionProps = (0, _lodash.get)(config, 'ElementFontPickerAutoCompleteProps', {
+                        var optionProps = config.get('ElementFontPickerAutoCompleteProps', {
                             key: 'stylizer-option-' + props.name + '-' + item.label,
                             className:  true ? 'active' : ''
                         });
@@ -67920,7 +67915,7 @@ var FontPicker = function (_React$Component) {
                             break;
 
                         default:
-                            var optionEmptyProps = (0, _lodash.get)(config, 'ElementFontPickerOptionEmptyProps', {
+                            var optionEmptyProps = config.get('ElementFontPickerOptionEmptyProps', {
                                 key: 'stylizer-option-' + props.name + '-empty',
                                 value: ''
                             });
@@ -67931,7 +67926,7 @@ var FontPicker = function (_React$Component) {
                                 null
                             ));
                             (0, _lodash.forEach)(state.options, function (text, value) {
-                                var optionProps = (0, _lodash.get)(config, 'ElementFontPickerOptionProps', {
+                                var optionProps = config.get('ElementFontPickerOptionProps', {
                                     key: 'stylizer-option-' + props.name + '-' + value.replace(' ', '-'),
                                     value: value
                                 });
@@ -67971,7 +67966,7 @@ var _initialiseProps = function _initialiseProps() {
         style: false,
         error: false
     };
-    this.config = {};
+    this.config = false;
     this.mode = null;
     this.loader = null;
 
@@ -69302,10 +69297,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _assign = __webpack_require__(28);
-
-var _assign2 = _interopRequireDefault(_assign);
-
 var _getPrototypeOf = __webpack_require__(16);
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -69340,6 +69331,10 @@ var _GradientParser = __webpack_require__(753);
 
 var _GradientParser2 = _interopRequireDefault(_GradientParser);
 
+var _Config = __webpack_require__(771);
+
+var _Config2 = _interopRequireDefault(_Config);
+
 var _lodash = __webpack_require__(14);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -69368,8 +69363,10 @@ var GradientPicker = function (_React$Component) {
             });
         }
 
+        _this.config = new _Config2['default']();
+
         if ('config' in props) {
-            (0, _assign2['default'])(_this.config, props.config);
+            _this.config.insert(props.config);
         }
 
         if ('root' in props) {
@@ -69407,44 +69404,44 @@ var GradientPicker = function (_React$Component) {
                 onAddStop = this.onAddStop,
                 onRemoveStop = this.onRemoveStop;
 
-            var mainProps = (0, _lodash.get)(config, 'ElementGradientPickerMainProps', {
+            var mainProps = config.get('ElementGradientPickerMainProps', {
                 className: props.className + ' stylizer-gradient-element'
             });
 
-            var previewProps = (0, _lodash.get)(config, 'ElementGradientPickerCanvasProps', {
+            var previewProps = config.get('ElementGradientPickerCanvasProps', {
                 className: 'stylizer-gradient-canvas',
                 ref: function ref(element) {
                     _this2.previewElement = element;
                 }
             });
 
-            var rowProps = (0, _lodash.get)(config, 'ElementGradientPickerModeLabelProps', {
+            var rowProps = config.get('ElementGradientPickerModeLabelProps', {
                 className: 'stylizer-form-row'
             });
 
-            var labelProps = (0, _lodash.get)(config, 'ElementGradientPickerLabelProps', {
+            var labelProps = config.get('ElementGradientPickerLabelProps', {
                 className: 'stylizer-form-label'
             });
 
-            var wrapperProps = (0, _lodash.get)(config, 'ElementGradientPickerWrapperProps', {
+            var wrapperProps = config.get('ElementGradientPickerWrapperProps', {
                 className: 'stylizer-form-item'
             });
 
-            var repeatElementProps = (0, _lodash.get)(config, 'ElementGradientPickerRepeatElementProps', {
+            var repeatElementProps = config.get('ElementGradientPickerRepeatElementProps', {
                 className: 'stylizer-form-input',
                 value: state.repeat,
                 name: 'repeat',
                 onChange: onChange
             });
 
-            var modeElementProps = (0, _lodash.get)(config, 'ElementGradientPickerModeElementProps', {
+            var modeElementProps = config.get('ElementGradientPickerModeElementProps', {
                 className: 'stylizer-form-input',
                 value: state.mode,
                 name: 'mode',
                 onChange: onChange
             });
 
-            var rotateElementProps = (0, _lodash.get)(config, 'ElementGradientPickerRotateProps', {
+            var rotateElementProps = config.get('ElementGradientPickerRotateProps', {
                 type: 'text',
                 className: 'stylizer-form-input',
                 name: 'rotate',
@@ -69453,14 +69450,14 @@ var GradientPicker = function (_React$Component) {
                 onChange: onChange
             });
 
-            var shapeElementProps = (0, _lodash.get)(config, 'ElementGradientPickerShapeProps', {
+            var shapeElementProps = config.get('ElementGradientPickerShapeProps', {
                 className: 'stylizer-form-input',
                 name: 'shape',
                 value: state.shape,
                 onChange: onChange
             });
 
-            var sizeElementProps = (0, _lodash.get)(config, 'ElementGradientPickerSizeProps', {
+            var sizeElementProps = config.get('ElementGradientPickerSizeProps', {
                 type: 'text',
                 className: 'stylizer-form-input',
                 name: 'size',
@@ -69468,7 +69465,7 @@ var GradientPicker = function (_React$Component) {
                 onChange: onChange
             });
 
-            var positionElementProps = (0, _lodash.get)(config, 'ElementGradientPickerOffsetProps', {
+            var positionElementProps = config.get('ElementGradientPickerOffsetProps', {
                 type: 'text',
                 className: 'stylizer-form-input',
                 name: 'position',
@@ -69476,7 +69473,7 @@ var GradientPicker = function (_React$Component) {
                 onChange: onChange
             });
 
-            var handleElementProps = (0, _lodash.get)(config, 'ElementGradientPickerHandleWrapperProps', {
+            var handleElementProps = config.get('ElementGradientPickerHandleWrapperProps', {
                 className: 'stylizer-gradient-handle-wrapper',
                 ref: function ref(element) {
                     _this2.handleElement = element;
@@ -69489,7 +69486,7 @@ var GradientPicker = function (_React$Component) {
 
             var Stops = [];
             (0, _lodash.forEach)(state.stops, function (stop, delta) {
-                var handleProps = (0, _lodash.get)(config, 'ElementGradientPickerHandleProps', {
+                var handleProps = config.get('ElementGradientPickerHandleProps', {
                     className: 'stylizer-gradient-handle',
                     target: delta,
                     name: 'gradient-stops-drag',
@@ -69499,7 +69496,7 @@ var GradientPicker = function (_React$Component) {
                     onMouseUp: onDragExit
                 });
 
-                var handleCloserProps = (0, _lodash.get)(config, 'ElementGradientPickerHandleCloserProps', {
+                var handleCloserProps = config.get('ElementGradientPickerHandleCloserProps', {
                     key: 'gradient-stops-closer',
                     name: 'gradient-stops-delete',
                     className: 'stylizer-gradient-handle-closer',
@@ -69508,7 +69505,7 @@ var GradientPicker = function (_React$Component) {
                     }
                 });
 
-                var handleColorProps = (0, _lodash.get)(config, 'ElementGradientPickerHandleColorProps', {
+                var handleColorProps = config.get('ElementGradientPickerHandleColorProps', {
                     key: 'gradient-stops-color',
                     name: 'gradient-stops-color',
                     className: 'stylizer-gradient-handle-color',
@@ -69688,7 +69685,7 @@ var _initialiseProps = function _initialiseProps() {
             color: '#ffffff'
         }]
     };
-    this.config = {};
+    this.config = false;
     this.prefix = '';
     this.handleElement = null;
     this.pickerElement = null;
@@ -69890,7 +69887,7 @@ var _initialiseProps = function _initialiseProps() {
             state.activePicker = false;
         } else {
             state.activePicker = delta;
-            var chromeProps = (0, _lodash.get)(config, 'ElementsGradientPickerChromeProps', {
+            var chromeProps = config.get('ElementsGradientPickerChromeProps', {
                 ref: function ref(element) {
                     _this3.pickerElement = element;
                 },
@@ -69997,7 +69994,11 @@ var _initialiseProps = function _initialiseProps() {
             });
         });
 
-        return results;
+        return _this.validate(results) ? results : false;
+    };
+
+    this.validate = function (rules) {
+        return rules.mode && rules.shape.length !== 0 ? true : false;
     };
 };
 
@@ -70013,10 +70014,6 @@ exports['default'] = GradientParser;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-var _assign = __webpack_require__(28);
-
-var _assign2 = _interopRequireDefault(_assign);
 
 var _getPrototypeOf = __webpack_require__(16);
 
@@ -70050,6 +70047,10 @@ var _ImageLoader = __webpack_require__(250);
 
 var _ImageLoader2 = _interopRequireDefault(_ImageLoader);
 
+var _Config = __webpack_require__(771);
+
+var _Config2 = _interopRequireDefault(_Config);
+
 var _closeCircled = __webpack_require__(130);
 
 var _closeCircled2 = _interopRequireDefault(_closeCircled);
@@ -70081,44 +70082,54 @@ var ImagePicker = function (_React$Component) {
             _this.state.value = props.value;
         }
 
+        _this.config = new _Config2['default']({
+            imageLoader: {
+                upload: {
+                    onError: function onError() {
+                        error('Error when uploading file');
+                    },
+                    onFailed: function onFailed() {
+                        error('Failed uploading File');
+                    },
+                    onComplete: function onComplete() {
+                        refresh();
+                    }
+                },
+                fetch: {
+                    onError: function onError() {
+                        error('Error when retrieving file');
+                    },
+                    onFailed: function onFailed() {
+                        error('Failed retrieving file');
+                    },
+                    onComplete: function onComplete() {
+                        refresh();
+                    }
+                },
+                remove: {
+                    onError: function onError() {
+                        error('Error removing File');
+                    },
+                    onFailed: function onFailed() {
+                        error('Failed when removing file');
+                    },
+                    onComplete: function onComplete() {
+                        refresh();
+                    }
+                }
+
+            }
+        });
+
         if ('config' in props) {
-            (0, _assign2['default'])(_this.config, props.config);
-
-            (0, _lodash.set)(_this, 'config.imageLoader.upload.onComplete', function () {
-                refresh();
-            });
-            (0, _lodash.set)(_this, 'config.imageLoader.fetch.onComplete', function () {
-                refresh();
-            });
-            (0, _lodash.set)(_this, 'config.imageLoader.remove.onComplete', function () {
-                refresh();
-            });
-
-            (0, _lodash.set)(_this, 'config.imageLoader.upload.onFailed', function () {
-                error('Failed uploading File');
-            });
-            (0, _lodash.set)(_this, 'config.imageLoader.upload.onError', function () {
-                error('Error when uploading file');
-            });
-            (0, _lodash.set)(_this, 'config.imageLoader.fetch.onFailed', function () {
-                error('Failed retrieving file');
-            });
-            (0, _lodash.set)(_this, 'config.imageLoader.fetch.onError', function () {
-                error('Error when retrieving file');
-            });
-            (0, _lodash.set)(_this, 'config.imageLoader.remove.onFailed', function () {
-                error('Failed uploading File');
-            });
-            (0, _lodash.set)(_this, 'config.imageLoader.remove.onError', function () {
-                error('Error when removing file');
-            });
+            _this.config.insert(props.config);
         }
 
         if ('root' in props) {
             _this.state.root = props.root;
         }
 
-        _this.loader = props.imageLoaderObject ? props.imageLoaderObject : new _ImageLoader2['default']((0, _lodash.get)(_this.config, 'imageLoader', {}), (0, _lodash.get)(_this.config, 'imageLibrary', false));
+        _this.loader = props.imageLoaderObject ? props.imageLoaderObject : new _ImageLoader2['default'](_this.config.get('imageLoader', {}), _this.config.get('imageLibrary', false));
 
         var maybeImage = _this.loader.find(_this.state.value.replace('url(', '').replace(')', '').split('/').pop().split('#')[0].split('?')[0]);
         if (maybeImage && maybeImage.id) {
@@ -70144,30 +70155,30 @@ var ImagePicker = function (_React$Component) {
                 onUpload = this.onUpload,
                 _onScroll = this.onScroll;
 
-            var mainAreaProps = (0, _lodash.get)(config, 'ElementImagePickerMainProps', {
+            var mainAreaProps = config.get('ElementImagePickerMainProps', {
                 className: props.className + ' stylizer-image-picker-element'
             });
 
-            var elementProps = (0, _lodash.get)(config, 'ElementImagePickerElementProps', {
+            var elementProps = config.get('ElementImagePickerElementProps', {
                 className: 'stylizer-form-item'
             });
 
-            var errorProps = (0, _lodash.get)(config, 'ElementImagePickerErrorProps', {
+            var errorProps = config.get('ElementImagePickerErrorProps', {
                 className: 'stylizer-error-bag'
             });
 
-            var progressProps = (0, _lodash.get)(config, 'ElementImagePickerProgressProps', {
+            var progressProps = config.get('ElementImagePickerProgressProps', {
                 className: 'stylizer-progress-bar',
                 ref: function ref(element) {
                     _this2.progressElement = element;
                 }
             });
 
-            var boxProps = (0, _lodash.get)(config, 'ElementImagePickerBoxProps', {
+            var boxProps = config.get('ElementImagePickerBoxProps', {
                 className: 'stylizer-form-search-upload'
             });
 
-            var searchInputProps = (0, _lodash.get)(config, 'ElementImagePickerSearchInputProps', {
+            var searchInputProps = config.get('ElementImagePickerSearchInputProps', {
                 type: 'text',
                 className: 'stylizer-form-input',
                 name: 'search',
@@ -70176,11 +70187,11 @@ var ImagePicker = function (_React$Component) {
                 onChange: onSearch
             });
 
-            var uploadElementProps = (0, _lodash.get)(config, 'ElementImagePickerUploadElementProps', {
+            var uploadElementProps = config.get('ElementImagePickerUploadElementProps', {
                 className: 'stylizer-form-input-file stylizer-form-button'
             });
 
-            var uploadInputProps = (0, _lodash.get)(config, 'ElementImagePickerUploadInputProps', {
+            var uploadInputProps = config.get('ElementImagePickerUploadInputProps', {
                 type: 'file',
                 className: 'stylizer-form-input',
                 accept: 'image/*',
@@ -70188,7 +70199,7 @@ var ImagePicker = function (_React$Component) {
                 onChange: onUpload
             });
 
-            var scrollAreaProps = (0, _lodash.get)(config, 'ElementImagePickerScrollAreaProps', {
+            var scrollAreaProps = config.get('ElementImagePickerScrollAreaProps', {
                 speed: 0.8,
                 contentClassName: "content",
                 onScroll: function onScroll(value) {
@@ -70198,7 +70209,7 @@ var ImagePicker = function (_React$Component) {
                 vertical: false
             });
 
-            var scrollAreaContentProps = (0, _lodash.get)(config, 'ElementImagePickerScrollAreaContentProps', {
+            var scrollAreaContentProps = config.get('ElementImagePickerScrollAreaContentProps', {
                 className: 'stylizer-image-picker-images',
                 ref: function ref(element) {
                     _this2.imagesElement = element;
@@ -70207,7 +70218,7 @@ var ImagePicker = function (_React$Component) {
 
             var Images = [];
             (0, _lodash.forEach)(state.images, function (image, delta) {
-                var thumbnailProps = (0, _lodash.get)(config, 'ElementImagePickerThumbnailProps', {
+                var thumbnailProps = config.get('ElementImagePickerThumbnailProps', {
                     key: 'image-picker-' + delta,
                     className: ['stylizer-image-picker-thumbnail', state.id === image.id ? 'active' : '', state.removing === image.id ? 'removing' : ''].join(' '),
                     onClick: function onClick(e) {
@@ -70215,19 +70226,19 @@ var ImagePicker = function (_React$Component) {
                     }
                 });
 
-                var thumbnailCloseProps = (0, _lodash.get)(config, 'ElementImagePickerThumbnailCloseProps', {
+                var thumbnailCloseProps = config.get('ElementImagePickerThumbnailCloseProps', {
                     className: 'stylizer-image-picker-thumbnail-close',
                     onClick: function onClick(e) {
                         onRemove(e, image.id);
                     }
                 });
 
-                var closeIconProps = (0, _lodash.get)(config, 'ElementImagePickerCloseIconProps', {
+                var closeIconProps = config.get('ElementImagePickerCloseIconProps', {
                     size: 16
                 });
 
-                var thumbnailImageProps = (0, _lodash.get)(config, 'ElementImagePickerThumbnailImageProps', {
-                    src: delta < state.showCount ? loader.thumbnail(image) : ''
+                var thumbnailImageProps = config.get('ElementImagePickerThumbnailImageProps', {
+                    src: delta < _this2.state.showCount ? loader.thumbnail(image) : ''
                 });
 
                 Images.push(_react2['default'].createElement(
@@ -70310,7 +70321,7 @@ var _initialiseProps = function _initialiseProps() {
         images: [],
         showCount: 0
     };
-    this.config = {};
+    this.config = false;
     this.loader = null;
     this.progressElement = null;
     this.imagesElement = null;
@@ -70355,6 +70366,7 @@ var _initialiseProps = function _initialiseProps() {
             error: false,
             progress: true
         });
+
         (0, _lodash.forEach)(e.target.files, function (file) {
             _this3.loader.upload(file, _this3.progressElement);
         });
@@ -70372,12 +70384,13 @@ var _initialiseProps = function _initialiseProps() {
     };
 
     this.onScroll = function (value) {
+
         if (_this3.state.images.length === _this3.state.showCount) {
             return false;
         }
 
         var leftPosition = value.leftPosition ? value.leftPosition : 0;
-        var singleWidth = value.realWidth / _this3.state.images.length;
+        var singleWidth = value.realWidth / (0, _lodash.size)(_this3.state.images);
         var showCount = Math.ceil((leftPosition + value.containerWidth) / singleWidth);
 
         if (showCount > _this3.state.images.length) {
@@ -70521,6 +70534,10 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _Config = __webpack_require__(771);
+
+var _Config2 = _interopRequireDefault(_Config);
+
 var _chevronRight = __webpack_require__(758);
 
 var _chevronRight2 = _interopRequireDefault(_chevronRight);
@@ -70650,8 +70667,13 @@ var Selector = function (_React$Component) {
             _this.state.error = !_this.validate(props.node.selector);
         }
 
-        if ('config' in props && props.config) {
-            _this.config = props.config;
+        _this.config = new _Config2['default']({
+            PanelSelectorFieldLabel: 'Selector',
+            PanelSelectorFieldError: 'Invalid CSS selector'
+        });
+
+        if ('config' in props) {
+            _this.config.insert(props.config);
         }
         return _this;
     }
@@ -70677,21 +70699,21 @@ var Selector = function (_React$Component) {
                 toggle = this.toggle,
                 submit = this.submit;
 
-            var tabProps = (0, _lodash.get)(config, 'PanelSelectorFieldTabProps', {
+            var tabProps = config.get('PanelSelectorFieldTabProps', {
                 key: 'stylizer-tab-selector-' + state.node.uuid,
                 className: 'stylizer-tab-content stylizer-content stylizer-tab-panel--selector'
             });
 
-            var selectorProps = (0, _lodash.get)(config, 'PanelSelectorFieldSelectorProps', {
+            var selectorProps = config.get('PanelSelectorFieldSelectorProps', {
                 key: 'selector-form-' + state.node.uuid,
                 className: ['stylizer-form-item', state.error ? 'stylizer-has-error' : ' '].join(' ')
             });
 
-            var labelProps = (0, _lodash.get)(config, 'PanelSelectorFieldLabelProps', {
+            var labelProps = config.get('PanelSelectorFieldLabelProps', {
                 className: 'stylizer-form-label'
             });
 
-            var inputProps = (0, _lodash.get)(config, 'PanelSelectorFieldInputProps', {
+            var inputProps = config.get('PanelSelectorFieldInputProps', {
                 key: 'input-selector-' + state.node.uuid,
                 className: 'stylizer-form-input',
                 type: 'text',
@@ -70700,21 +70722,21 @@ var Selector = function (_React$Component) {
                 onChange: submit
             });
 
-            var errorProps = (0, _lodash.get)(config, 'PanelSelectorFieldErrorProps', {
+            var errorProps = config.get('PanelSelectorFieldErrorProps', {
                 key: 'input-selector-error-' + state.node.uuid,
                 className: 'stylizer-error-bag'
             });
 
-            var badgesProps = (0, _lodash.get)(config, 'PanelSelectorFieldBadgesProps', {
+            var badgesProps = config.get('PanelSelectorFieldBadgesProps', {
                 key: 'selector-badges-' + state.node.uuid,
                 className: 'stylizer-selector-badges'
             });
 
-            var badgeItemProps = (0, _lodash.get)(config, 'PanelSelectorFieldBadgeItemProps', {
+            var badgeItemProps = config.get('PanelSelectorFieldBadgeItemProps', {
                 className: 'stylizer-selector-badges-text'
             });
 
-            var badgeIconProps = (0, _lodash.get)(config, 'PanelSelectorFieldBadgeIconProps', {
+            var badgeIconProps = config.get('PanelSelectorFieldBadgeIconProps', {
                 className: 'stylizer-selector-badges-separator'
             });
 
@@ -70730,17 +70752,17 @@ var Selector = function (_React$Component) {
                         config.PanelSelectorFieldLabel
                     ),
                     _react2['default'].createElement('input', inputProps),
-                    state.error && config.PanelSelectorFieldError && _react2['default'].createElement(
+                    state.error && config.get('PanelSelectorFieldError') && _react2['default'].createElement(
                         'div',
                         errorProps,
-                        config.PanelSelectorFieldError
+                        config.get('PanelSelectorFieldError')
                     )
                 ),
                 _react2['default'].createElement(
                     'div',
                     badgesProps,
                     state.node && state.node.tree && state.node.tree.map(function (item, delta) {
-                        var badgeProps = (0, _lodash.get)(config, 'PanelSelectorFieldBadgeProps', {
+                        var badgeProps = config.get('PanelSelectorFieldBadgeProps', {
                             key: 'badges-' + delta,
                             onClick: function onClick() {
                                 toggle(item);
@@ -70859,10 +70881,11 @@ var Spacing = function (_BasePanel) {
             values: {}
         };
 
-        _this.config = {
+        _this.config.insert({
             type: 'spacing',
             empty: null
-        };
+        });
+
         _this.fields = [{
             key: 'width',
             title: 'Width',
@@ -70884,6 +70907,7 @@ var Spacing = function (_BasePanel) {
             type: 'group',
             elements: [{ title: 'top', target: 'margin-top', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'left', target: 'margin-left', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'right', target: 'margin-right', type: 'element', field: 'text', 'default': '', inline: false }, { title: 'bottom', target: 'margin-bottom', type: 'element', field: 'text', 'default': '', inline: false }]
         }];
+
         _this.initialize(props);
         return _this;
     }
@@ -71005,10 +71029,11 @@ var Styles = function (_BasePanel) {
             picker: false
         };
 
-        _this.config = {
+        _this.config.insert({
             type: 'styles',
             empty: null
-        };
+        });
+
         _this.defaultFields = [{
             key: 'background',
             title: 'Background',
@@ -71095,10 +71120,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _assign = __webpack_require__(28);
-
-var _assign2 = _interopRequireDefault(_assign);
-
 var _getPrototypeOf = __webpack_require__(16);
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -71122,6 +71143,10 @@ var _inherits3 = _interopRequireDefault(_inherits2);
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _Config = __webpack_require__(771);
+
+var _Config2 = _interopRequireDefault(_Config);
 
 var _fileImageO = __webpack_require__(762);
 
@@ -71151,14 +71176,16 @@ var BackgroundImage = function (_React$Component) {
         _this.state = {
             value: ''
         };
-        _this.config = {};
+        _this.config = false;
 
         if ('value' in props) {
             _this.state.value = props.value;
         }
 
+        _this.config = new _Config2['default']();
+
         if ('config' in props) {
-            (0, _assign2['default'])(_this.config, props.config);
+            _this.config.insert(props.config);
         }
 
         if ('root' in props) {
@@ -71175,29 +71202,29 @@ var BackgroundImage = function (_React$Component) {
             var root = props.root;
 
 
-            var mainProps = (0, _lodash.get)(config, 'ElementBackgroundImageMainProps', {
+            var mainProps = config.get('ElementBackgroundImageMainProps', {
                 className: props.className + ' stylizer-background-image-element'
             });
 
-            var spanGradientPickerConst = (0, _lodash.get)(config, 'ElementBackgroundImageSpanGradientPickerConst', {
+            var spanGradientPickerProps = config.get('ElementBackgroundImageSpanGradientPickerProps', {
                 className: 'stylizer-gradient-picker',
                 onClick: function onClick() {
                     root.generateGradientFields && root.generateGradientFields(true);
                 }
             });
 
-            var spanImagePickerConst = (0, _lodash.get)(config, 'ElementBackgroundImageSpanImagePickerConst', {
+            var spanImagePickerProps = config.get('ElementBackgroundImageSpanImagePickerProps', {
                 className: 'stylizer-image-picker',
                 onClick: function onClick() {
                     root.generateImageFields && root.generateImageFields(true);
                 }
             });
 
-            var gradientIconProps = (0, _lodash.get)(config, 'ElementBackgroundImageGradientIconProps', {
+            var gradientIconProps = config.get('ElementBackgroundImageGradientIconProps', {
                 size: 13
             });
 
-            var imageIconProps = (0, _lodash.get)(config, 'ElementBackgroundImageImageIconProps', {
+            var imageIconProps = config.get('ElementBackgroundImageImageIconProps', {
                 size: 13
             });
 
@@ -71206,12 +71233,12 @@ var BackgroundImage = function (_React$Component) {
                 mainProps,
                 _react2['default'].createElement(
                     'span',
-                    spanGradientPickerConst,
+                    spanGradientPickerProps,
                     _react2['default'].createElement(_objectGroup2['default'], gradientIconProps)
                 ),
                 _react2['default'].createElement(
                     'span',
-                    spanImagePickerConst,
+                    spanImagePickerProps,
                     _react2['default'].createElement(_fileImageO2['default'], imageIconProps)
                 ),
                 _react2['default'].createElement('input', props)
@@ -71352,10 +71379,11 @@ var Typography = function (_BasePanel) {
             values: {}
         };
 
-        _this.config = {
+        _this.config.insert({
             type: 'typography',
             empty: null
-        };
+        });
+
         _this.fields = [{
             key: 'font',
             title: 'Font',
@@ -71419,6 +71447,7 @@ var Typography = function (_BasePanel) {
                     'pre-wrap': 'Pre Wrap'
                 }, 'default': '', inline: false }]
         }];
+
         _this.initialize(props);
         return _this;
     }
@@ -71467,6 +71496,10 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _Config = __webpack_require__(771);
+
+var _Config2 = _interopRequireDefault(_Config);
+
 var _lodash = __webpack_require__(14);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
@@ -71479,18 +71512,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 var Overlay = function (_React$Component) {
     (0, _inherits3['default'])(Overlay, _React$Component);
 
-    function Overlay() {
-        var _ref;
-
-        var _temp, _this, _ret;
-
+    function Overlay(props) {
         (0, _classCallCheck3['default'])(this, Overlay);
 
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-            args[_key] = arguments[_key];
-        }
+        var _this = (0, _possibleConstructorReturn3['default'])(this, (Overlay.__proto__ || (0, _getPrototypeOf2['default'])(Overlay)).call(this, props));
 
-        return _ret = (_temp = (_this = (0, _possibleConstructorReturn3['default'])(this, (_ref = Overlay.__proto__ || (0, _getPrototypeOf2['default'])(Overlay)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+        _this.state = {
             position: {
                 top: 0,
                 left: 0,
@@ -71518,7 +71545,10 @@ var Overlay = function (_React$Component) {
                 marginTop: 0,
                 marginBottom: 0
             }
-        }, _this.config = {}, _this.detectSize = function (node) {
+        };
+        _this.config = false;
+
+        _this.detectSize = function (node) {
             var result = {};
             var requiredValue = ['border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'z-index'];
 
@@ -71578,7 +71608,9 @@ var Overlay = function (_React$Component) {
             });
 
             return result;
-        }, _this.resetState = function () {
+        };
+
+        _this.resetState = function () {
             _this.setState({
                 position: {
                     top: 0,
@@ -71608,7 +71640,13 @@ var Overlay = function (_React$Component) {
                     marginBottom: 0
                 }
             });
-        }, _temp), (0, _possibleConstructorReturn3['default'])(_this, _ret);
+        };
+
+        _this.config = new _Config2['default']();
+        if ('config' in props) {
+            _this.config.insert(props.config);
+        }
+        return _this;
     }
 
     (0, _createClass3['default'])(Overlay, [{
@@ -71626,25 +71664,25 @@ var Overlay = function (_React$Component) {
             var state = this.state,
                 config = this.config;
 
-            var overlayBoxProps = (0, _lodash.get)(config, 'overlayBoxProps', {
+            var overlayBoxProps = config.get('overlayBoxProps', {
                 key: 'overlay-box',
                 className: 'stylizer-overlay-box',
                 style: state.position
             });
 
-            var overlayMarginProps = (0, _lodash.get)(config, 'overlayMarginProps', {
+            var overlayMarginProps = config.get('overlayMarginProps', {
                 key: 'overlay-margin',
                 className: 'stylizer-overlay-margin',
                 style: state.margin
             });
 
-            var overlayPaddingProps = (0, _lodash.get)(config, 'overlayPaddingProps', {
+            var overlayPaddingProps = config.get('overlayPaddingProps', {
                 key: 'overlay-padding',
                 className: 'stylizer-overlay-padding',
                 style: (0, _assign2['default'])({}, state.padding, state.border)
             });
 
-            var overlayContentProps = (0, _lodash.get)(config, 'overlayContentProps', {
+            var overlayContentProps = config.get('overlayContentProps', {
                 key: 'overlay-content',
                 className: 'stylizer-overlay-content',
                 style: state.size
@@ -71714,7 +71752,7 @@ exports = module.exports = __webpack_require__(768)(undefined);
 
 
 // module
-exports.push([module.i, "/**\n  Main Variables\n  @todo Convert more into mixin and less friendly\n  **/\n/**\n  Generic Styling for both vertical and horizontal\n  **/\n.stylizer-inspector {\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  z-index: 99999;\n  background: #051017;\n  width: 100%;\n  height: 320px;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  border-bottom: 3px solid #000000;\n  margin: 0;\n  padding: 0;\n  line-height: 140%;\n  vertical-align: middle;\n  box-sizing: border-box;\n  font-size: 14px;\n  font-family: Arial, Helvetica, Verdana, sans-serif;\n  /**\n    Styling Reset\n    **/\n  /**\n    Inspector Mode\n    **/\n  /**\n    Form Items\n    **/\n  /** Form Hacks **/\n  /**\n    Tabs\n    **/\n  /**\n    Scroll bar\n    **/\n  /**\n    Overlay Box for Inspector Tools\n    **/\n  /**\n    Main Panels Structures\n    Used in both iterator and editor\n    **/\n  /**\n    Iterator Panel\n    **/\n  /**\n    Editor Panel\n    **/\n}\n.stylizer-inspector * {\n  margin: 0;\n  padding: 0;\n  line-height: 140%;\n  vertical-align: middle;\n  box-sizing: border-box;\n  font-size: 14px;\n  font-family: Arial, Helvetica, Verdana, sans-serif;\n}\n.stylizer-inspector.minimize {\n  height: 34px;\n}\n.stylizer-inspector.minimize .stylizer-tabs-wrapper,\n.stylizer-inspector.minimize .stylizer-dom-panel {\n  display: none;\n}\n.stylizer-inspector .stylizer-font-element-dropdown-item,\n.stylizer-inspector .stylizer-font-element-dropdown,\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select,\n.stylizer-inspector textarea {\n  background: #213946;\n  border: 1px solid #040f15;\n  color: #d3f7ff;\n  padding: 0 7px;\n  line-height: 29px;\n  min-height: 0;\n  height: auto;\n  font-size: 13px;\n  border-radius: 0;\n  margin: 0;\n  width: 100%;\n}\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select {\n  height: 29px;\n}\n.stylizer-inspector textarea {\n  padding: 6px 7px;\n}\n.stylizer-inspector input[type=range] {\n  -webkit-appearance: none;\n  width: 100%;\n  background: transparent;\n  padding-top: 10px;\n  padding-left: 10px;\n  padding-right: 10px;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-thumb {\n  -webkit-appearance: none;\n}\n.stylizer-inspector input[type=range]:focus {\n  outline: none;\n}\n.stylizer-inspector input[type=range]::-ms-track {\n  width: 100%;\n  cursor: pointer;\n  background: transparent;\n  border-color: transparent;\n  color: transparent;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-thumb {\n  -webkit-appearance: none;\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-moz-range-thumb {\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-ms-thumb {\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-runnable-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-webkit-slider-runnable-track {\n  background: #213946;\n}\n.stylizer-inspector input[type=range]::-moz-range-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]::-ms-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: transparent;\n  border-color: transparent;\n  border-width: 16px 0;\n  color: transparent;\n}\n.stylizer-inspector input[type=range]::-ms-fill-lower {\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-ms-fill-lower {\n  background: #213946;\n}\n.stylizer-inspector input[type=range]::-ms-fill-upper {\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-ms-fill-upper {\n  background: #213946;\n}\n.stylizer-inspector input[disabled] {\n  background: #192b35;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete {\n  position: relative;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete > * {\n  display: block !important;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: auto;\n  max-height: 160px;\n  min-width: 160px;\n  overflow-y: auto;\n  cursor: pointer;\n  border: 1px solid #040f15 !important;\n  overflow-x: hidden;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown .stylizer-font-element-dropdown-item {\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown .stylizer-font-element-dropdown-item:hover {\n  color: #0f82aa !important;\n}\n.stylizer-inspector select {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n}\n.stylizer-inspector select:focus {\n  outline: none;\n}\n.stylizer-inspector select > option {\n  background-color: #213946;\n  border: 1px solid #040f15;\n  cursor: pointer;\n}\n.stylizer-inspector select > option:hover {\n  background-color: #192b35;\n  color: #d3f7ff;\n}\n.stylizer-inspector label {\n  font-size: 12px;\n  margin-bottom: 3px;\n  font-weight: 300;\n  display: block;\n}\n.stylizer-inspector :focus {\n  outline: 0;\n}\n.stylizer-inspector ::-ms-reveal,\n.stylizer-inspector ::-ms-clear,\n.stylizer-inspector ::-ms-expand {\n  display: none !important;\n}\n@media screen and (min-width: \"0\\0\") {\n  .stylizer-inspector select {\n    background-image: none\\9;\n  }\n}\n.stylizer-inspector progress {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  width: calc(90%);\n  height: 20px;\n  color: #195e8a;\n  margin: 4px 5px 0;\n}\n.stylizer-inspector progress::-moz-progress-bar,\n.stylizer-inspector progress::-webkit-progress-bar {\n  background-color: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector progress::-webkit-progress-value {\n  background-image: #195e8a;\n}\n.stylizer-inspector .stylizer-form-item {\n  margin-bottom: 5px;\n}\n.stylizer-inspector .stylizer-form-header {\n  font-size: 12px;\n  margin-bottom: 8px;\n  padding-bottom: 4px;\n  color: #d3f7ff;\n  font-weight: 300;\n  border-bottom: 1px solid #040d12;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  align-items: center;\n  justify-content: space-between;\n}\n.stylizer-inspector .stylizer-form-header svg {\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-form-label {\n  text-transform: capitalize;\n}\n.stylizer-inspector .stylizer-form-group {\n  margin-bottom: 18px;\n}\n.stylizer-inspector .stylizer-form-row {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  flex-wrap: nowrap;\n}\n.stylizer-inspector .stylizer-form-row > * {\n  padding: 0 7px;\n}\n.stylizer-inspector .stylizer-form-row > *:first-child {\n  padding-left: 0;\n}\n.stylizer-inspector .stylizer-form-row > *:last-child {\n  padding-right: 0;\n}\n.stylizer-inspector .stylizer-form-button {\n  font-size: 12px;\n  padding: 3px 10px;\n  background: #13a6d9;\n  color: #d3f7ff;\n  border: none;\n  outline: none;\n  border-radius: 3px;\n  cursor: pointer;\n  text-align: center;\n}\n.stylizer-inspector .stylizer-form-button :hover {\n  background: #1194c2;\n}\n.stylizer-inspector .stylizer-form-input-file input[type=\"file\"] {\n  display: none;\n}\n.stylizer-inspector .stylizer-has-error input[role=\"combobox\"],\n.stylizer-inspector .stylizer-has-error .stylizer-form-input {\n  border-color: #c50313 !important;\n}\n.stylizer-inspector .stylizer-error-bag {\n  font-size: 13px;\n  padding: 3px;\n  color: #c50313;\n}\n.stylizer-inspector .stylizer-label-inline {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-form-input {\n  max-width: 120px;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-form-label {\n  margin-right: 20px;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-error-bag {\n  margin-left: 10px;\n}\n.stylizer-inspector .stylizer-color-element {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-inspector .stylizer-color-element input[type=\"text\"] {\n  border-left: none;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-preview {\n  width: 30px;\n  min-width: 30px;\n  height: 29px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-right: none;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-preview > .stylizer-color-preview-content {\n  border-radius: 100%;\n  width: 10px;\n  height: 10px;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-closer {\n  max-width: 39px;\n  height: 29px;\n  width: 39px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-left: none;\n  margin-left: -1px;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-gradient-element {\n  margin-top: 30px;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-canvas {\n  width: 100%;\n  height: 40px;\n  border: 1px solid #040f15;\n  background-color: #213946;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-wrapper {\n  width: 100%;\n  height: 40px;\n  position: relative;\n  margin-top: -40px;\n  margin-bottom: 40px;\n  z-index: 1;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  width: 8px;\n  height: 40px;\n  background: #195e8a;\n  cursor: move;\n  z-index: 2;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-closer {\n  margin-top: -16px;\n  margin-left: -2px;\n  height: 14px;\n  width: 14px;\n  display: block;\n  cursor: pointer;\n  z-index: 2;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-color {\n  margin-top: 41px;\n  margin-left: -6px;\n  height: 20px;\n  width: 20px;\n  display: block;\n  cursor: pointer;\n  border: 1px solid #195e8a;\n  background-color: #000101;\n}\n.stylizer-inspector .stylizer-background-image-element {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-inspector .stylizer-background-image-element .stylizer-gradient-picker,\n.stylizer-inspector .stylizer-background-image-element .stylizer-image-picker {\n  padding: 3px 8px;\n  cursor: pointer;\n  background: #213946;\n  border: 1px solid #040f15;\n  border-right: none;\n}\n.stylizer-inspector .stylizer-background-image-element .stylizer-form-input {\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-image-picker-element .stylizer-form-search-upload {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-inspector .stylizer-image-picker-element .stylizer-form-search-upload .stylizer-form-input-file {\n  max-width: 100px;\n  margin: 3px 10px;\n}\n.stylizer-inspector .stylizer-image-picker-element .stylizer-form-search-upload .stylizer-form-item {\n  flex-grow: 0;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea {\n  width: 100%;\n  height: 160px;\n  position: relative;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: nowrap;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images .stylizer-image-picker-thumbnail {\n  min-width: 130px;\n  min-height: 130px;\n  height: 130px;\n  margin: 10px;\n  position: relative;\n  overflow: hidden;\n  cursor: pointer;\n  border: 2px solid transparent;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images .stylizer-image-picker-thumbnail:first-child {\n  margin-left: 0;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images .stylizer-image-picker-thumbnail:last-child {\n  margin-right: 0;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images .stylizer-image-picker-thumbnail.active {\n  border-color: #195e8a;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images .stylizer-image-picker-thumbnail.removing {\n  border-color: #c50313;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images .stylizer-image-picker-thumbnail .stylizer-image-picker-thumbnail-close {\n  position: absolute;\n  top: -2px;\n  right: 1px;\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images .stylizer-image-picker-thumbnail img {\n  object-fit: cover;\n  object-position: 50% 50%;\n  max-height: 130px;\n}\n.stylizer-inspector .stylizer-selector-badges {\n  font-size: 12px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge {\n  display: flex;\n  flex-direction: row;\n  margin: 5px 0;\n  cursor: pointer;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .stylizer-selector-badges-text {\n  background: #040f15;\n  color: #6d8d95;\n  padding: 4px 8px;\n  border-radius: 4px;\n  max-width: 100px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge.active .stylizer-selector-badges-text {\n  background: #137fad;\n  color: #d3f7ff;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .stylizer-selector-badges-separator {\n  margin: 0 5px;\n}\n.stylizer-inspector .chrome-picker {\n  background: #041e2b !important;\n  color: #6d8d95;\n  border: 1px solid #040f15;\n  box-shadow: none !important;\n}\n.stylizer-inspector .chrome-picker svg {\n  background: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker span {\n  color: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker input {\n  background: #213946;\n  border: 1px solid #040f15 !important;\n  color: #d3f7ff !important;\n  box-shadow: none !important;\n  font-size: 13px !important;\n  height: auto !important;\n}\n.stylizer-inspector .stylizer-tabs-wrapper {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs {\n  background: #03141d;\n  color: #6d8d95;\n  max-width: 150px;\n  min-width: 150px;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-evenly;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element {\n  padding: 10px 15px;\n  font-size: 13px;\n  display: block;\n  cursor: pointer;\n  text-transform: capitalize;\n  flex-grow: 1;\n  border-bottom: 1px solid #040d12;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element.active {\n  background: #081c27;\n  color: #13a6d9;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs-contents {\n  background: #081c27;\n  flex-grow: 1;\n  display: flex;\n  flex-direction: column;\n  padding: 0;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs-contents.has-vertical-scrollbar {\n  padding-right: 15px;\n}\n.stylizer-inspector .scrollarea .scrollarea-content {\n  width: auto;\n  display: table;\n  min-width: 100%;\n}\n.stylizer-inspector .scrollarea .scrollbar-container {\n  background: #082739;\n  opacity: 1 !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container:hover {\n  background: #082739;\n  opacity: 1 !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container .scrollbar {\n  background: #051118;\n  cursor: pointer;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.vertical {\n  width: 16px;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.vertical .scrollbar {\n  width: 16px;\n  margin: 0;\n  min-height: 20px !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.horizontal {\n  height: 16px;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.horizontal .scrollbar {\n  height: 16px;\n  margin: 0;\n  min-width: 20px !important;\n}\n.stylizer-inspector .stylizer-overlay-box {\n  pointer-events: none;\n  position: fixed;\n  z-index: 0;\n  top: 0;\n  left: 0;\n  background: #ff929a;\n  opacity: 0.4;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-margin {\n  margin: 0;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-padding {\n  background: #ffbf80;\n  padding: 0;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-content {\n  background: #edff7b;\n  width: 0;\n  height: 0;\n}\n.stylizer-inspector .stylizer-panels {\n  width: 30%;\n  background: #051017;\n  color: #d3f7ff;\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n  z-index: 9999;\n}\n.stylizer-inspector .stylizer-panels.minimize {\n  max-width: 30px;\n}\n.stylizer-inspector .stylizer-panels.minimize > :not(.stylizer-header) {\n  display: none;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header {\n  padding: 8px 15px;\n  background: #000000;\n  font-size: 14px;\n  font-weight: 300;\n  text-transform: uppercase;\n  display: flex;\n  flex-direction: row;\n  min-height: 35px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-text {\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-actions svg {\n  cursor: pointer;\n  opacity: 0.8;\n  margin: 0 5px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-actions svg:hover {\n  opacity: 1;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content {\n  padding: 15px;\n  width: 100%;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content-flex {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content-flex > * {\n  padding: 15px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-selector-empty {\n  font-size: 14px;\n  text-align: center;\n  display: flex;\n  align-self: center;\n  justify-content: center;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator {\n  flex-grow: 1;\n  overflow: hidden;\n  display: block;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth] {\n  margin-left: 150px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"0\"] {\n  margin-left: 0px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"1\"] {\n  margin-left: 15px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"2\"] {\n  margin-left: 30px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"3\"] {\n  margin-left: 45px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"4\"] {\n  margin-left: 60px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"5\"] {\n  margin-left: 75px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"6\"] {\n  margin-left: 90px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"7\"] {\n  margin-left: 105px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"8\"] {\n  margin-left: 120px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"9\"] {\n  margin-left: 135px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"10\"] {\n  margin-left: 150px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element {\n  background: #071c2a;\n  color: #d3f7ff;\n  padding: 6px 10px;\n  margin-bottom: 8px;\n  white-space: nowrap;\n  cursor: pointer;\n  width: fit-content;\n  font-size: 12px;\n  font-weight: 300;\n  border-left: 5px solid #071c2a;\n  min-width: 100%;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.overridden {\n  background: #000000;\n  border-left: 3px solid #4c2503 !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.active {\n  background: #4b9701;\n  border-left: 3px solid #4b9701 !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.changed {\n  background: #7d3d05;\n  border-left: 3px solid #11415f !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.parents:not(.processed) {\n  border-left: 3px solid #196597;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.parents.processed {\n  border-left: 3px solid #0d334d;\n}\n.stylizer-inspector .stylizer-editor-panel {\n  background: #081c27;\n  color: #9abdc5;\n  width: 70%;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-header {\n  background: #020709;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-left-space,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-right-space {\n  background: #081c27;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-center-space {\n  display: flex;\n  flex-wrap: wrap;\n  flex-grow: 1;\n  padding: 15px 0;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item {\n  padding: 0;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) input {\n  border-right-color: transparent;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-group {\n  padding: 0 15px;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-group--radius,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-group--outline {\n  width: 50%;\n  min-width: 330px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border [class*=\"stylizer-group--border-\"] {\n  width: 25%;\n  min-width: 260px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border [class*=\"stylizer-field--border-\"] input {\n  min-width: 50px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-top-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-left-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-right-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-bottom-color input {\n  min-width: 70px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border select {\n  min-width: 80px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--spacing .stylizer-form-group {\n  width: 25%;\n  min-width: 260px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-form-group {\n  width: 25%;\n  min-width: 320px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-group--background {\n  width: 100%;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-image input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-size input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-position input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--opacity input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--display input {\n  min-width: 60px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-color input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-repeat select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--visibility select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--overflow select {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-form-group {\n  width: 50%;\n  min-width: 350px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-group--font {\n  min-width: 590px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-family input {\n  min-width: 100px;\n  width: 100%;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-size input {\n  min-width: 60px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--letter-spacing input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-weight input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--white-space select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--vertical-align select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-weight select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-style select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-variant select {\n  min-width: 100px;\n}\n/**\n  Vertical Overrides\n  **/\nbody[stylizer-vertical=\"true\"][stylizer-active=\"false\"] {\n  padding-left: 380px;\n}\nbody[stylizer-vertical=\"true\"][stylizer-active=\"true\"] {\n  padding-left: 34px;\n}\nbody[stylizer-vertical=\"true\"][stylizer-active=\"true\"] .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\nbody[stylizer-vertical=\"true\"][stylizer-active=\"true\"] .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\nbody[stylizer-vertical=\"true\"][stylizer-active=\"true\"] .stylizer-header-actions svg {\n  margin: 0 0 5px !important;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector {\n  top: 0;\n  bottom: 0;\n  width: 390px;\n  flex-direction: column;\n  height: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector.minimize {\n  height: 100%;\n  width: 34px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize {\n  max-width: none;\n  max-height: 35px !important;\n  overflow: hidden;\n  height: 35px !important;\n  min-height: 35px !important;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize.stylizer-editor-panel {\n  max-height: calc(100vh - 35px);\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.stylizer-dom-panel {\n  max-height: 40vh;\n  height: 40vh;\n  min-height: 40vh;\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.stylizer-editor-panel {\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-selector-empty {\n  flex-direction: column;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panel-left-space {\n  position: absolute;\n  top: 0;\n  left: 100%;\n  bottom: 0;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-label-inline {\n  align-items: flex-start;\n  max-width: 25%;\n  flex-wrap: wrap;\n  flex-direction: column;\n  flex-grow: 1;\n  padding: 0 7px;\n  margin-bottom: 10px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-row {\n  flex-wrap: wrap;\n  margin: 0 -7px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-item {\n  margin-bottom: 20px;\n  display: block;\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-item > * {\n  width: 100%;\n  max-width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector input[type=\"text\"],\nbody[stylizer-vertical=\"true\"] .stylizer-inspector select {\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-color-element input[type=\"text\"] {\n  max-width: 100%;\n  flex-grow: 1;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper {\n  flex-direction: column;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs {\n  flex-direction: row;\n  max-width: 100%;\n  min-width: 100%;\n  min-height: 35px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element {\n  border-bottom: none;\n  padding: 10px 14px;\n  font-size: 10px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content {\n  flex-direction: column;\n  position: relative;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-tabs-contents {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  padding: 0;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-panel-center-space .stylizer-form-row {\n  margin: 0;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-panel-center-space .stylizer-form-group {\n  width: 100%;\n  min-width: 1px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-panel-center-space .stylizer-form-search-upload {\n  flex-direction: column;\n}\n/**\n  Horizontal Overrides\n  **/\nbody[stylizer-vertical=\"false\"][stylizer-active=\"false\"] {\n  padding-bottom: 320px;\n}\nbody[stylizer-vertical=\"false\"][stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\nbody[stylizer-vertical=\"false\"][stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header .stylizer-header-actions svg {\n  margin: 0 0 5px;\n}\nbody[stylizer-vertical=\"false\"][stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\nbody[stylizer-vertical=\"false\"][stylizer-active=\"true\"] {\n  padding-bottom: 34px;\n}\nbody[stylizer-vertical=\"false\"] .stylizer-tabs-wrapper {\n  max-height: 280px;\n}\n", ""]);
+exports.push([module.i, "/**\n  Main Variables\n  @todo Convert more into mixin and less friendly\n  **/\n/**\n  Generic Styling for both vertical and horizontal\n  **/\n.stylizer-inspector {\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  z-index: 99999;\n  background: #051017;\n  width: 100%;\n  height: 320px;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  border-bottom: 3px solid #000000;\n  margin: 0;\n  padding: 0;\n  line-height: 140%;\n  vertical-align: middle;\n  box-sizing: border-box;\n  font-size: 14px;\n  font-family: Arial, Helvetica, Verdana, sans-serif;\n  /**\n    Styling Reset\n    **/\n  /**\n    Inspector Mode\n    **/\n  /**\n    Form Items\n    **/\n  /** Form Hacks **/\n  /**\n    Tabs\n    **/\n  /**\n    Scroll bar\n    **/\n  /**\n    Overlay Box for Inspector Tools\n    **/\n  /**\n    Main Panels Structures\n    Used in both iterator and editor\n    **/\n  /**\n    Iterator Panel\n    **/\n  /**\n    Editor Panel\n    **/\n}\n.stylizer-inspector * {\n  margin: 0;\n  padding: 0;\n  line-height: 140%;\n  vertical-align: middle;\n  box-sizing: border-box;\n  font-size: 14px;\n  font-family: Arial, Helvetica, Verdana, sans-serif;\n}\n.stylizer-inspector.minimize {\n  height: 34px;\n}\n.stylizer-inspector.minimize .stylizer-tabs-wrapper,\n.stylizer-inspector.minimize .stylizer-dom-panel {\n  display: none;\n}\n.stylizer-inspector .stylizer-font-element-dropdown-item,\n.stylizer-inspector .stylizer-font-element-dropdown,\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select,\n.stylizer-inspector textarea {\n  background: #213946;\n  border: 1px solid #040f15;\n  color: #d3f7ff;\n  padding: 0 7px;\n  line-height: 29px;\n  min-height: 0;\n  height: auto;\n  font-size: 13px;\n  border-radius: 0;\n  margin: 0;\n  width: 100%;\n}\n.stylizer-inspector .chrome-picker input,\n.stylizer-inspector input[role=\"combobox\"],\n.stylizer-inspector input[type=\"text\"],\n.stylizer-inspector input[type=\"url\"],\n.stylizer-inspector input[type=\"number\"],\n.stylizer-inspector input[type=\"tel\"],\n.stylizer-inspector select {\n  height: 29px;\n}\n.stylizer-inspector textarea {\n  padding: 6px 7px;\n}\n.stylizer-inspector input[type=range] {\n  -webkit-appearance: none;\n  width: 100%;\n  background: transparent;\n  padding-top: 10px;\n  padding-left: 10px;\n  padding-right: 10px;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-thumb {\n  -webkit-appearance: none;\n}\n.stylizer-inspector input[type=range]:focus {\n  outline: none;\n}\n.stylizer-inspector input[type=range]::-ms-track {\n  width: 100%;\n  cursor: pointer;\n  background: transparent;\n  border-color: transparent;\n  color: transparent;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-thumb {\n  -webkit-appearance: none;\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-moz-range-thumb {\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-ms-thumb {\n  border: 1px solid #040f15;\n  height: 20px;\n  width: 10px;\n  background: #195e8a;\n  cursor: pointer;\n  margin-top: -7px;\n}\n.stylizer-inspector input[type=range]::-webkit-slider-runnable-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-webkit-slider-runnable-track {\n  background: #213946;\n}\n.stylizer-inspector input[type=range]::-moz-range-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]::-ms-track {\n  width: 100%;\n  height: 8px;\n  cursor: pointer;\n  background: transparent;\n  border-color: transparent;\n  border-width: 16px 0;\n  color: transparent;\n}\n.stylizer-inspector input[type=range]::-ms-fill-lower {\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-ms-fill-lower {\n  background: #213946;\n}\n.stylizer-inspector input[type=range]::-ms-fill-upper {\n  background: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector input[type=range]:focus::-ms-fill-upper {\n  background: #213946;\n}\n.stylizer-inspector input[disabled] {\n  background: #192b35;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete {\n  position: relative;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete > * {\n  display: block !important;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown {\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: auto;\n  max-height: 160px;\n  min-width: 160px;\n  overflow-y: auto;\n  cursor: pointer;\n  border: 1px solid #040f15 !important;\n  overflow-x: hidden;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown .stylizer-font-element-dropdown-item {\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-font-element-autocomplete .stylizer-font-element-dropdown .stylizer-font-element-dropdown-item:hover {\n  color: #0f82aa !important;\n}\n.stylizer-inspector select {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n}\n.stylizer-inspector select:focus {\n  outline: none;\n}\n.stylizer-inspector select > option {\n  background-color: #213946;\n  border: 1px solid #040f15;\n  cursor: pointer;\n}\n.stylizer-inspector select > option:hover {\n  background-color: #192b35;\n  color: #d3f7ff;\n}\n.stylizer-inspector label {\n  font-size: 12px;\n  margin-bottom: 3px;\n  font-weight: 300;\n  display: block;\n}\n.stylizer-inspector :focus {\n  outline: 0;\n}\n.stylizer-inspector ::-ms-reveal,\n.stylizer-inspector ::-ms-clear,\n.stylizer-inspector ::-ms-expand {\n  display: none !important;\n}\n@media screen and (min-width: \"0\\0\") {\n  .stylizer-inspector select {\n    background-image: none\\9;\n  }\n}\n.stylizer-inspector progress {\n  -webkit-appearance: none;\n  -moz-appearance: none;\n  appearance: none;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  width: calc(90%);\n  height: 20px;\n  color: #195e8a;\n  margin: 4px 5px 0;\n}\n.stylizer-inspector progress::-moz-progress-bar,\n.stylizer-inspector progress::-webkit-progress-bar {\n  background-color: #213946;\n  border: 1px solid #040f15;\n}\n.stylizer-inspector progress::-webkit-progress-value {\n  background-image: #195e8a;\n}\n.stylizer-inspector .stylizer-form-item {\n  margin-bottom: 5px;\n}\n.stylizer-inspector .stylizer-form-header {\n  font-size: 12px;\n  margin-bottom: 8px;\n  padding-bottom: 4px;\n  color: #d3f7ff;\n  font-weight: 300;\n  border-bottom: 1px solid #040d12;\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  align-items: center;\n  justify-content: space-between;\n}\n.stylizer-inspector .stylizer-form-header svg {\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-form-label {\n  text-transform: capitalize;\n}\n.stylizer-inspector .stylizer-form-group {\n  margin-bottom: 18px;\n}\n.stylizer-inspector .stylizer-form-row {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  flex-wrap: nowrap;\n}\n.stylizer-inspector .stylizer-form-row > * {\n  padding: 0 7px;\n}\n.stylizer-inspector .stylizer-form-row > *:first-child {\n  padding-left: 0;\n}\n.stylizer-inspector .stylizer-form-row > *:last-child {\n  padding-right: 0;\n}\n.stylizer-inspector .stylizer-form-button {\n  font-size: 12px;\n  padding: 3px 10px;\n  background: #13a6d9;\n  color: #d3f7ff;\n  border: none;\n  outline: none;\n  border-radius: 3px;\n  cursor: pointer;\n  text-align: center;\n}\n.stylizer-inspector .stylizer-form-button :hover {\n  background: #1194c2;\n}\n.stylizer-inspector .stylizer-form-input-file input[type=\"file\"] {\n  display: none;\n}\n.stylizer-inspector .stylizer-has-error input[role=\"combobox\"],\n.stylizer-inspector .stylizer-has-error .stylizer-form-input {\n  border-color: #c50313 !important;\n}\n.stylizer-inspector .stylizer-error-bag {\n  font-size: 13px;\n  padding: 3px;\n  color: #c50313;\n}\n.stylizer-inspector .stylizer-label-inline {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-form-input {\n  max-width: 120px;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-form-label {\n  margin-right: 20px;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-label-inline .stylizer-error-bag {\n  margin-left: 10px;\n}\n.stylizer-inspector .stylizer-color-element {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-inspector .stylizer-color-element input[type=\"text\"] {\n  border-left: none;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-preview {\n  width: 30px;\n  min-width: 30px;\n  height: 29px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-right: none;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-preview > .stylizer-color-preview-content {\n  border-radius: 100%;\n  width: 10px;\n  height: 10px;\n}\n.stylizer-inspector .stylizer-color-element .stylizer-color-closer {\n  max-width: 39px;\n  height: 29px;\n  width: 39px;\n  background-color: #213946;\n  border: 1px solid #040f15;\n  border-left: none;\n  margin-left: -1px;\n  cursor: pointer;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-gradient-element {\n  margin-top: 30px;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-canvas {\n  width: 100%;\n  height: 40px;\n  border: 1px solid #040f15;\n  background-color: #213946;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-wrapper {\n  width: 100%;\n  height: 40px;\n  position: relative;\n  margin-top: -40px;\n  margin-bottom: 40px;\n  z-index: 1;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle {\n  position: absolute;\n  top: 0;\n  bottom: 0;\n  width: 8px;\n  height: 40px;\n  background: #195e8a;\n  cursor: move;\n  z-index: 2;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-closer {\n  margin-top: -16px;\n  margin-left: -2px;\n  height: 14px;\n  width: 14px;\n  display: block;\n  cursor: pointer;\n  z-index: 2;\n}\n.stylizer-inspector .stylizer-gradient-element .stylizer-gradient-handle-color {\n  margin-top: 41px;\n  margin-left: -6px;\n  height: 20px;\n  width: 20px;\n  display: block;\n  cursor: pointer;\n  border: 1px solid #195e8a;\n  background-color: #000101;\n}\n.stylizer-inspector .stylizer-background-image-element {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-inspector .stylizer-background-image-element .stylizer-gradient-picker,\n.stylizer-inspector .stylizer-background-image-element .stylizer-image-picker {\n  padding: 3px 8px;\n  cursor: pointer;\n  background: #213946;\n  border: 1px solid #040f15;\n  border-right: none;\n}\n.stylizer-inspector .stylizer-background-image-element .stylizer-form-input {\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-image-picker-element .stylizer-form-search-upload {\n  display: flex;\n  flex-direction: row;\n}\n.stylizer-inspector .stylizer-image-picker-element .stylizer-form-search-upload .stylizer-form-input-file {\n  max-width: 100px;\n  margin: 3px 10px;\n}\n.stylizer-inspector .stylizer-image-picker-element .stylizer-form-search-upload .stylizer-form-item {\n  flex-grow: 0;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea {\n  width: 100%;\n  height: 160px;\n  position: relative;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images {\n  display: flex;\n  flex-direction: row;\n  flex-wrap: nowrap;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images .stylizer-image-picker-thumbnail {\n  min-width: 130px;\n  min-height: 130px;\n  height: 130px;\n  margin: 10px;\n  position: relative;\n  overflow: hidden;\n  cursor: pointer;\n  border: 2px solid transparent;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images .stylizer-image-picker-thumbnail:first-child {\n  margin-left: 0;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images .stylizer-image-picker-thumbnail:last-child {\n  margin-right: 0;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images .stylizer-image-picker-thumbnail.active {\n  border-color: #195e8a;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images .stylizer-image-picker-thumbnail.removing {\n  border-color: #c50313;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images .stylizer-image-picker-thumbnail .stylizer-image-picker-thumbnail-close {\n  position: absolute;\n  top: -2px;\n  right: 1px;\n  cursor: pointer;\n}\n.stylizer-inspector .stylizer-image-picker-element .scrollarea .content .stylizer-image-picker-images .stylizer-image-picker-thumbnail img {\n  object-fit: cover;\n  object-position: 50% 50%;\n  max-height: 130px;\n}\n.stylizer-inspector .stylizer-selector-badges {\n  font-size: 12px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge {\n  display: flex;\n  flex-direction: row;\n  margin: 5px 0;\n  cursor: pointer;\n  align-items: center;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .stylizer-selector-badges-text {\n  background: #040f15;\n  color: #6d8d95;\n  padding: 4px 8px;\n  border-radius: 4px;\n  max-width: 100px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font-size: 12px;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge.active .stylizer-selector-badges-text {\n  background: #137fad;\n  color: #d3f7ff;\n}\n.stylizer-inspector .stylizer-selector-badges .stylizer-selector-badge .stylizer-selector-badges-separator {\n  margin: 0 5px;\n}\n.stylizer-inspector .chrome-picker {\n  background: #041e2b !important;\n  color: #6d8d95;\n  border: 1px solid #040f15;\n  box-shadow: none !important;\n}\n.stylizer-inspector .chrome-picker svg {\n  background: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker span {\n  color: #6d8d95 !important;\n}\n.stylizer-inspector .chrome-picker input {\n  background: #213946;\n  border: 1px solid #040f15 !important;\n  color: #d3f7ff !important;\n  box-shadow: none !important;\n  font-size: 13px !important;\n  height: auto !important;\n}\n.stylizer-inspector .stylizer-tabs-wrapper {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs {\n  background: #03141d;\n  color: #6d8d95;\n  max-width: 150px;\n  min-width: 150px;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-evenly;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element {\n  padding: 10px 15px;\n  font-size: 13px;\n  display: block;\n  cursor: pointer;\n  text-transform: capitalize;\n  flex-grow: 1;\n  border-bottom: 1px solid #040d12;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element.active {\n  background: #081c27;\n  color: #13a6d9;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs-contents {\n  background: #081c27;\n  flex-grow: 1;\n  display: flex;\n  flex-direction: column;\n  padding: 0;\n}\n.stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs-contents.has-vertical-scrollbar {\n  padding-right: 15px;\n}\n.stylizer-inspector .scrollarea .scrollarea-content {\n  width: auto;\n  display: table;\n  min-width: 100%;\n}\n.stylizer-inspector .scrollarea .scrollbar-container {\n  background: #082739;\n  opacity: 1 !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container:hover {\n  background: #082739;\n  opacity: 1 !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container .scrollbar {\n  background: #051118;\n  cursor: pointer;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.vertical {\n  width: 16px;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.vertical .scrollbar {\n  width: 16px;\n  margin: 0;\n  min-height: 20px !important;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.horizontal {\n  height: 16px;\n}\n.stylizer-inspector .scrollarea .scrollbar-container.horizontal .scrollbar {\n  height: 16px;\n  margin: 0;\n  min-width: 20px !important;\n}\n.stylizer-inspector .stylizer-overlay-box {\n  pointer-events: none;\n  position: fixed;\n  z-index: 0;\n  top: 0;\n  left: 0;\n  background: #ff929a;\n  opacity: 0.4;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-margin {\n  margin: 0;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-padding {\n  background: #ffbf80;\n  padding: 0;\n}\n.stylizer-inspector .stylizer-overlay-box .stylizer-overlay-content {\n  background: #edff7b;\n  width: 0;\n  height: 0;\n}\n.stylizer-inspector .stylizer-panels {\n  width: 30%;\n  background: #051017;\n  color: #d3f7ff;\n  display: flex;\n  flex-direction: column;\n  flex-grow: 1;\n  z-index: 9999;\n}\n.stylizer-inspector .stylizer-panels.minimize {\n  max-width: 30px;\n}\n.stylizer-inspector .stylizer-panels.minimize > :not(.stylizer-header) {\n  display: none;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header {\n  padding: 8px 15px;\n  background: #000000;\n  font-size: 14px;\n  font-weight: 300;\n  text-transform: uppercase;\n  display: flex;\n  flex-direction: row;\n  min-height: 35px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-text {\n  flex-grow: 1;\n  font-size: 12px;\n  line-height: 24px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-actions svg {\n  cursor: pointer;\n  opacity: 0.8;\n  margin: 0 5px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-header .stylizer-header-actions svg:hover {\n  opacity: 1;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content {\n  padding: 15px;\n  width: 100%;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content-flex {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-panels .stylizer-content-flex > * {\n  padding: 15px;\n}\n.stylizer-inspector .stylizer-panels .stylizer-selector-empty {\n  font-size: 14px;\n  text-align: center;\n  display: flex;\n  align-self: center;\n  justify-content: center;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator {\n  flex-grow: 1;\n  overflow: hidden;\n  display: block;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth] {\n  margin-left: 150px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"0\"] {\n  margin-left: 0px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"1\"] {\n  margin-left: 15px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"2\"] {\n  margin-left: 30px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"3\"] {\n  margin-left: 45px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"4\"] {\n  margin-left: 60px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"5\"] {\n  margin-left: 75px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"6\"] {\n  margin-left: 90px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"7\"] {\n  margin-left: 105px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"8\"] {\n  margin-left: 120px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"9\"] {\n  margin-left: 135px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator [data-depth=\"10\"] {\n  margin-left: 150px;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element {\n  background: #071c2a;\n  color: #d3f7ff;\n  padding: 6px 10px;\n  margin-bottom: 8px;\n  white-space: nowrap;\n  cursor: pointer;\n  width: fit-content;\n  font-size: 12px;\n  font-weight: 300;\n  border-left: 5px solid #071c2a;\n  min-width: 100%;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.overridden {\n  background: #000000;\n  border-left: 3px solid #4c2503 !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.active {\n  background: #4b9701;\n  border-left: 3px solid #4b9701 !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.changed {\n  background: #7d3d05;\n  border-left: 3px solid #11415f !important;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.parents:not(.processed) {\n  border-left: 3px solid #196597;\n}\n.stylizer-inspector .stylizer-dom-panel .stylizer-iterator .stylizer-element.parents.processed {\n  border-left: 3px solid #0d334d;\n}\n.stylizer-inspector .stylizer-editor-panel {\n  background: #081c27;\n  color: #9abdc5;\n  width: 70%;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-header {\n  background: #020709;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-left-space,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-right-space {\n  background: #081c27;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-panel-center-space {\n  display: flex;\n  flex-wrap: wrap;\n  flex-grow: 1;\n  padding: 15px 0;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item {\n  padding: 0;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-item:not(:last-child):not(.stylizer-has-error) input {\n  border-right-color: transparent;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content .stylizer-form-group {\n  padding: 0 15px;\n  flex-grow: 1;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-group--radius,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-group--outline {\n  width: 50%;\n  min-width: 330px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border [class*=\"stylizer-group--border-\"] {\n  width: 25%;\n  min-width: 260px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border [class*=\"stylizer-field--border-\"] input {\n  min-width: 50px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-top-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-left-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-right-color input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border .stylizer-field--border-bottom-color input {\n  min-width: 70px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--border select {\n  min-width: 80px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--spacing .stylizer-form-group {\n  width: 25%;\n  min-width: 260px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-form-group {\n  width: 25%;\n  min-width: 320px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-group--background {\n  width: 100%;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-image input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-size input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-position input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--opacity input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--display input {\n  min-width: 60px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-color input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--background-repeat select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--visibility select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--styles .stylizer-field--overflow select {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-form-group {\n  width: 50%;\n  min-width: 350px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-group--font {\n  min-width: 590px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-family input {\n  min-width: 100px;\n  width: 100%;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-size input {\n  min-width: 60px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--letter-spacing input,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-weight input {\n  min-width: 100px;\n}\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--white-space select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--vertical-align select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-weight select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-style select,\n.stylizer-inspector .stylizer-editor-panel .stylizer-tab-content.stylizer-tab-panel--typography .stylizer-field--font-variant select {\n  min-width: 100px;\n}\n/**\n  Vertical Overrides\n  **/\nbody[stylizer-vertical=\"true\"][stylizer-active=\"false\"] {\n  padding-left: 380px;\n}\nbody[stylizer-vertical=\"true\"][stylizer-active=\"true\"] {\n  padding-left: 34px;\n}\nbody[stylizer-vertical=\"true\"][stylizer-active=\"true\"] .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\nbody[stylizer-vertical=\"true\"][stylizer-active=\"true\"] .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\nbody[stylizer-vertical=\"true\"][stylizer-active=\"true\"] .stylizer-header-actions svg {\n  margin: 0 0 5px !important;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector {\n  top: 0;\n  bottom: 0;\n  width: 390px;\n  flex-direction: column;\n  height: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector.minimize {\n  height: 100%;\n  width: 34px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize {\n  max-width: none;\n  max-height: 35px !important;\n  overflow: hidden;\n  height: 35px !important;\n  min-height: 35px !important;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.minimize.stylizer-editor-panel {\n  max-height: calc(100vh - 35px);\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.stylizer-dom-panel {\n  max-height: 40vh;\n  height: 40vh;\n  min-height: 40vh;\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panels.stylizer-editor-panel {\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-selector-empty {\n  flex-direction: column;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-panel-left-space {\n  position: absolute;\n  top: 0;\n  left: 100%;\n  bottom: -3px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-label-inline {\n  align-items: flex-start;\n  max-width: 25%;\n  flex-wrap: wrap;\n  flex-direction: column;\n  flex-grow: 1;\n  padding: 0 7px;\n  margin-bottom: 10px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-row {\n  flex-wrap: wrap;\n  margin: 0 -7px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-item {\n  margin-bottom: 20px;\n  display: block;\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-form-item > * {\n  width: 100%;\n  max-width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector input[type=\"text\"],\nbody[stylizer-vertical=\"true\"] .stylizer-inspector select {\n  width: 100%;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-color-element input[type=\"text\"] {\n  max-width: 100%;\n  flex-grow: 1;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper {\n  flex-direction: column;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs {\n  flex-direction: row;\n  max-width: 100%;\n  min-width: 100%;\n  min-height: 35px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tabs .stylizer-tab-element {\n  border-bottom: none;\n  padding: 10px 14px;\n  font-size: 10px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content {\n  flex-direction: column;\n  position: relative;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-tabs-contents {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  padding: 0;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-panel-center-space .stylizer-form-row {\n  margin: 0;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-panel-center-space .stylizer-form-group {\n  width: 100%;\n  min-width: 1px;\n}\nbody[stylizer-vertical=\"true\"] .stylizer-inspector .stylizer-tabs-wrapper .stylizer-tab-content .stylizer-panel-center-space .stylizer-form-search-upload {\n  flex-direction: column;\n}\n/**\n  Horizontal Overrides\n  **/\nbody[stylizer-vertical=\"false\"][stylizer-active=\"false\"] {\n  padding-bottom: 320px;\n}\nbody[stylizer-vertical=\"false\"][stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header {\n  flex-direction: column-reverse;\n  flex-grow: 1;\n  padding: 8px;\n}\nbody[stylizer-vertical=\"false\"][stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header .stylizer-header-actions svg {\n  margin: 0 0 5px;\n}\nbody[stylizer-vertical=\"false\"][stylizer-active=\"false\"] .stylizer-panels.minimize .stylizer-header .stylizer-header-text {\n  transform: rotate(180deg);\n  writing-mode: vertical-rl;\n  text-align: right;\n  margin-top: 19px;\n  line-height: 14px;\n}\nbody[stylizer-vertical=\"false\"][stylizer-active=\"true\"] {\n  padding-bottom: 34px;\n}\nbody[stylizer-vertical=\"false\"] .stylizer-tabs-wrapper {\n  max-height: 280px;\n}\n", ""]);
 
 // exports
 
@@ -72265,6 +72303,128 @@ module.exports = function (css) {
 
 	// send back the fixed css
 	return fixedCss;
+};
+
+
+/***/ }),
+/* 771 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _assign = __webpack_require__(28);
+
+var _assign2 = _interopRequireDefault(_assign);
+
+var _classCallCheck2 = __webpack_require__(10);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(22);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _lodash = __webpack_require__(14);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+/**
+ * Class for managing apps wide configuration
+ *
+ * @author jason.xie@victheme.com
+ */
+var Config = function () {
+    function Config() {
+        var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        (0, _classCallCheck3['default'])(this, Config);
+
+        this.insert(config);
+    }
+
+    (0, _createClass3['default'])(Config, [{
+        key: 'insert',
+        value: function insert(config) {
+            (0, _lodash.merge)(Config.storage, config);
+        }
+    }, {
+        key: 'get',
+        value: function get(key, defaultValue) {
+            var storedValue = (0, _lodash.get)(Config.storage, key, '###nothing_found###');
+
+            if ((0, _lodash.isObject)(storedValue)) {
+                storedValue = (0, _assign2['default'])({}, storedValue);
+            }
+
+            if ((0, _lodash.isObject)(storedValue) && (0, _lodash.isObject)(defaultValue) || (0, _lodash.isArray)(storedValue) && (0, _lodash.isArray)(defaultValue)) {
+                storedValue = (0, _lodash.merge)(defaultValue, storedValue);
+            }
+
+            if (storedValue === '###nothing_found###' && defaultValue) {
+                storedValue = defaultValue;
+            }
+
+            return storedValue;
+        }
+    }]);
+    return Config;
+}();
+
+Config.storage = {};
+exports['default'] = Config;
+
+/***/ }),
+/* 772 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(773), __esModule: true };
+
+/***/ }),
+/* 773 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(774);
+module.exports = __webpack_require__(19).Object.values;
+
+
+/***/ }),
+/* 774 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://github.com/tc39/proposal-object-values-entries
+var $export = __webpack_require__(41);
+var $values = __webpack_require__(775)(false);
+
+$export($export.S, 'Object', {
+  values: function values(it) {
+    return $values(it);
+  }
+});
+
+
+/***/ }),
+/* 775 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getKeys = __webpack_require__(88);
+var toIObject = __webpack_require__(80);
+var isEnum = __webpack_require__(102).f;
+module.exports = function (isEntries) {
+  return function (it) {
+    var O = toIObject(it);
+    var keys = getKeys(O);
+    var length = keys.length;
+    var i = 0;
+    var result = [];
+    var key;
+    while (length > i) if (isEnum.call(O, key = keys[i++])) {
+      result.push(isEntries ? [key, O[key]] : O[key]);
+    } return result;
+  };
 };
 
 

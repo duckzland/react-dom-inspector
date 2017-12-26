@@ -1,4 +1,4 @@
-import { forEach, find, filter, remove } from 'lodash';
+import { forEach, find, filter, remove, isObject, isArray } from 'lodash';
 
 /**
  * Class for managing images
@@ -30,7 +30,7 @@ export default class ImageLoader {
             headers: {},
             onFailed: false,
             onError: false,
-            onComplete: false,
+            onComplete: false
         },
         fetch: {
             url: false,
@@ -56,7 +56,7 @@ export default class ImageLoader {
     }
 
     set = (images) => {
-        ImageLoader.images = images;
+        ImageLoader.images = isObject(images) ? Object.values(images) : !isArray(images) ? [ images ] : images;
     };
 
     get = (id) => {

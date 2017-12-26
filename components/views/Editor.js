@@ -9,6 +9,7 @@ import CloseIcon from '../../node_modules/react-icons/lib/io/close';
 import SaveIcon from '../../node_modules/react-icons/lib/fa/floppy-o';
 import LayoutIcon from '../../node_modules/react-icons/lib/io/code-working';
 import DOMHelper from '../modules/DOMHelper';
+import Configurator from '../modules/Config';
 import BorderPanel from './Panels/Border';
 import SelectorPanel from './Panels/Selector';
 import SpacingPanel from './Panels/Spacing';
@@ -30,20 +31,22 @@ export default class Editor extends React.Component {
     };
 
     styleElement = false;
-
-    config = {
-        EditorPanelHeaderText: 'Editor',
-        EditorPanelEmptyText: 'No Element Selected'
-    };
+    config = false;
 
     constructor(props) {
         super(props);
-
-        this.styleElement = (new DOMHelper()).styleSheet({ id: 'stylizer-source' }, 'style');
-
+        
+        this.config = new Configurator({
+            stylizerID: 'stylizer-source',
+            EditorPanelHeaderText: 'Editor',
+            EditorPanelEmptyText: 'No Element Selected'
+        });
+        
         if ('config' in props)  {
-            Object.assign(this.config, props.config);
+            this.config.insert(props.config);
         }
+        
+        this.styleElement = (new DOMHelper()).styleSheet({ id: this.config.get('stylizerID') }, 'style');
 
         if ('node' in props) {
             this.state.node = props.node;
@@ -91,106 +94,107 @@ export default class Editor extends React.Component {
 
     render() {
 
-        let { onChangeTab, state, config } = this;
+        let { onChangeTab, props, state, config } = this;
         let ActivePanel = [];
 
-        const { root, node } = state;
+        const { root } = props;
+        const { node } = state;
         const { minimize } = root.state;
+
         const AllowedTabs = ['selector', 'spacing', 'border', 'styles', 'typography'];
 
-        const editorProps = get(config, 'EditorPanelEditorProps', {
+        const editorProps = config.get('EditorPanelEditorProps', {
             key: 'stylizer-editor-panel',
             className: 'stylizer-panels stylizer-editor-panel'
         });
 
-        const headerProps = get(config, 'EditorPanelHeaderProps', {
+        const headerProps = config.get('EditorPanelHeaderProps', {
             key: 'stylizer-editor-header',
             className: 'stylizer-header'
         });
 
-        const headerTextProps = get(config, 'EditorPanelHeaderTextProps', {
+        const headerTextProps = config.get('EditorPanelHeaderTextProps', {
             key: 'stylizer-editor-header-text',
             className: 'stylizer-header-text'
         });
 
-        const headerActionProps = get(config, 'EditorPanelHeaderActionProps', {
+        const headerActionProps = config.get('EditorPanelHeaderActionProps', {
             key: 'stylizer-editor-header-actions',
             className: 'stylizer-header-actions'
         });
 
-        const layoutIconProps = get(config, 'EditorPanelLayoutIconProps', {
+        const layoutIconProps = config.get('EditorPanelLayoutIconProps', {
             size: 16,
             transform: root.state.vertical === false ? 'rotate(90)' : '',
             onClick: () => root.toggleLayout()
         });
 
-        const hoverIconProps = get(config, 'EditorPanelHoverIconProps', {
+        const hoverIconProps = config.get('EditorPanelHoverIconProps', {
             size: 16,
             color: root.state.hover ? '#13a6d9' : '',
             onClick: () => root.toggleHoverInspector()
         });
 
-        const revertIconProps = get(config, 'EditorPanelRevertIconProps', {
+        const revertIconProps = config.get('EditorPanelRevertIconProps', {
             size: 16,
             onClick: () => root.revertData()
         });
 
-        const deleteIconProps = get(config, 'EditorPanelDeleteIconProps', {
+        const deleteIconProps = config.get('EditorPanelDeleteIconProps', {
             size: 16,
             onClick: () => root.wipeData()
         });
 
-        const saveIconProps = get(config, 'EditorPanelSaveIconProps', {
+        const saveIconProps = config.get('EditorPanelSaveIconProps', {
             size: 16,
             onClick: () => root.saveData()
         });
 
-        const closeIconProps = get(config, 'EditorPanelCloseIconProps', {
+        const closeIconProps = config.get('EditorPanelCloseIconProps', {
             size: 16,
             onClick: () => root.killApp()
         });
 
-        const hamburgerIconProps = get(config, 'EditorPanelHamburgerIconProps', {
+        const hamburgerIconProps = config.get('EditorPanelHamburgerIconProps', {
             size: 16,
             onClick: () => root.toggleMinimize()
         });
 
-        const tabsWrapperProps = get(config, 'EditorPanelTabsWrapperProps', {
+        const tabsWrapperProps = config.get('EditorPanelTabsWrapperProps', {
             key: 'stylizer-tabs-wrapper',
             className: 'stylizer-tabs-wrapper'
         });
 
-        const tabsProps = get(config, 'EditorPanelTabsProps', {
+        const tabsProps = config.get('EditorPanelTabsProps', {
             key: 'stylizer-tabs',
             className: 'stylizer-tabs'
         });
 
-        const emptyProps = get(config, 'EditorPanelEmptyProps', {
+        const emptyProps = config.get('EditorPanelEmptyProps', {
             className: 'stylizer-selector-empty'
         });
 
-        const panelProps = get(config, 'EditorPanelPanelProps', {
+        const panelProps = config.get('EditorPanelPanelProps', Object.assign(state, {
             key: 'stylizer-active-panel-' + (node && node.uuid ? node.uuid : 'empty'),
             root: this,
-            scroll: state.scroll,
-            config: this.config
-        });
+            scroll: state.scroll
+        }));
 
         switch (state.active) {
             case 'selector' :
-                ActivePanel.push(<SelectorPanel { ...state } { ...panelProps }/>);
+                ActivePanel.push(<SelectorPanel { ...panelProps } />);
                 break;
             case 'border' :
-                ActivePanel.push(<BorderPanel { ...state } { ...panelProps } />);
+                ActivePanel.push(<BorderPanel { ...panelProps } />);
                 break;
             case 'spacing' :
-                ActivePanel.push(<SpacingPanel { ...state } { ...panelProps } />);
+                ActivePanel.push(<SpacingPanel { ...panelProps } />);
                 break;
             case 'styles' :
-                ActivePanel.push(<StylesPanel { ...state } { ...panelProps } />);
+                ActivePanel.push(<StylesPanel { ...panelProps } />);
                 break;
             case 'typography' :
-                ActivePanel.push(<TypographyPanel { ...state } { ...panelProps } />);
+                ActivePanel.push(<TypographyPanel { ...panelProps } />);
                 break;
         }
 
@@ -198,7 +202,7 @@ export default class Editor extends React.Component {
             <div { ...editorProps }>
                 <h3 { ...headerProps }>
                     <span { ...headerTextProps }>
-                        { config.EditorPanelHeaderText }
+                        { config.get('EditorPanelHeaderText') }
                     </span>
                     <span { ...headerActionProps }>
                         { !minimize && <LayoutIcon { ...layoutIconProps } /> }
@@ -215,9 +219,9 @@ export default class Editor extends React.Component {
                     ? <div { ...tabsWrapperProps }>
                         <div { ...tabsProps }>
                             { AllowedTabs.map((TabKey) => {
-                                const selectorItemProps = get(config, 'EditorPanelSelectorItemProps', {
-                                    key: get(config, 'EditorPanelPanelItemPrefix', 'stylizer-tab-') + TabKey,
-                                    className: [ get(config, 'EditorPanelPanelItemPrefix', 'stylizer-tab-') + 'element', state.active === TabKey ? 'active' : null ].join(' '),
+                                const selectorItemProps = config.get('EditorPanelSelectorItemProps', {
+                                    key: config.get('EditorPanelPanelItemPrefix', 'stylizer-tab-') + TabKey,
+                                    className: [ config.get('EditorPanelPanelItemPrefix', 'stylizer-tab-') + 'element', state.active === TabKey ? 'active' : null ].join(' '),
                                     onClick: () => onChangeTab(TabKey)
                                 });
 
@@ -228,7 +232,7 @@ export default class Editor extends React.Component {
                     </div>
 
                     : <div { ...tabsWrapperProps }>
-                        <div { ...emptyProps }>{ config.EditorPanelEmptyText }</div>
+                        <div { ...emptyProps }>{ config.get('EditorPanelEmptyText') }</div>
                     </div>
                 }
             </div>
