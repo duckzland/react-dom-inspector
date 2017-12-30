@@ -5,7 +5,7 @@
  * @author jason.xie@victheme.com
  */
 
-// Since we dont want to delete anything just return the dummy json
+// Since we don't want to delete anything just return the dummy json
 $response = new stdClass();
 $response->id = $_REQUEST['id'];
 $response->success = true;

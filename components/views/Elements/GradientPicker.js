@@ -30,6 +30,7 @@ export default class GradientPicker extends React.Component {
             }
         ]
     };
+
     config = false;
     prefix = '';
 

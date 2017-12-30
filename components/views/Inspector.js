@@ -170,7 +170,7 @@ export default class Inspector extends React.Component {
             <div { ...panelProps }>
                 <h3 { ...headerProps }>
                     <span { ...headerTextProps }>{ config.get('InspectorPanelHeaderText') }</span>
-                    <span { ...headerActionProps }><HamburgerIcon { ...hamburgerIconProps } /></span>
+                    <span { ...headerActionProps }><span title="Minimize Navigator"><HamburgerIcon { ...hamburgerIconProps } /></span></span>
                 </h3>
                 <ScrollArea { ...scrollAreaProps }>
                     { iterator.get().map((node, delta) => {

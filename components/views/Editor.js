@@ -58,15 +58,17 @@ export default class Editor extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
+        let reset = false;
         if ('refresh' in nextProps && nextProps.refresh) {
             this.styleElement = (new DOMHelper()).styleSheet({id: 'stylizer-source'}, 'style');
+            reset = true;
         }
         this.state.node = nextProps.node;
-        this.getStyling();
-    }
+        this.getStyling(reset);
+    };
 
-    getStyling = () => {
-        this.state.node && 'generateStyling' in this.state.node && this.state.node.generateStyling();
+    getStyling = (reset = false) => {
+        this.state.node && 'generateStyling' in this.state.node && this.state.node.generateStyling(reset);
     };
 
     rebuildStyling = (e) => {
@@ -205,13 +207,13 @@ export default class Editor extends React.Component {
                         { config.get('EditorPanelHeaderText') }
                     </span>
                     <span { ...headerActionProps }>
-                        { !minimize && <LayoutIcon { ...layoutIconProps } /> }
-                        { !minimize && <HoverIcon { ...hoverIconProps } /> }
-                        { !minimize && <RevertIcon { ...revertIconProps } /> }
-                        { !minimize && <DeleteIcon { ...deleteIconProps } /> }
-                        { !minimize && <SaveIcon { ...saveIconProps } /> }
-                        { !minimize && <CloseIcon { ...closeIconProps } /> }
-                        <HamburgerIcon { ...hamburgerIconProps } />
+                        { !minimize && <span title="Change Layout"><LayoutIcon { ...layoutIconProps } /></span> }
+                        { !minimize && <span title="Trigger hover selector"><HoverIcon { ...hoverIconProps } /></span> }
+                        { !minimize && <span title="Reset Rules"><RevertIcon { ...revertIconProps } /></span> }
+                        { !minimize && <span title="Remove all Rules"><DeleteIcon { ...deleteIconProps } /></span> }
+                        { !minimize && <span title="Save Rules"><SaveIcon { ...saveIconProps } /></span> }
+                        { !minimize && <span title="Exit Editor"><CloseIcon { ...closeIconProps } /></span> }
+                        <span title="Minimize Editor"><HamburgerIcon { ...hamburgerIconProps } /></span>
                     </span>
                 </h3>
 

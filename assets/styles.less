@@ -1,6 +1,5 @@
 /**
   Main Variables
-  @todo Convert more into mixin and less friendly
   **/
 @InspectorBackground: #051017;
 @InspectorText: #d3f7ff;
@@ -40,6 +39,9 @@
 @ColorGreen: #4b9701;
 @ColorOrange: #7d3d05;
 @ColorRed: #c50313;
+
+@ToolTipBackground: #03141d;
+@ToolTipText: #d3f7ff;
 
 @ie9MediaMinWidthHack: "0\0";
 
@@ -352,6 +354,25 @@
 
     svg {
       cursor: pointer;
+    }
+  }
+
+  [data-hover-title] {
+    position: relative;
+
+    &:before {
+      position: absolute;
+      content: attr(data-hover-title);
+      bottom: 0;
+      left: 0;
+      padding: 5px;
+      background: @ToolTipBackground;
+      color: @ToolTipText;
+      font-size: 12px;
+    }
+
+    &:hover:before {
+      display: block;
     }
   }
 
@@ -1159,6 +1180,12 @@ body[stylizer-vertical="true"] {
     &.minimize {
       height: 100%;
       width: 34px;
+    }
+
+    .has-vertical-scrollbar {
+      .stylizer-form-group {
+        padding-right: 30px;
+      }
     }
 
     .stylizer-panels {

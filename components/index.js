@@ -24,7 +24,7 @@ export default class Inspector extends React.Component {
         node: false,
         hover: false,
         saving: false,
-        vertical: true,
+        vertical: false,
         refresh: false,
         overlay: {}
     };
@@ -139,7 +139,7 @@ export default class Inspector extends React.Component {
     };
 
     wipeData = () => {
-        const { props, convertData, cloneSheet } = this;
+        const { props, convertData } = this;
         const storage = document.getElementById('stylizer-source');
         const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
 
@@ -151,7 +151,12 @@ export default class Inspector extends React.Component {
         sheet
             && sheet.cssRules
             && forEach(sheet.cssRules, (rule, delta) => {
-                sheet.removeRule(delta);
+                if ('removeRule' in sheet) {
+                    sheet.removeRule(delta);
+                }
+                else if ('deleteRule' in sheet) {
+                    sheet.deleteRule(0);
+                }
             });
 
         this.setState({ refresh: true });

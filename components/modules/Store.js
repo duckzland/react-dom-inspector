@@ -78,15 +78,15 @@ export default class Store {
         )
     };
 
-    generateStyling = () => {
+    generateStyling = (reset = false) => {
 
-        if (this.styles) {
+        if (this.styles && !reset) {
             return this.styles;
         }
 
         let node = this.trackNode();
 
-        this.styles = {};
+        this.resetStyle();
         if (!node) {
             return;
         }
@@ -204,6 +204,10 @@ export default class Store {
        delete this.styles[target];
     };
 
+    resetStyle = () => {
+        this.styles = {};
+    };
+
     storeStyle = (target, value) => {
         set(this.styles, target, value);
         this.changed = true;
@@ -219,7 +223,7 @@ export default class Store {
     };
 
     reset = () => {
-        this.generateStyling();
+        this.generateStyling(true);
         this.changed = false;
     }
 
