@@ -3,13 +3,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Iterator from './modules/Iterator';
 import DOMHelper from './modules/DOMHelper';
-import FontLoader from './modules/FontLoader';
-import ImageLoader from './modules/ImageLoader';
+import Parser from './modules/Parser';
 import Configurator from './modules/Config';
 import InspectorPanel from './views/Inspector';
 import EditorPanel from './views/Editor';
 import Overlay from './views/Overlay';
-import { forEach, get } from 'lodash';
+import { forEach, get, isFunction } from 'lodash';
 import './../assets/styles.less';
 
 /**
@@ -62,7 +61,6 @@ export default class Inspector extends React.Component {
         
         this.iteratorHelper = new Iterator();
         this.DOMHelper = new DOMHelper();
-        this.fontLoader = new FontLoader(get(this, 'config.googleFontApi', false));
 
         this.cloneSheet();
     };
@@ -122,12 +120,15 @@ export default class Inspector extends React.Component {
     killApp = () => {
         const { config } = this;
         const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
+        const killFunction = get(window, mountNode.getAttribute('data-onkill'));
         const unmount = ReactDOM.unmountComponentAtNode(mountNode);
         if (unmount) {
             this.destroyEvent();
             document.body.removeAttribute('stylizer-active');
             this.iteratorHelper.destroy();
         }
+
+        isFunction(killFunction) && killFunction();
     };
 
     cloneSheet = () => {
@@ -139,14 +140,15 @@ export default class Inspector extends React.Component {
     };
 
     wipeData = () => {
-        const { props, convertData } = this;
+        const { convertData, config } = this;
         const storage = document.getElementById('stylizer-source');
+        const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
+        const wipeFunction = get(window, mountNode.getAttribute('data-onwipe'));
         const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
 
         storage
-            && props
-            && props.onWipe
-            && props.onWipe(convertData(storage));
+            && isFunction(wipeFunction)
+            && wipeFunction(convertData(storage));
 
         sheet
             && sheet.cssRules
@@ -163,13 +165,14 @@ export default class Inspector extends React.Component {
     };
 
     revertData = () => {
-        const { props, convertData, cloneSheet } = this;
+        const { convertData, cloneSheet, config } = this;
         const storage = document.getElementById('stylizer-source');
+        const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
+        const revertFunction = get(window, mountNode.getAttribute('data-onrevert'));
 
         storage
-            && props
-            && props.onRevert
-            && props.onRevert(convertData(storage));
+            && isFunction(revertFunction)
+            && revertFunction(convertData(storage));
 
         storage
             && document.body.removeChild(storage)
@@ -199,13 +202,14 @@ export default class Inspector extends React.Component {
     };
 
     saveData = () => {
-        const { props, convertData } = this;
+        const { convertData, config } = this;
         const storage = document.getElementById('stylizer-source');
+        const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
+        const saveFunction = get(window, mountNode.getAttribute('data-onsave'));
 
         storage
-            && props
-            && props.onSave
-            && props.onSave(convertData(storage));
+            && isFunction(saveFunction)
+            && saveFunction(convertData(storage));
 
         return true;
     };

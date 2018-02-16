@@ -20,6 +20,7 @@
 @FormElementActiveText: #13a6d9;
 @FormElementButtonColor: #13a6d9;
 @FormElementButtonText: #d3f7ff;
+@FormElementPlaceholder: #94b4bc;
 
 @TabsBackground: #03141d;
 @TabsText: #6d8d95;
@@ -333,6 +334,24 @@
     &::-webkit-progress-value {
       background-image: @ColorBlue;
     }
+  }
+
+  ::-webkit-input-placeholder {
+    color: @FormElementPlaceholder;
+  }
+
+  :-moz-placeholder {
+    color: @FormElementPlaceholder;
+    opacity: 1;
+  }
+
+  ::-moz-placeholder {
+    color: @FormElementPlaceholder;
+    opacity: 1;
+  }
+
+  :-ms-input-placeholder {
+    color: @FormElementPlaceholder;
   }
 
   .stylizer-form-item {

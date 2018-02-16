@@ -117,10 +117,9 @@ export default class ImagePicker extends React.Component {
             error: false,
             progress: true
         });
-        
-        forEach(e.target.files, (file) => {
-            this.loader.upload(file, this.progressElement);
-        });
+
+        this.loader.upload(e.target.files[0], this.progressElement);
+
     };
 
     onRemove = (e, id) => {

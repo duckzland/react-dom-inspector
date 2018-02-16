@@ -1,5 +1,6 @@
 import React from 'react';
 import Autocomplete from 'react-autocomplete';
+import Configurator from '../../modules/Config';
 import FontLoader from '../../modules/FontLoader';
 import { get, forEach } from 'lodash';
 

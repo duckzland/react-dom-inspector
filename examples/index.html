@@ -206,6 +206,12 @@
             .section-pages .content {
                 margin-bottom: 60px;
             }
+
+            @media (max-width: 600px) {
+                img {
+                    display: none;
+                }
+            }
         </style>
     </head>
     <body class="flex-box flex-column flex-grow">
@@ -251,8 +257,40 @@
             var Element = document.getElementById('dom-inspector');
             var CurrentHost = window.location.href;
 
+            // Emulating callback when onKill event triggered
+            function onKill() {
+                console.log('Killed Triggered');
+            }
+
+            // Emulating callback when onSave event triggered
+            function onSave(data) {
+                console.log('Save Triggered');
+                console.log(data);
+            }
+
+            // Emulating callback when onWipe event triggered
+            function onWipe(data) {
+                console.log('Wipe Triggered');
+                console.log(data);
+            }
+
+            // Emulating callback when onRevert event triggered
+            function onRevert(data) {
+                console.log('Revert Triggered');
+                console.log(data);
+            }
+
+            // Registering Callbacks as attribute, Note this is not the
+            // same as jQuery.data() use jQuery.attr() to register this!
+            Element.setAttribute('data-onkill', 'onKill');
+            Element.setAttribute('data-onsave', 'onSave');
+            Element.setAttribute('data-onwipe', 'onWipe');
+            Element.setAttribute('data-onrevert', 'onRevert');
+
             Element.setAttribute('data-iterator-max-depth', 2);
             Element.setAttribute('data-google-font-api', 'AIzaSyBGkmctzcaXne1HFbZKYz6iq9i6ROrVeaE');
+
+            // Injecting image library directly on boot
             Element.setAttribute('data-image-library', JSON.stringify([
                 { id: 1, filename: "image1.jpg", url: CurrentHost + "images/image1.jpg", thumb: false },
                 { id: 2, filename: "image2.jpg", url: CurrentHost + "images/image2.jpg", thumb: false },
@@ -265,6 +303,12 @@
                 { id: 9, filename: "image9.jpg", url: CurrentHost + "images/image9.jpg", thumb: false },
                 { id: 10, filename: "image10.jpg", url: CurrentHost + "images/image10.jpg", thumb: false }
             ]));
+
+            // Example on how to inject image library via ajax call
+            // This will call the data-image-loader.fetch.url to load images urls and data via ajax
+            // Element.setAttribute('data-image-fetch', 'true');
+
+            // Set up the image loader parameters
             Element.setAttribute('data-image-loader', JSON.stringify({
                 upload: {
                     url: CurrentHost + "upload.php"

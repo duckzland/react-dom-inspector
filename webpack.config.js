@@ -40,6 +40,12 @@ module.exports = {
     },
     plugins: [
 
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify('production')
+            }
+        }),
+
         new ExtractTextPlugin({
             filename: 'dist/css/style.min.css',
             allChunks: true
@@ -63,11 +69,7 @@ module.exports = {
             sourceMap: false
         }),
 
-        new webpack.DefinePlugin({
-            'process.env': {
-                'NODE_ENV': JSON.stringify('production')
-            }
-        }),
+        new webpack.optimize.AggressiveMergingPlugin(),
 
         new CopyWebpackPlugin([
             {from: 'dist/js/react-dom-inspector.min.js', to: 'examples/assets/js/react-dom-inspector.min.js'},

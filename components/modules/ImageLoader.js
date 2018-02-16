@@ -92,7 +92,7 @@ export default class ImageLoader {
 
     remove = (id) => {
         const { config } = this;
-        const { url, onError, onComplete, onFailed, headers } = config.remove;
+        const { url, onError, onComplete, onFailed, headers, data } = config.remove;
 
         if (url) {
             const XHR = new XMLHttpRequest();
@@ -120,6 +120,8 @@ export default class ImageLoader {
                     reject(Error("Network Error"));
                 };
 
+                XHR.open('POST', url);
+
                 headers && forEach(headers, (value, key) => {
                     XHR.setRequestHeader(key, value)
                 });
@@ -127,7 +129,12 @@ export default class ImageLoader {
                 const Data = new FormData();
                 Data.append('id', id);
 
-                XHR.open('POST', url);
+                if (data) {
+                    forEach(data, (value, key) => {
+                        Data.append(key, value);
+                    });
+                }
+
                 XHR.send(Data);
             });
         }
@@ -138,13 +145,20 @@ export default class ImageLoader {
     upload = (file, progress) => {
 
         const { config } = this;
-        const { url, onError, onComplete, onFailed, headers } = config.upload;
+        const { url, onError, onComplete, onFailed, headers, data } = config.upload;
 
         if (url) {
             const XHR = new XMLHttpRequest();
             const Data = new FormData();
 
+            if (data) {
+                forEach(data, (value, key) => {
+                    Data.append(key, value);
+                });
+            }
+
             Data.append('FileUpload', file);
+            Data.append('name', file.name);
 
             return new Promise((resolve, reject) => {
 
@@ -183,11 +197,12 @@ export default class ImageLoader {
                     reject(Error("Network Error"));
                 };
 
+                XHR.open('POST', url, true);
+
                 headers && forEach(headers, (value, key) => {
                     XHR.setRequestHeader(key, value)
                 });
 
-                XHR.open('POST', url);
                 XHR.send(Data);
             });
         }
@@ -197,10 +212,17 @@ export default class ImageLoader {
 
     fetch = () => {
         const { config } = this;
-        const { url, onError, onComplete, onFailed, headers } = config.fetch;
+        const { url, onError, onComplete, onFailed, headers, data } = config.fetch;
 
         if (url) {
             const XHR = new XMLHttpRequest();
+            const Data = new FormData();
+            if (data) {
+                forEach(data, (value, key) => {
+                    Data.append(key, value);
+                });
+            }
+
             return new Promise((resolve, reject) => {
 
                 XHR.onreadystatechange = function(e) {
@@ -224,12 +246,12 @@ export default class ImageLoader {
                     reject(Error("Network Error"));
                 };
 
+                XHR.open('POST', url, true);
                 headers && forEach(headers, (value, key) => {
                     XHR.setRequestHeader(key, value)
                 });
 
-                XHR.open('POST', url);
-                XHR.send();
+                XHR.send(Data);
             });
         }
 

@@ -13,7 +13,7 @@ $image->filename = 'image1.jpg';
 $image->url = $url . '/images/' . $image->filename;
 $image->thumb = false;
 $response->image = $image;
-
+var_dump($_REQUEST);
 header('Content-Type: application/json');
 echo json_encode($response);
 die();

@@ -11,6 +11,7 @@ ReactDOM.render(
         editor={{
             domID: Element.getAttribute('id'),
             googleFontAPI: Element.getAttribute('data-google-font-api'),
+            imageFetch: Element.getAttribute('data-image-fetch'),
             imageLoader: JSON.parse(Element.getAttribute('data-image-loader')),
             imageLibrary: JSON.parse(Element.getAttribute('data-image-library'))
         }}

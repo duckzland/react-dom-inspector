@@ -10,6 +10,8 @@ import SaveIcon from '../../node_modules/react-icons/lib/fa/floppy-o';
 import LayoutIcon from '../../node_modules/react-icons/lib/io/code-working';
 import DOMHelper from '../modules/DOMHelper';
 import Configurator from '../modules/Config';
+import FontLoader from '../modules/FontLoader';
+import ImageLoader from '../modules/ImageLoader';
 import BorderPanel from './Panels/Border';
 import SelectorPanel from './Panels/Selector';
 import SpacingPanel from './Panels/Spacing';
@@ -54,6 +56,14 @@ export default class Editor extends React.Component {
 
         if ('root' in props) {
             this.state.root = props.root;
+        }
+
+        if (this.config.get('googleFontAPI')) {
+            (new FontLoader(this.config.get('googleFontAPI')));
+        }
+
+        if (this.config.get('imageLoader') && this.config.get('imageFetch')) {
+            (new ImageLoader(this.config.get('imageLoader'), [])).fetch();
         }
     };
 
@@ -162,6 +172,34 @@ export default class Editor extends React.Component {
             onClick: () => root.toggleMinimize()
         });
 
+        const layoutIconLabel = config.get('EditorPanelLayoutIconLabel', {
+            title: 'Change the inspector orientation'
+        });
+
+        const hoverIconLabel = config.get('EditorPanelHoverIconLabel', {
+            title: 'Enable mouse hover DOM selector'
+        });
+
+        const revertIconLabel = config.get('EditorPanelRevertIconLabel', {
+            title: 'Reset unsaved changes'
+        });
+
+        const deleteIconLabel = config.get('EditorPanelDeleteIconLabel', {
+            title: 'Delete both saved and unsaved changes'
+        });
+
+        const saveIconLabel = config.get('EditorPanelSaveIconLabel', {
+            title: 'Save changes'
+        });
+
+        const closeIconLabel = config.get('EditorPanelCloseIconLabel', {
+            title: 'Close Editor'
+        });
+
+        const hamburgerIconLabel = config.get('EditorPanelHamburgerIconLabel', {
+            title: 'Minimize Editor'
+        });
+
         const tabsWrapperProps = config.get('EditorPanelTabsWrapperProps', {
             key: 'stylizer-tabs-wrapper',
             className: 'stylizer-tabs-wrapper'
@@ -207,13 +245,13 @@ export default class Editor extends React.Component {
                         { config.get('EditorPanelHeaderText') }
                     </span>
                     <span { ...headerActionProps }>
-                        { !minimize && <span title="Change Layout"><LayoutIcon { ...layoutIconProps } /></span> }
-                        { !minimize && <span title="Trigger hover selector"><HoverIcon { ...hoverIconProps } /></span> }
-                        { !minimize && <span title="Reset Rules"><RevertIcon { ...revertIconProps } /></span> }
-                        { !minimize && <span title="Remove all Rules"><DeleteIcon { ...deleteIconProps } /></span> }
-                        { !minimize && <span title="Save Rules"><SaveIcon { ...saveIconProps } /></span> }
-                        { !minimize && <span title="Exit Editor"><CloseIcon { ...closeIconProps } /></span> }
-                        <span title="Minimize Editor"><HamburgerIcon { ...hamburgerIconProps } /></span>
+                        { !minimize && <span { ...layoutIconLabel }><LayoutIcon { ...layoutIconProps } /></span> }
+                        { !minimize && <span { ...hoverIconLabel }><HoverIcon { ...hoverIconProps } /></span> }
+                        { !minimize && <span { ...revertIconLabel }><RevertIcon { ...revertIconProps } /></span> }
+                        { !minimize && <span { ...deleteIconLabel }><DeleteIcon { ...deleteIconProps } /></span> }
+                        { !minimize && <span { ...saveIconLabel }><SaveIcon { ...saveIconProps } /></span> }
+                        { !minimize && <span { ...closeIconLabel }><CloseIcon { ...closeIconProps } /></span> }
+                        <span { ...hamburgerIconLabel }><HamburgerIcon { ...hamburgerIconProps } /></span>
                     </span>
                 </h3>
 
