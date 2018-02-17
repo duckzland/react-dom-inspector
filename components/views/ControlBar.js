@@ -159,9 +159,9 @@ export default class ControlBar extends React.Component {
                         { config.get('LogoText') }
                     </span>
                     <span { ...headerViewModeProps }>
-                        { <span { ...mobileIconLabel }><MobileIcon { ...mobileIconProps } /></span> }
-                        { <span { ...tabletIconLabel }><TabletIcon { ...tabletIconProps } /></span> }
                         { <span { ...desktopIconLabel }><DesktopIcon { ...desktopIconProps } /></span> }
+                        { <span { ...tabletIconLabel }><TabletIcon { ...tabletIconProps } /></span> }
+                        { <span { ...mobileIconLabel }><MobileIcon { ...mobileIconProps } /></span> }
                     </span>
                     <span { ...headerActionProps }>
                         { <span { ...layoutIconLabel }><LayoutIcon { ...layoutIconProps } /></span> }
