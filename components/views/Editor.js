@@ -2,12 +2,6 @@ import React from 'react';
 import ScrollArea from 'react-scrollbar';
 import { get } from 'lodash';
 import HamburgerIcon from '../../node_modules/react-icons/lib/io/navicon-round';
-import HoverIcon from '../../node_modules/react-icons/lib/io/compose';
-import DeleteIcon from '../../node_modules/react-icons/lib/io/trash-b';
-import RevertIcon from '../../node_modules/react-icons/lib/fa/refresh';
-import CloseIcon from '../../node_modules/react-icons/lib/io/close';
-import SaveIcon from '../../node_modules/react-icons/lib/fa/floppy-o';
-import LayoutIcon from '../../node_modules/react-icons/lib/io/code-working';
 import DOMHelper from '../modules/DOMHelper';
 import Configurator from '../modules/Config';
 import FontLoader from '../modules/FontLoader';
@@ -39,7 +33,7 @@ export default class Editor extends React.Component {
         super(props);
         
         this.config = new Configurator({
-            stylizerID: 'stylizer-source',
+            stylizerID: props.stylizerID,
             EditorPanelHeaderText: 'Editor',
             EditorPanelEmptyText: 'No Element Selected'
         });
@@ -48,7 +42,7 @@ export default class Editor extends React.Component {
             this.config.insert(props.config);
         }
         
-        this.styleElement = (new DOMHelper()).styleSheet({ id: this.config.get('stylizerID') }, 'style');
+        this.styleElement = (new DOMHelper(props.document)).styleSheet({ id: this.config.get('stylizerID') }, 'style');
 
         if ('node' in props) {
             this.state.node = props.node;
@@ -70,7 +64,8 @@ export default class Editor extends React.Component {
     componentWillReceiveProps(nextProps) {
         let reset = false;
         if ('refresh' in nextProps && nextProps.refresh) {
-            this.styleElement = (new DOMHelper()).styleSheet({id: 'stylizer-source'}, 'style');
+            this.config.stylizerID = nextProps.root.getStyleSourceID();
+            this.styleElement = (new DOMHelper(nextProps.document)).styleSheet({id: nextProps.root.getStyleSourceID()}, 'style');
             reset = true;
         }
         this.state.node = nextProps.node;
@@ -111,7 +106,6 @@ export default class Editor extends React.Component {
 
         const { root } = props;
         const { node } = state;
-        const { minimize } = root.state;
 
         const AllowedTabs = ['selector', 'spacing', 'border', 'styles', 'typography'];
 
@@ -135,65 +129,9 @@ export default class Editor extends React.Component {
             className: 'stylizer-header-actions'
         });
 
-        const layoutIconProps = config.get('EditorPanelLayoutIconProps', {
-            size: 16,
-            transform: root.state.vertical === false ? 'rotate(90)' : '',
-            onClick: () => root.toggleLayout()
-        });
-
-        const hoverIconProps = config.get('EditorPanelHoverIconProps', {
-            size: 16,
-            color: root.state.hover ? '#13a6d9' : '',
-            onClick: () => root.toggleHoverInspector()
-        });
-
-        const revertIconProps = config.get('EditorPanelRevertIconProps', {
-            size: 16,
-            onClick: () => root.revertData()
-        });
-
-        const deleteIconProps = config.get('EditorPanelDeleteIconProps', {
-            size: 16,
-            onClick: () => root.wipeData()
-        });
-
-        const saveIconProps = config.get('EditorPanelSaveIconProps', {
-            size: 16,
-            onClick: () => root.saveData()
-        });
-
-        const closeIconProps = config.get('EditorPanelCloseIconProps', {
-            size: 16,
-            onClick: () => root.killApp()
-        });
-
         const hamburgerIconProps = config.get('EditorPanelHamburgerIconProps', {
             size: 16,
             onClick: () => root.toggleMinimize()
-        });
-
-        const layoutIconLabel = config.get('EditorPanelLayoutIconLabel', {
-            title: 'Change the inspector orientation'
-        });
-
-        const hoverIconLabel = config.get('EditorPanelHoverIconLabel', {
-            title: 'Enable mouse hover DOM selector'
-        });
-
-        const revertIconLabel = config.get('EditorPanelRevertIconLabel', {
-            title: 'Reset unsaved changes'
-        });
-
-        const deleteIconLabel = config.get('EditorPanelDeleteIconLabel', {
-            title: 'Delete both saved and unsaved changes'
-        });
-
-        const saveIconLabel = config.get('EditorPanelSaveIconLabel', {
-            title: 'Save changes'
-        });
-
-        const closeIconLabel = config.get('EditorPanelCloseIconLabel', {
-            title: 'Close Editor'
         });
 
         const hamburgerIconLabel = config.get('EditorPanelHamburgerIconLabel', {
@@ -245,12 +183,6 @@ export default class Editor extends React.Component {
                         { config.get('EditorPanelHeaderText') }
                     </span>
                     <span { ...headerActionProps }>
-                        { !minimize && <span { ...layoutIconLabel }><LayoutIcon { ...layoutIconProps } /></span> }
-                        { !minimize && <span { ...hoverIconLabel }><HoverIcon { ...hoverIconProps } /></span> }
-                        { !minimize && <span { ...revertIconLabel }><RevertIcon { ...revertIconProps } /></span> }
-                        { !minimize && <span { ...deleteIconLabel }><DeleteIcon { ...deleteIconProps } /></span> }
-                        { !minimize && <span { ...saveIconLabel }><SaveIcon { ...saveIconProps } /></span> }
-                        { !minimize && <span { ...closeIconLabel }><CloseIcon { ...closeIconProps } /></span> }
                         <span { ...hamburgerIconLabel }><HamburgerIcon { ...hamburgerIconProps } /></span>
                     </span>
                 </h3>

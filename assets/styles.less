@@ -10,6 +10,9 @@
 @ScrollerBackground: #082739;
 @ScrollerElement: #051118;
 
+@ControlBarBackground: #196597;
+@ControlBarText: #d3f7ff;
+
 @EditorBackground: #081c27;
 @EditorText: #9abdc5;
 
@@ -129,6 +132,10 @@
   input[type="tel"],
   select {
     height: 29px;
+  }
+
+  .chrome-picker > div >.flexbox-fix > div:not(.flexbox-fix) > div {
+    margin-top: 4px !important;
   }
 
   textarea {
@@ -733,6 +740,53 @@
   }
 
   /**
+    Controlbar
+    **/
+  .stylizer-controlbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: @ControlBarBackground;
+    color: @ControlBarText;
+    font-size: 14px;
+    font-weight: 300;
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: row;
+    min-height: 35px;
+
+    > * {
+      padding: 8px 15px;
+    }
+
+    .stylizer-header-text {
+      flex-grow: 1;
+      font-size: 12px;
+      line-height: 24px;
+    }
+
+    .stylizer-header-view-mode {
+      background: darken(@ControlBarBackground, 10%);
+    }
+
+    .stylizer-header-actions {
+      background: darken(@ControlBarBackground, 7%);
+    }
+
+    svg {
+      cursor: pointer;
+      opacity: 0.8;
+      margin: 0 5px;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  /**
     Tabs
     **/
   .stylizer-tabs-wrapper {
@@ -842,6 +896,8 @@
 
     .stylizer-overlay-padding {
       background: @OverlayPaddingBackground;
+      border-color: darker(@OverlayPaddingBackground, 10%);
+      border-style: solid;
       padding: 0;
     }
 
@@ -1156,12 +1212,65 @@
 
 
 /**
+  Body Elements
+  **/
+body[stylizer-vertical] {
+  height: 100vh;
+  max-height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+  padding-top: 35px;
+
+  /**
+  Styling for the Iframe
+  **/
+  #stylizer-frame-wrapper {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: auto;
+    height: max-content;
+
+    > iframe {
+      display: block;
+      border: none;
+      width: 100%;
+
+
+      &.stylizer-desktop {
+
+      }
+
+      &.stylizer-tablet {
+        width: 768px;
+        height: 1024px;
+        min-height: 1024px;
+        margin: 60px auto;
+      }
+
+      &.stylizer-mobile {
+        width: 414px;
+        height: 736px;
+        min-height: 736px;
+        margin: 60px auto;
+      }
+    }
+  }
+}
+
+/**
   Vertical Overrides
   **/
 body[stylizer-vertical="true"] {
 
   &[stylizer-active="false"] {
-    padding-left: 380px;
+    padding-left: 390px;
+
+    #stylizer-frame-wrapper {
+      height: ~"calc(100vh - 35px)";
+      max-height: ~"calc(100vh - 35px)";
+      min-height: ~"calc(100vh - 35px)";
+    }
+
   }
 
   &[stylizer-active="true"] {
@@ -1190,7 +1299,7 @@ body[stylizer-vertical="true"] {
   }
 
   .stylizer-inspector {
-    top: 0;
+    top: 35px;
     bottom: 0;
     width: 390px;
     flex-direction: column;
@@ -1338,7 +1447,16 @@ body[stylizer-vertical="true"] {
 body[stylizer-vertical="false"] {
 
   &[stylizer-active="false"] {
-    padding-bottom: 320px;
+
+    height: ~"calc(100vh - 320px)";
+    max-height: ~"calc(100vh - 320px)";
+    min-height: ~"calc(100vh - 320px)";
+
+    #stylizer-frame-wrapper {
+      height: ~"calc(100vh - 355px)";
+      max-height: ~"calc(100vh - 355px)";
+      min-height: ~"calc(100vh - 355px)";
+    }
 
     .stylizer-panels {
       &.minimize {
@@ -1366,7 +1484,15 @@ body[stylizer-vertical="false"] {
   }
 
   &[stylizer-active="true"] {
-    padding-bottom: 34px;
+    height: ~"calc(100vh - 69px)";
+    max-height: ~"calc(100vh - 69px)";
+    min-height: ~"calc(100vh - 69px)";
+
+    #stylizer-frame-wrapper {
+      height: ~"calc(100vh - 69px)";
+      max-height: ~"calc(100vh - 69px)";
+      min-height: ~"calc(100vh - 69px)";
+    }
   }
 
   .stylizer-tabs-wrapper {

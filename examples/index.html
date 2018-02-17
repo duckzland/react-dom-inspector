@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>React DOM Inpector Tester</title>
+        <title>React DOM Panels</title>
 
         <!--[if IE]>
-        <meta http-equiv='X-UA-Compatible' content="IE=edge,IE=9,IE=8,chrome=1"><![endif]-->
+        <meta http-equiv='X-UA-Compatible' content="IE=edge,IE=9,IE=8,chrome=1">
+        <![endif]-->
         <meta charset="utf-8"/>
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 
-        <!-- Default Style Sheet for the example page -->
         <style type="text/css">
-
+            /** CSS RESETS **/
             a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, body, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, label, legend, li, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video {
                 margin: 0;
                 padding: 0;
@@ -20,239 +19,15 @@
                 vertical-align: baseline;
                 box-sizing: border-box
             }
-
-            article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
-                display: block
-            }
-
-            ol, ul {
-                list-style: none
-            }
-
-            blockquote, q {
-                quotes: none
-            }
-
-            blockquote:after, blockquote:before, q:after, q:before {
-                content: '';
-                content: none
-            }
-
-            table {
-                border-collapse: collapse;
-                border-spacing: 0
-            }
-
-            body, html {
-                min-height: 100vh;
-                width: 100%
-            }
-
-            html {
-                font-size: 100%;
-                line-height: 1.5
-            }
-
-            body {
-                line-height: 1;
-                direction: ltr;
-                font-family: Arial, sans-serif;
-                font-weight: 400;
-                font-size: 14px;
-                padding: 0;
-                margin: 0
-            }
-
-            h1, h2, h3, h4, h5, h6 {
-                font-weight: 700;
-                margin: 0
-            }
-
-            a {
-                text-decoration: none
-            }
-
-            .container {
-                width: 100%;
-                max-width: 1140px;
-                margin: 0 auto;
-                padding: 0 20px
-            }
-
-            .flex-box {
-                display: flex
-            }
-
-            .flex-column {
-                flex-direction: column
-            }
-
-            .flex-row {
-                flex-direction: row
-            }
-
-            .flex-grow {
-                flex-grow: 1
-            }
-
-            .flex-align-center {
-                align-items: center
-            }
-
-            .flex-justify-center {
-                justify-content: center
-            }
-
-            .button-fill {
-                font-size: 16px;
-                text-align: center;
-                display: block;
-                padding: 12px 20px;
-                border-radius: 6px;
-                font-weight: 400;
-                cursor: pointer;
-                line-height: 20px
-            }
-
-            .center-banner {
-                text-align: center;
-                max-height: 600px;
-                min-height: 400px;
-                height: 70vh;
-                position: relative
-            }
-
-            .center-banner .container {
-                max-width: 600px;
-                z-index: 2
-            }
-
-            .center-banner h1 {
-                font-size: 38px;
-                line-height: 160%;
-                margin-bottom: 15px
-            }
-
-            .center-banner h2 {
-                font-size: 18px;
-                font-weight: 400;
-                line-height: 160%;
-                margin-bottom: 35px
-            }
-
-            .center-banner h3 {
-                font-size: 14px;
-                font-weight: 400;
-                line-height: 160%
-            }
-
-            .center-banner h3 a {
-                text-decoration: underline
-            }
-
-            .center-banner .button-fill {
-                display: inline-block;
-                width: auto;
-                margin-bottom: 30px;
-                font-size: 18px;
-                font-weight: 700;
-                padding: 18px 27px
-            }
-
-            .section-banner {
-                position: relative;
-                padding: 90px 0 0;
-                overflow: hidden;
-                min-height: 300px
-            }
-
-            .section-banner .container {
-                z-index: 2
-            }
-
-            .section-banner .banner {
-                order: 2;
-                max-height: calc(100vh - 120px);
-                margin: 20px 60px 70px;
-                width: 50%;
-                min-width: calc(50% - 120px)
-            }
-
-            .section-banner .banner img {
-                box-shadow: 0 0 12px #333;
-                vertical-align: middle
-            }
-
-            .section-banner .inner {
-                order: 1;
-                width: 50%;
-                min-width: 50%;
-                max-width: 520px;
-                padding: 30px 60px;
-                margin-bottom: 180px;
-            }
-
-            .section-banner h1 {
-                font-size: 42px;
-                margin-bottom: 30px
-            }
-
-            .section-banner .content {
-                font-size: 19px;
-                line-height: 140%;
-                font-weight: 400
-            }
-
-            .section-pages .content {
-                margin-bottom: 60px;
-            }
-
-            @media (max-width: 600px) {
-                img {
-                    display: none;
-                }
-            }
         </style>
     </head>
-    <body class="flex-box flex-column flex-grow">
+    <body>
 
-        <!-- Example markup -->
-        <div class="main-content flex-grow flex-box flex-column">
-            <section class="center-banner flex-box flex-column flex-justify-center">
-                <div class="container">
-                    <h1>
-                        React DOM Inspector
-                    </h1>
-                    <h2>
-                        Testing page for React DOM Inspector Javascript
-                    </h2>
-                    <a class="button-fill button-secondary" href="#">
-                        Example of a Button
-                    </a>
-                    <h3>
-                        <a href="#">Example of Link</a>
-                    </h3>
-                </div>
-            </section>
-            <section class="section-banner flex-box flex-column">
-                <div class="container flex-box flex-row flex-align-center">
-                    <div class="banner">
-                        <img src="./assets/img/test-image.jpg">
-                    </div>
-                    <div class="inner flex-grow">
-                        <h1>
-                            Testing Image
-                        </h1>
-                        <div class="content">
-                            Inspector doesn't support img element
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
+        <div id="stylizer-frame-wrapper"></div>
 
         <!-- The markup where the Inspector will be injected to -->
         <div id="dom-inspector"></div>
+
         <script>
             var Element = document.getElementById('dom-inspector');
             var CurrentHost = window.location.href;
@@ -321,19 +96,9 @@
                 }
             }));
 
-        </script>
+            Element.setAttribute('data-page-src', 'site.html');
 
-        <!-- Emulating Previously stored stylesheets to be reinjected back to the javascript -->
-        <style id="stylizer-original" class="stylizer-sheet" type="text/css" scoped>
-            .main-content {
-                border: 20px solid #123123;
-            }
-            .container {
-                background: #aabbcc;
-                border: 10px solid #000000;
-                padding: 60px;
-            }
-        </style>
+        </script>
 
         <!-- Loading the minified stylesheet for the Inspector Element -->
         <link href="assets/css/style.min.css" rel="stylesheet" type="text/css" />

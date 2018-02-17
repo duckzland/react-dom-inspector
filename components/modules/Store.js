@@ -19,7 +19,8 @@ export default class Store {
     constructor(node, depth, tree, config = false) {
 
         config && Object.assign(this.config, config);
-        
+
+        this.document = node.ownerDocument;
         node.matches = node.matches
             || node.webkitMatchesSelector
             || node.mozMatchesSelector
@@ -48,7 +49,7 @@ export default class Store {
     };
 
     trackNode = () => {
-        let node = document.querySelectorAll('[' + this.config.stylizerAttribute + '="' + this.uuid + '"]');
+        let node = this.document.querySelectorAll('[' + this.config.stylizerAttribute + '="' + this.uuid + '"]');
         return node.length !== 0 ? node[0] : false ;
     };
 
@@ -91,8 +92,8 @@ export default class Store {
             return;
         }
 
-        let rules = (new DOMHelper()).styleSheet({ id: this.config.sheetID }, 'content'),
-            elements = document.createElement('span'),
+        let rules = (new DOMHelper(this.document)).styleSheet({ id: this.getSheetID() }, 'content'),
+            elements = this.document.createElement('span'),
             skippedRule = new RegExp('(initial|inherit)', 'g');
 
         for (let r in rules) {
@@ -194,6 +195,17 @@ export default class Store {
     storeSelector = (value) => {
         this.selector = value;
         this.changed = true;
+    };
+
+    getSheetID = () => {
+        if ('root' in this.config && 'getStyleSourceID' in this.config.root) {
+            return this.config.root.getStyleSourceID();
+        }
+
+        if (this.config.sheetID) {
+            return this.config.sheetID;
+        }
+        return false;
     };
 
     getStyle = (target) => {
