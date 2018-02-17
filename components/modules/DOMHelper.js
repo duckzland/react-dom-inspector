@@ -7,7 +7,8 @@ import { forEach } from 'lodash';
  */
 export default class DOMHelper {
 
-    constructor() {
+    constructor(document) {
+        this.document = document;
         return this;
     };
 
@@ -91,7 +92,7 @@ export default class DOMHelper {
     };
 
     styleSheet = (rules, output = 'node') => {
-        let sheets = document.styleSheets;
+        let sheets = this.document.styleSheets;
 
         if (output !== 'all') {
             for (var i in sheets) {

@@ -5,6 +5,9 @@ import Inspector from './components';
 const Element = document.getElementById('dom-inspector');
 ReactDOM.render(
     <Inspector
+        config={{
+            pageSrc: Element.getAttribute('data-page-src')
+        }}
         iterator={{
             maxDepth: Element.getAttribute('data-iterator-max-depth')
         }}
@@ -13,7 +16,7 @@ ReactDOM.render(
             googleFontAPI: Element.getAttribute('data-google-font-api'),
             imageFetch: Element.getAttribute('data-image-fetch'),
             imageLoader: JSON.parse(Element.getAttribute('data-image-loader')),
-            imageLibrary: JSON.parse(Element.getAttribute('data-image-library'))
+            imageLibrary: JSON.parse(Element.getAttribute('data-image-library')),
         }}
     />,
     Element

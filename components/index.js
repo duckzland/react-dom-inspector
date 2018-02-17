@@ -5,6 +5,7 @@ import Iterator from './modules/Iterator';
 import DOMHelper from './modules/DOMHelper';
 import Parser from './modules/Parser';
 import Configurator from './modules/Config';
+import ControlBar from './views/ControlBar';
 import InspectorPanel from './views/Inspector';
 import EditorPanel from './views/Editor';
 import Overlay from './views/Overlay';
@@ -25,7 +26,9 @@ export default class Inspector extends React.Component {
         saving: false,
         vertical: false,
         refresh: false,
-        overlay: {}
+        overlay: {},
+        frameLoaded: false,
+        viewmode: 'desktop'
     };
 
     eventBinded = {
@@ -39,6 +42,7 @@ export default class Inspector extends React.Component {
     DOMHelper = false;
     hoverCache = false;
     fontLoader = false;
+    document = false;
 
     constructor(props) {
         super(props);
@@ -59,17 +63,17 @@ export default class Inspector extends React.Component {
             this.config.insert(props.config);
         }
         
-        this.iteratorHelper = new Iterator();
-        this.DOMHelper = new DOMHelper();
+        this.iteratorHelper = new Iterator({
+            root: this,
+            sheetID: this.getStyleSourceID()
+        });
 
-        this.cloneSheet();
+        this.generateFrame();
     };
 
     componentWillMount() {
         document.body.setAttribute('stylizer-active', this.state.minimize ? 'true' : 'false');
         document.body.setAttribute('stylizer-vertical', this.state.vertical ? 'true' : 'false');
-        this.state.hover ? this.bindEvent('mousemove') : this.destroyEvent('mousemove');
-        this.state.minimize ? this.destroyEvent('all') : this.bindEvent('click');
     };
 
     componentDidUpdate() {
@@ -82,27 +86,62 @@ export default class Inspector extends React.Component {
     };
 
     bindEvent = (event = 'all') => {
+
         if (!this.eventBinded.click && (event === 'click' || event === 'all')) {
-            document.addEventListener('click', this.captureNode, false);
+            this.document.addEventListener('click', this.captureNode, false);
             this.eventBinded.click = true;
         }
 
         if (!this.eventBinded.mousemove && (event === 'mousemove' || event === 'all')) {
-            document.addEventListener('mousemove', this.moveOverlay, false);
+            this.document.addEventListener('mousemove', this.moveOverlay, false);
             this.eventBinded.mousemove = true;
         }
     };
 
     destroyEvent = (event = 'all') => {
         if (this.eventBinded.click && (event === 'click' || event === 'all')) {
-            document.removeEventListener('click', this.captureNode);
+            this.document.removeEventListener('click', this.captureNode);
             this.eventBinded.click = false;
         }
 
         if (this.eventBinded.mousemove && (event === 'mousemove' || event === 'all')) {
-            document.removeEventListener('mousemove', this.moveOverlay);
+            this.document.removeEventListener('mousemove', this.moveOverlay);
             this.eventBinded.mousemove = false;
         }
+    };
+
+    generateFrame = () => {
+        this.setState({ frameLoaded: false });
+        this.frameWrapper = document.getElementById('stylizer-frame-wrapper');
+        this.frame = document.createElement('iframe');
+        this.frame.classList.add('stylizer-' + this.state.viewmode);
+        this.frame.setAttribute('id', 'stylizer-frame');
+        this.frame.setAttribute('scrolling', 'no');
+        this.frame.setAttribute('width', '100%');
+        this.frame.setAttribute('height', '100%');
+        this.frame.setAttribute('src', this.config.get('pageSrc'));
+        this.frame.onload = () => {
+            this.document = this.frame.contentWindow.document;
+            this.DOMHelper = new DOMHelper(this.document);
+
+            this.resizeFrame();
+            this.cloneSheet();
+
+            this.state.hover ? this.bindEvent('mousemove') : this.destroyEvent('mousemove');
+            this.state.minimize ? this.destroyEvent('all') : this.bindEvent('click');
+
+            this.setState({ frameLoaded: true });
+        };
+
+        this.frameWrapper.appendChild(this.frame);
+    };
+
+    resizeFrame = () => {
+        this.frame.style.height = Math.max(
+            this.document.body.scrollHeight, this.document.documentElement.scrollHeight,
+            this.document.body.offsetHeight, this.document.documentElement.offsetHeight,
+            this.document.body.clientHeight, this.document.documentElement.clientHeight
+        ) + 'px';
     };
 
     toggleMinimize = () => {
@@ -115,6 +154,19 @@ export default class Inspector extends React.Component {
 
     toggleLayout = () => {
         this.setState({ vertical: !this.state.vertical });
+        this.resizeFrame();
+    };
+
+    toggleViewMode = (mode) => {
+        this.state.viewmode = mode;
+        this.state.refresh = true;
+        this.frame.classList.remove('stylizer-desktop');
+        this.frame.classList.remove('stylizer-tablet');
+        this.frame.classList.remove('stylizer-mobile');
+        this.frame.classList.add('stylizer-' + mode);
+        this.resizeFrame();
+        this.iteratorHelper.reset();
+        this.setState(this.state);
     };
 
     killApp = () => {
@@ -122,6 +174,7 @@ export default class Inspector extends React.Component {
         const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
         const killFunction = get(window, mountNode.getAttribute('data-onkill'));
         const unmount = ReactDOM.unmountComponentAtNode(mountNode);
+
         if (unmount) {
             this.destroyEvent();
             document.body.removeAttribute('stylizer-active');
@@ -132,51 +185,71 @@ export default class Inspector extends React.Component {
     };
 
     cloneSheet = () => {
-        let sheet = document.createElement('style');
-        sheet.id = 'stylizer-source';
-        sheet.innerHTML = document.getElementById('stylizer-original').innerHTML;
-        sheet.classList.add('stylizer-sheet');
-        document.body.appendChild(sheet);
+        ['desktop', 'tablet', 'mobile'].map((type) => {
+            const original = this.document.getElementById('stylizer-original-' + type);
+            const sheet = this.document.createElement('style');
+            const mediaAttr = original.getAttribute('media');
+
+            sheet.id = 'stylizer-source-' + type;
+            sheet.innerHTML = original.innerHTML;
+            sheet.classList.add('stylizer-sheet');
+
+            if (mediaAttr) {
+                sheet.setAttribute('media', mediaAttr);
+                original.setAttribute('media-original', mediaAttr);
+            }
+
+            original.setAttribute('media', 'max-width: 1px');
+
+            this.document.body.appendChild(sheet);
+        });
     };
 
     wipeData = () => {
-        const { convertData, config } = this;
-        const storage = document.getElementById('stylizer-source');
+        const { convertData, config, cloneSheet } = this;
         const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
         const wipeFunction = get(window, mountNode.getAttribute('data-onwipe'));
-        const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
 
-        storage
-            && isFunction(wipeFunction)
-            && wipeFunction(convertData(storage));
+        ['desktop', 'tablet', 'mobile'].map((type) => {
+            const storage = this.document.getElementById('stylizer-source-' + type);
+            const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
+            storage
+                && isFunction(wipeFunction)
+                && wipeFunction(convertData(storage), type);
 
-        sheet
-            && sheet.cssRules
-            && forEach(sheet.cssRules, (rule, delta) => {
-                if ('removeRule' in sheet) {
-                    sheet.removeRule(delta);
-                }
-                else if ('deleteRule' in sheet) {
+            sheet
+                && sheet.cssRules
+                && forEach(sheet.cssRules, (rule, delta) => {
                     sheet.deleteRule(0);
-                }
-            });
+                });
+        });
 
         this.setState({ refresh: true });
     };
-
+    
+    getStyleOriginalID = () => {
+        return this.state.viewmode ? 'stylizer-original-' + this.state.viewmode : 'stylizer-original-desktop';
+    };
+    
+    getStyleSourceID = () => {
+        return this.state.viewmode ? 'stylizer-source-' + this.state.viewmode : 'stylizer-source-desktop';
+    };
+    
     revertData = () => {
         const { convertData, cloneSheet, config } = this;
-        const storage = document.getElementById('stylizer-source');
         const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
         const revertFunction = get(window, mountNode.getAttribute('data-onrevert'));
 
-        storage
-            && isFunction(revertFunction)
-            && revertFunction(convertData(storage));
+        ['desktop', 'tablet', 'mobile'].map((type) => {
+            const storage = this.document.getElementById('stylizer-source-' + type);
 
-        storage
-            && document.body.removeChild(storage)
-            && cloneSheet();
+            storage
+                && isFunction(revertFunction)
+                && revertFunction(convertData(storage), type)
+                && this.document.body.removeChild(storage)
+        });
+
+        cloneSheet();
 
         this.setState({ refresh: true });
     };
@@ -203,23 +276,21 @@ export default class Inspector extends React.Component {
 
     saveData = () => {
         const { convertData, config } = this;
-        const storage = document.getElementById('stylizer-source');
         const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
         const saveFunction = get(window, mountNode.getAttribute('data-onsave'));
 
-        storage
-            && isFunction(saveFunction)
-            && saveFunction(convertData(storage));
+        ['desktop', 'tablet', 'mobile'].map((type) => {
+            const storage = this.document.getElementById('stylizer-source-' + type);
+            storage
+                && isFunction(saveFunction)
+                && saveFunction(convertData(storage), type);
+        });
 
         return true;
     };
 
     setActiveNode = (node) => {
         this.setState({ node: node });
-    };
-
-    detectIfInsideStylizer = (node) => {
-        return this.DOMHelper.closest(node, {id: 'dom-inspector', className: '\\bstylizer\\b', hasAttribute: 'stylizer-inspector'}, 'boolean');
     };
 
     retrieveOrBuildStorage = (node) => {
@@ -240,8 +311,7 @@ export default class Inspector extends React.Component {
             e.preventDefault();
         }
 
-        if (this.detectIfInsideStylizer(node)
-            || node.nodeName.toLowerCase().match(new RegExp('(img|style|script|link)', 'g'))) {
+        if (node.nodeName.toLowerCase().match(new RegExp('(img|style|script|link)', 'g'))) {
             return true;
         }
 
@@ -256,8 +326,7 @@ export default class Inspector extends React.Component {
     moveOverlay = (e) => {
         const node = e.target;
 
-        if (this.detectIfInsideStylizer(node)
-            || node.nodeName.toLowerCase().match(new RegExp('(img|style|script|link|html|body)', 'g'))) {
+        if (node.nodeName.toLowerCase().match(new RegExp('(img|style|script|link|html|body)', 'g'))) {
             this.hoverCache = false;
             this.setState({ overlay: false });
             return true;
@@ -278,7 +347,14 @@ export default class Inspector extends React.Component {
 
     render() {
         const { config, state, props, allowNavigator, DOMHelper, iteratorHelper } = this;
-        const { iterator, editor } = props;
+        const { iterator, editor, controlbar } = props;
+
+        const controllBarProps = config.get('controlBarProps', {
+            key: 'stylizer-controlbar-element',
+            config: controlbar,
+            root: this,
+            refresh: state.refresh
+        });
 
         const inspectorProps = config.get('inspectorProps', {
             key: 'stylizer-inspector',
@@ -292,6 +368,8 @@ export default class Inspector extends React.Component {
             root: this,
             iterator: iteratorHelper,
             node: state.node,
+            document: this.document,
+            stylizerID: this.getStyleSourceID(),
             refresh: state.refresh
         });
 
@@ -301,18 +379,24 @@ export default class Inspector extends React.Component {
             root: this,
             node: state.node,
             DOMHelper: DOMHelper,
+            document: this.document,
+            stylizerID: this.getStyleSourceID(),
             refresh: state.refresh
         });
 
         const overlayProps = config.get('overlayProps', {
+            frame: this.frame,
+            wrapper: this.frameWrapper,
             node: state.overlay
         });
 
         return (
             <div { ...inspectorProps }>
-                { allowNavigator && <InspectorPanel { ...inspectorPanelProps }/> }
-                <EditorPanel { ...editorPanelProps } />
-                <Overlay { ...overlayProps } />
+                <ControlBar { ...controllBarProps } />
+                { state.frameLoaded && allowNavigator && <InspectorPanel { ...inspectorPanelProps }/> }
+                { state.frameLoaded && <EditorPanel { ...editorPanelProps } /> }
+                { state.frameLoaded && <Overlay { ...overlayProps } /> }
+                { !state.frameLoaded && <div class="loading-bar" /> }
             </div>
         )
     };

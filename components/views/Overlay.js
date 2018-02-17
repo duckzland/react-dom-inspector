@@ -40,6 +40,8 @@ export default class Overlay extends React.Component {
     };
 
     config = false;
+    frame = false;
+    frameWrapper = false;
 
     constructor(props) {
         super(props);
@@ -47,6 +49,12 @@ export default class Overlay extends React.Component {
         this.config = new Configurator();
         if ('config' in props)  {
             this.config.insert(props.config);
+        }
+        if ('wrapper' in props) {
+            this.frameWrapper = props.wrapper;
+        }
+        if ('frame' in props) {
+            this.frame = props.frame;
         }
     };
 
@@ -68,7 +76,11 @@ export default class Overlay extends React.Component {
             'z-index'
         ];
 
+        this.document = node.ownerDocument;
+        let mainBodyStyle = getComputedStyle(document.body);
         let computedStyle = getComputedStyle(node);
+        let frameStyle = getComputedStyle(this.frame);
+
         requiredValue.forEach(item => {
             result[item] = parseFloat(computedStyle[item]) || 0;
         });
@@ -89,8 +101,8 @@ export default class Overlay extends React.Component {
         }
 
         Object.assign(result, {
-            top: _y,
-            left: _x
+            top: (_y - this.frameWrapper.scrollTop) + parseFloat(mainBodyStyle['padding-top']) + parseFloat(frameStyle['margin-top']),
+            left: _x + parseFloat(frameStyle['margin-left']) +  parseFloat(mainBodyStyle['padding-left'])
         });
 
         this.setState({
@@ -127,7 +139,7 @@ export default class Overlay extends React.Component {
     };
 
     componentWillReceiveProps(props) {
-        if ('node' in props && props.node && props.node instanceof HTMLElement) {
+        if ('node' in props && props.node && 'ownerDocument' in props.node) {
             this.detectSize(props.node);
         }
         else {

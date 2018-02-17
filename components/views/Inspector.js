@@ -27,13 +27,16 @@ export default class Inspector extends React.Component {
             InspectorPanelHeaderText: 'Navigator'
         });
         
-        this.iterator = 'iterator' in props ? props.iterator : new Iterator();
+        this.iterator = 'iterator' in props ? props.iterator : new Iterator({
+            root: props.root,
+            sheetID: props.stylizerID
+        });
         
         if ('config' in props)  {
            this.config.insert(props.config);
         }
         
-        this.iterator.iterate(document.body, false, 0, this.config.get('InspectorPanelStartingDepth'), []);
+        this.iterator.iterate(props.document.body, false, 0, this.config.get('InspectorPanelStartingDepth'), []);
     };
 
     componentWillReceiveProps(nextProps) {
