@@ -2,6 +2,7 @@ import React from 'react';
 import BasePanel from '../Panel';
 import CloseIcon from '../../../node_modules/react-icons/lib/io/close-circled';
 import BackgroundImage from '../Fields/BackgroundImage';
+import BoxShadow from '../Fields/BoxShadow';
 import { get, forEach } from 'lodash';
 
 /**
@@ -93,6 +94,14 @@ export default class Styles extends BasePanel {
                         inherit: 'Inherit'
                     }, default: '', inline: false}
                 ]
+            },
+            {
+                key: 'box-shadow',
+                title: 'Box Shadow',
+                type: 'group',
+                elements:  [
+                    { title: false, target: 'box-shadow', type: 'element', field: 'box-shadow', default: '', inline: false}
+                ]
             }
         ];
 
@@ -148,6 +157,11 @@ export default class Styles extends BasePanel {
         if (element.field === 'background-image') {
             inputProps.type = 'text';
             inputElement.push( <BackgroundImage { ...inputProps} /> );
+        }
+
+        if (element.field === 'box-shadow') {
+            inputProps.type = 'text';
+            inputElement.push( <BoxShadow { ...inputProps} /> );
         }
     };
 }

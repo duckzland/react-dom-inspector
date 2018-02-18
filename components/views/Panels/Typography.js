@@ -1,4 +1,6 @@
+import React from 'react';
 import BasePanel from '../Panel';
+import TextShadow from '../Fields/TextShadow';
 
 /**
  * Class for generating the typography panel inside the editor markup
@@ -35,6 +37,14 @@ export default class Typography extends BasePanel {
                         normal: 'Normal',
                         'small-caps': 'Small caps'
                     }, default: '', inline: false}
+                ]
+            },
+            {
+                key: 'text-shadow',
+                title: 'Text Shadow',
+                type: 'group',
+                elements:  [
+                    { title: false, target: 'text-shadow', type: 'element', field: 'text-shadow', default: '', inline: false}
                 ]
             },
             {
@@ -86,7 +96,7 @@ export default class Typography extends BasePanel {
                     {title: 'overflow', target: 'text-overflow', type: 'element', field: 'select', options: {
                         'clip': 'Clip',
                         'ellipsis': 'Ellipsis'
-                    }, default: '', inline: false},
+                    }, default: '', inline: false}
 
                 ]
             },
@@ -120,4 +130,11 @@ export default class Typography extends BasePanel {
 
         this.initialize(props);
     }
+
+    hookBeforeElementRender = (element, inputElement, inputProps) => {
+        if (element.field === 'text-shadow') {
+            inputProps.type = 'text';
+            inputElement.push( <TextShadow { ...inputProps} /> );
+        }
+    };
 }

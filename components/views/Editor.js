@@ -11,6 +11,7 @@ import SelectorPanel from './Panels/Selector';
 import SpacingPanel from './Panels/Spacing';
 import StylesPanel from './Panels/Styles';
 import TypographyPanel from './Panels/Typography';
+import LayoutPanel from './Panels/Layout';
 
 /**
  * Class for generating the Editor element markup
@@ -107,7 +108,7 @@ export default class Editor extends React.Component {
         const { root } = props;
         const { node } = state;
 
-        const AllowedTabs = ['selector', 'spacing', 'border', 'styles', 'typography'];
+        const AllowedTabs = ['selector', 'layout', 'spacing', 'border', 'styles', 'typography'];
 
         const editorProps = config.get('EditorPanelEditorProps', {
             key: 'stylizer-editor-panel',
@@ -161,6 +162,9 @@ export default class Editor extends React.Component {
         switch (state.active) {
             case 'selector' :
                 ActivePanel.push(<SelectorPanel { ...panelProps } />);
+                break;
+            case 'layout' :
+                ActivePanel.push(<LayoutPanel { ...panelProps } />);
                 break;
             case 'border' :
                 ActivePanel.push(<BorderPanel { ...panelProps } />);

@@ -15,6 +15,7 @@
 
 @EditorBackground: #081c27;
 @EditorText: #9abdc5;
+@FrameBackground: #0a2835;
 
 @FormElementBackground: #213946;
 @FormElementBorder: #040f15;
@@ -1164,6 +1165,12 @@
             min-width: 100px;
           }
         }
+
+        .stylizer-field--box-shadow {
+          .stylizer-form-input--boxshadow-inset {
+            min-width: 120px;
+          }
+        }
       }
 
       &.stylizer-tab-panel--typography {
@@ -1229,6 +1236,7 @@ body[stylizer-vertical] {
     min-height: 100%;
     overflow-x: auto;
     height: max-content;
+    background: @FrameBackground;
 
     > iframe {
       display: block;
