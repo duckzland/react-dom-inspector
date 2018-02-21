@@ -19,7 +19,7 @@ module.exports = {
             },
             {
                 test: /\.(svg)$/,
-                loaders: ['svg-loader']
+                loaders: ['svg-url-loader']
             },
             {
                 test: /.js?$/,

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChromePicker } from 'react-color';
 import CloseIcon from '../../../node_modules/react-icons/lib/io/close-circled';
+import TrashIcon from '../../../node_modules/react-icons/lib/io/trash-a';
 import Configurator from '../../modules/Config';
 import { get } from 'lodash';
 
@@ -83,6 +84,20 @@ export default class ColorPicker extends React.Component {
         !isOpen() ? show() : close();
     };
 
+    erase = () => {
+        this.setState({
+            value: ' ',
+            color: {}
+        });
+
+        this.props.onChange({
+            target: {
+                name: this.props.name,
+                value: ' '
+            }
+        });
+    };
+
     convert = (color) => {
         if (color.rgb.a === 1 || color.rgb.a === 0) {
             return color.hex;
@@ -102,7 +117,7 @@ export default class ColorPicker extends React.Component {
     };
 
     render() {
-        const { props, state, config, toggle, show, close, isOpen } = this;
+        const { props, state, config, toggle, show, close, isOpen, erase } = this;
         const mainProps = config.get('ElementColorPickerMainProps', {
             className: props.className + ' stylizer-color-element'
         });
@@ -131,7 +146,16 @@ export default class ColorPicker extends React.Component {
             onClick: close
         });
 
+        const spanEraseConst = config.get('ElementColorPickerSpanEraserConst', {
+            className: 'stylizer-color-closer',
+            onClick: erase
+        });
+
         const closeIconProps = config.get('ElementColorPickerCloseIconProps', {
+            size: 13
+        });
+
+        const trashIconProps = config.get('ElementColorPickerTrashIconProps', {
             size: 13
         });
 
@@ -139,7 +163,8 @@ export default class ColorPicker extends React.Component {
             <div { ...mainProps } >
                 <span { ...spanPickerConst }><span { ...spanPickerContentConst } /></span>
                 <input { ...inputProps } />
-                { isOpen() && <span { ...spanCloserConst } ><CloseIcon {...closeIconProps }/></span> }
+                { state.value && state.value !== ' ' && !isOpen() && <span { ...spanEraseConst }><TrashIcon { ...trashIconProps } /></span> }
+                { isOpen() && <span { ...spanCloserConst } ><CloseIcon { ...closeIconProps } /></span> }
             </div>
         )
     }

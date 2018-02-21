@@ -20,6 +20,7 @@ export default class ControlBar extends React.Component {
 
     state = {
         root: false,
+        message: false,
         errors: {}
     };
 
@@ -38,13 +39,14 @@ export default class ControlBar extends React.Component {
     };
 
     componentWillReceiveProps(nextProps) {
-
+        if ('message' in nextProps) {
+            this.setState({message: nextProps.message});
+        }
     };
 
     render() {
 
-        let { props, config } = this;
-
+        const { props, state, config } = this;
         const { root } = props;
 
         const headerProps = config.get('ControlBarHeaderProps', {
@@ -62,9 +64,14 @@ export default class ControlBar extends React.Component {
             className: 'stylizer-header-actions'
         });
 
-        const headerViewModeProps = config.get('ControlBarHeaderActionProps', {
+        const headerViewModeProps = config.get('ControlBarHeaderViewModeProps', {
             key: 'stylizer-editor-header-view-mode',
             className: 'stylizer-header-view-mode'
+        });
+
+        const headerNotificationProps = config.get('ControlBarHeaderNotificationProps', {
+            key: 'stylizer-editor-header-notification',
+            className: 'stylizer-header-notification'
         });
 
         const layoutIconProps = config.get('ControlBarLayoutIconProps', {
@@ -152,25 +159,26 @@ export default class ControlBar extends React.Component {
         const mobileIconLabel = config.get('ControlBarMobileIconLabel', {
             title: 'Change to mobile view mode'
         });
-
+console.log(state.message);
         return (
             <div { ...headerProps }>
-                    <span { ...headerTextProps }>
-                        { config.get('LogoText') }
-                    </span>
-                    <span { ...headerViewModeProps }>
-                        { <span { ...desktopIconLabel }><DesktopIcon { ...desktopIconProps } /></span> }
-                        { <span { ...tabletIconLabel }><TabletIcon { ...tabletIconProps } /></span> }
-                        { <span { ...mobileIconLabel }><MobileIcon { ...mobileIconProps } /></span> }
-                    </span>
-                    <span { ...headerActionProps }>
-                        { <span { ...layoutIconLabel }><LayoutIcon { ...layoutIconProps } /></span> }
-                        { <span { ...hoverIconLabel }><HoverIcon { ...hoverIconProps } /></span> }
-                        { <span { ...revertIconLabel }><RevertIcon { ...revertIconProps } /></span> }
-                        { <span { ...deleteIconLabel }><DeleteIcon { ...deleteIconProps } /></span> }
-                        { <span { ...saveIconLabel }><SaveIcon { ...saveIconProps } /></span> }
-                        { <span { ...closeIconLabel }><CloseIcon { ...closeIconProps } /></span> }
-                    </span>
+                <span { ...headerTextProps }>
+                    { config.get('LogoText') }
+                </span>
+                { state.message && <span { ...headerNotificationProps }>{ state.message }</span> }
+                <span { ...headerViewModeProps }>
+                    { <span { ...desktopIconLabel }><DesktopIcon { ...desktopIconProps } /></span> }
+                    { <span { ...tabletIconLabel }><TabletIcon { ...tabletIconProps } /></span> }
+                    { <span { ...mobileIconLabel }><MobileIcon { ...mobileIconProps } /></span> }
+                </span>
+                <span { ...headerActionProps }>
+                    { <span { ...layoutIconLabel }><LayoutIcon { ...layoutIconProps } /></span> }
+                    { <span { ...hoverIconLabel }><HoverIcon { ...hoverIconProps } /></span> }
+                    { <span { ...revertIconLabel }><RevertIcon { ...revertIconProps } /></span> }
+                    { <span { ...deleteIconLabel }><DeleteIcon { ...deleteIconProps } /></span> }
+                    { <span { ...saveIconLabel }><SaveIcon { ...saveIconProps } /></span> }
+                    { <span { ...closeIconLabel }><CloseIcon { ...closeIconProps } /></span> }
+                </span>
             </div>
         )
     };

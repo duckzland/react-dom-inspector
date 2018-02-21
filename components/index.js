@@ -28,7 +28,8 @@ export default class Inspector extends React.Component {
         refresh: false,
         overlay: {},
         frameLoaded: false,
-        viewmode: 'desktop'
+        viewmode: 'desktop',
+        message: false
     };
 
     eventBinded = {
@@ -74,6 +75,7 @@ export default class Inspector extends React.Component {
     componentWillMount() {
         document.body.setAttribute('stylizer-active', this.state.minimize ? 'true' : 'false');
         document.body.setAttribute('stylizer-vertical', this.state.vertical ? 'true' : 'false');
+        document.body.setAttribute('stylizer-viewmode', this.state.viewmode);
     };
 
     componentDidUpdate() {
@@ -111,6 +113,12 @@ export default class Inspector extends React.Component {
     };
 
     generateFrame = () => {
+        const { config } = this;
+        const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
+        const frameReadyFunction = get(window, mountNode.getAttribute('data-onframeready'));
+        const frameAppendFunction = get(window, mountNode.getAttribute('data-onframeappend'));
+        const frameBeforeUnloadFunction = get(window, mountNode.getAttribute('data-onframebeforeunload'));
+
         this.setState({ frameLoaded: false });
         this.frameWrapper = document.getElementById('stylizer-frame-wrapper');
         this.frame = document.createElement('iframe');
@@ -119,8 +127,12 @@ export default class Inspector extends React.Component {
         this.frame.setAttribute('scrolling', 'no');
         this.frame.setAttribute('width', '100%');
         this.frame.setAttribute('height', '100%');
+        this.frame.setAttribute('sandbox', 'allow-scripts allow-same-origin');
         this.frame.setAttribute('src', this.config.get('pageSrc'));
-        this.frame.onload = () => {
+        this.frame.onbeforeunload = (e) => {
+            isFunction(frameBeforeUnloadFunction) && frameBeforeUnloadFunction(e, this);
+        };
+        this.frame.onload = (e) => {
             this.document = this.frame.contentWindow.document;
             this.DOMHelper = new DOMHelper(this.document);
 
@@ -130,10 +142,14 @@ export default class Inspector extends React.Component {
             this.state.hover ? this.bindEvent('mousemove') : this.destroyEvent('mousemove');
             this.state.minimize ? this.destroyEvent('all') : this.bindEvent('click');
 
+            isFunction(frameReadyFunction) && frameReadyFunction(e, this);
+
             this.setState({ frameLoaded: true });
         };
 
         this.frameWrapper.appendChild(this.frame);
+
+        isFunction(frameAppendFunction) && frameAppendFunction(this.frame, this);
     };
 
     resizeFrame = () => {
@@ -164,6 +180,7 @@ export default class Inspector extends React.Component {
         this.frame.classList.remove('stylizer-tablet');
         this.frame.classList.remove('stylizer-mobile');
         this.frame.classList.add('stylizer-' + mode);
+        document.body.setAttribute('stylizer-viewmode', this.state.viewmode);
         this.resizeFrame();
         this.iteratorHelper.reset();
         this.setState(this.state);
@@ -184,29 +201,39 @@ export default class Inspector extends React.Component {
         isFunction(killFunction) && killFunction();
     };
 
+    prepareSheet = () => {
+        !this.state.sheetPrepared
+            && ['desktop', 'tablet', 'mobile'].map((type) => {
+                const sheet = this.document.getElementById('stylizer-original-' + type);
+                sheet.getAttribute('media')
+                    && sheet.setAttribute('media-original', sheet.getAttribute('media'));
+
+                sheet.setAttribute('media', 'max-width: 1px');
+            });
+
+        this.state.sheetPrepared = true;
+    };
+
     cloneSheet = () => {
+
+        this.prepareSheet();
+
         ['desktop', 'tablet', 'mobile'].map((type) => {
             const original = this.document.getElementById('stylizer-original-' + type);
             const sheet = this.document.createElement('style');
-            const mediaAttr = original.getAttribute('media');
+            const mediaAttr = original.getAttribute('media-original');
 
             sheet.id = 'stylizer-source-' + type;
             sheet.innerHTML = original.innerHTML;
             sheet.classList.add('stylizer-sheet');
-
-            if (mediaAttr) {
-                sheet.setAttribute('media', mediaAttr);
-                original.setAttribute('media-original', mediaAttr);
-            }
-
-            original.setAttribute('media', 'max-width: 1px');
+            mediaAttr && sheet.setAttribute('media', mediaAttr);
 
             this.document.body.appendChild(sheet);
         });
     };
 
     wipeData = () => {
-        const { convertData, config, cloneSheet } = this;
+        const { convertData, config } = this;
         const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
         const wipeFunction = get(window, mountNode.getAttribute('data-onwipe'));
 
@@ -215,7 +242,7 @@ export default class Inspector extends React.Component {
             const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
             storage
                 && isFunction(wipeFunction)
-                && wipeFunction(convertData(storage), type);
+                && wipeFunction(convertData(storage), type, this);
 
             sheet
                 && sheet.cssRules
@@ -242,10 +269,11 @@ export default class Inspector extends React.Component {
 
         ['desktop', 'tablet', 'mobile'].map((type) => {
             const storage = this.document.getElementById('stylizer-source-' + type);
-
             storage
                 && isFunction(revertFunction)
-                && revertFunction(convertData(storage), type)
+                && revertFunction(convertData(storage), type, this);
+
+            storage
                 && this.document.body.removeChild(storage)
         });
 
@@ -283,7 +311,7 @@ export default class Inspector extends React.Component {
             const storage = this.document.getElementById('stylizer-source-' + type);
             storage
                 && isFunction(saveFunction)
-                && saveFunction(convertData(storage), type);
+                && saveFunction(convertData(storage), type, this);
         });
 
         return true;
@@ -345,6 +373,10 @@ export default class Inspector extends React.Component {
         });
     };
 
+    setMessage = (text) => {
+        this.setState({message: text, refresh: true});
+    };
+
     render() {
         const { config, state, props, allowNavigator, DOMHelper, iteratorHelper } = this;
         const { iterator, editor, controlbar } = props;
@@ -353,7 +385,8 @@ export default class Inspector extends React.Component {
             key: 'stylizer-controlbar-element',
             config: controlbar,
             root: this,
-            refresh: state.refresh
+            refresh: state.refresh,
+            message: state.message
         });
 
         const inspectorProps = config.get('inspectorProps', {

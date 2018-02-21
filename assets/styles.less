@@ -73,7 +73,6 @@
   font-size: 14px;
   font-family: Arial, Helvetica, Verdana, sans-serif;
 
-
   /**
     Styling Reset
     **/
@@ -135,7 +134,7 @@
     height: 29px;
   }
 
-  .chrome-picker > div >.flexbox-fix > div:not(.flexbox-fix) > div {
+  .chrome-picker > div > .flexbox-fix > div:not(.flexbox-fix) > div {
     margin-top: 4px !important;
   }
 
@@ -318,7 +317,7 @@
 
   @media screen and (min-width: @ie9MediaMinWidthHack) {
     & select {
-      background-image:none\9;
+      background-image: none \9;
     }
   }
 
@@ -628,7 +627,6 @@
         right: 0;
         bottom: 0;
 
-
         .stylizer-image-picker-images {
           display: flex;
           flex-direction: row;
@@ -723,7 +721,7 @@
     box-shadow: none !important;
 
     svg {
-      background:  @TabsText !important
+      background: @TabsText !important
     }
 
     span {
@@ -909,7 +907,6 @@
     }
   }
 
-
   /**
     Main Panels Structures
     Used in both iterator and editor
@@ -992,13 +989,12 @@
       overflow: hidden;
       display: block;
 
-
       [data-depth] {
         margin-left: (10 * @InspectorElementMargin);
       }
 
       .data-depth-margin( @depth-margin, @max-depth ) when ( @max-depth >= 0 ) {
-        .data-depth-margin( @depth-margin, @max-depth - 1 );
+        .data-depth-margin(@depth-margin, @max-depth - 1);
 
         [data-depth="@{max-depth}"] {
           margin-left: (@max-depth * @depth-margin);
@@ -1133,6 +1129,7 @@
           min-width: 320px;
         }
 
+        .stylizer-group--box-shadow,
         .stylizer-group--background {
           width: 100%;
         }
@@ -1169,6 +1166,11 @@
         .stylizer-field--box-shadow {
           .stylizer-form-input--boxshadow-inset {
             min-width: 120px;
+          }
+
+          .stylizer-form-input--boxshadow-hshadow,
+          .stylizer-form-input--boxshadow-vshadow {
+            min-width: 60px;
           }
         }
       }
@@ -1217,7 +1219,6 @@
   }
 }
 
-
 /**
   Body Elements
   **/
@@ -1231,19 +1232,19 @@ body[stylizer-vertical] {
   /**
   Styling for the Iframe
   **/
-  #stylizer-frame-wrapper {
+  #stylizer-viewmode-frame {
     width: 100%;
     min-height: 100%;
     overflow-x: auto;
     height: max-content;
     background: @FrameBackground;
 
-    > iframe {
+    iframe {
       display: block;
       border: none;
       width: 100%;
 
-
+      /**
       &.stylizer-desktop {
 
       }
@@ -1260,7 +1261,7 @@ body[stylizer-vertical] {
         height: 736px;
         min-height: 736px;
         margin: 60px auto;
-      }
+      }**/
     }
   }
 }
@@ -1273,7 +1274,7 @@ body[stylizer-vertical="true"] {
   &[stylizer-active="false"] {
     padding-left: 390px;
 
-    #stylizer-frame-wrapper {
+    #stylizer-viewmode-frame {
       height: ~"calc(100vh - 35px)";
       max-height: ~"calc(100vh - 35px)";
       min-height: ~"calc(100vh - 35px)";
@@ -1448,7 +1449,6 @@ body[stylizer-vertical="true"] {
   }
 }
 
-
 /**
   Horizontal Overrides
   **/
@@ -1460,7 +1460,7 @@ body[stylizer-vertical="false"] {
     max-height: ~"calc(100vh - 320px)";
     min-height: ~"calc(100vh - 320px)";
 
-    #stylizer-frame-wrapper {
+    #stylizer-viewmode-frame {
       height: ~"calc(100vh - 355px)";
       max-height: ~"calc(100vh - 355px)";
       min-height: ~"calc(100vh - 355px)";
@@ -1496,7 +1496,7 @@ body[stylizer-vertical="false"] {
     max-height: ~"calc(100vh - 69px)";
     min-height: ~"calc(100vh - 69px)";
 
-    #stylizer-frame-wrapper {
+    #stylizer-viewmode-frame {
       height: ~"calc(100vh - 69px)";
       max-height: ~"calc(100vh - 69px)";
       min-height: ~"calc(100vh - 69px)";
@@ -1507,3 +1507,27 @@ body[stylizer-vertical="false"] {
     max-height: 280px;
   }
 }
+
+/**
+  View Mode overrides
+  **/
+body {
+  &[stylizer-viewmode="tablet"] {
+    #stylizer-frame-wrapper {
+      width: 768px;
+      height: 1024px;
+      margin: 60px auto;
+      overflow-x: auto;
+    }
+  }
+
+  &[stylizer-viewmode="mobile"] {
+    #stylizer-frame-wrapper {
+      width: 414px;
+      height: 736px;
+      min-height: 736px;
+      margin: 60px auto;
+      overflow-x: auto;
+    }
+  }
+} 

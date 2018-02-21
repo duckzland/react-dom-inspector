@@ -5,6 +5,7 @@ import { get } from 'lodash';
 /**
  * Component for building an overlay for hovered DOM Element
  *
+ * @todo Refactor this properly!
  * @author jason.xie@victheme.com
  */
 export default class Overlay extends React.Component {
@@ -52,6 +53,7 @@ export default class Overlay extends React.Component {
         }
         if ('wrapper' in props) {
             this.frameWrapper = props.wrapper;
+            this.viewModeWrapper = this.frameWrapper.parentElement;
         }
         if ('frame' in props) {
             this.frame = props.frame;
@@ -80,6 +82,7 @@ export default class Overlay extends React.Component {
         let mainBodyStyle = getComputedStyle(document.body);
         let computedStyle = getComputedStyle(node);
         let frameStyle = getComputedStyle(this.frame);
+        let frameWrapperStyle = getComputedStyle(this.frameWrapper);
 
         requiredValue.forEach(item => {
             result[item] = parseFloat(computedStyle[item]) || 0;
@@ -101,8 +104,8 @@ export default class Overlay extends React.Component {
         }
 
         Object.assign(result, {
-            top: (_y - this.frameWrapper.scrollTop) + parseFloat(mainBodyStyle['padding-top']) + parseFloat(frameStyle['margin-top']),
-            left: _x + parseFloat(frameStyle['margin-left']) +  parseFloat(mainBodyStyle['padding-left'])
+            top: (_y - this.viewModeWrapper.scrollTop - this.frameWrapper.scrollTop) + parseFloat(mainBodyStyle['padding-top']) + parseFloat(frameStyle['margin-top']) + parseFloat(frameWrapperStyle['margin-top']),
+            left: _x + parseFloat(frameStyle['margin-left']) +  parseFloat(mainBodyStyle['padding-left']) + parseFloat(frameWrapperStyle['margin-left'])
         });
 
         this.setState({

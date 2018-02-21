@@ -72,10 +72,7 @@ export default class Iterator {
         }
 
         for (let x=0; x < node.childNodes.length; x++) {
-            let childNode = node.childNodes[x];
-            if ( childNode.childNodes.length > 0) {
-                this.crawl(childNode, Storage, depth + 1, maxDepth, tree);
-            }
+            this.crawl(node.childNodes[x], Storage, depth + 1, maxDepth, tree);
         }
 
     };
