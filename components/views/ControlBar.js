@@ -12,7 +12,7 @@ import MobileIcon from '../../node_modules/react-icons/lib/fa/mobile';
 import Configurator from '../modules/Config';
 
 /**
- * Class for generating the Editor element markup
+ * Class for generating the Control Bar element markup
  *
  * @author jason.xie@victheme.com
  */
@@ -20,7 +20,6 @@ export default class ControlBar extends React.Component {
 
     state = {
         root: false,
-        message: false,
         errors: {}
     };
 
@@ -35,12 +34,6 @@ export default class ControlBar extends React.Component {
 
         if ('root' in props) {
             this.state.root = props.root;
-        }
-    };
-
-    componentWillReceiveProps(nextProps) {
-        if ('message' in nextProps) {
-            this.setState({message: nextProps.message});
         }
     };
 
@@ -67,11 +60,6 @@ export default class ControlBar extends React.Component {
         const headerViewModeProps = config.get('ControlBarHeaderViewModeProps', {
             key: 'stylizer-editor-header-view-mode',
             className: 'stylizer-header-view-mode'
-        });
-
-        const headerNotificationProps = config.get('ControlBarHeaderNotificationProps', {
-            key: 'stylizer-editor-header-notification',
-            className: 'stylizer-header-notification'
         });
 
         const layoutIconProps = config.get('ControlBarLayoutIconProps', {
@@ -159,13 +147,12 @@ export default class ControlBar extends React.Component {
         const mobileIconLabel = config.get('ControlBarMobileIconLabel', {
             title: 'Change to mobile view mode'
         });
-console.log(state.message);
+
         return (
             <div { ...headerProps }>
                 <span { ...headerTextProps }>
                     { config.get('LogoText') }
                 </span>
-                { state.message && <span { ...headerNotificationProps }>{ state.message }</span> }
                 <span { ...headerViewModeProps }>
                     { <span { ...desktopIconLabel }><DesktopIcon { ...desktopIconProps } /></span> }
                     { <span { ...tabletIconLabel }><TabletIcon { ...tabletIconProps } /></span> }

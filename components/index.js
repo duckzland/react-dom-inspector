@@ -6,6 +6,7 @@ import DOMHelper from './modules/DOMHelper';
 import Parser from './modules/Parser';
 import Configurator from './modules/Config';
 import ControlBar from './views/ControlBar';
+import MessageBox from './views/MessageBox';
 import InspectorPanel from './views/Inspector';
 import EditorPanel from './views/Editor';
 import Overlay from './views/Overlay';
@@ -28,8 +29,7 @@ export default class Inspector extends React.Component {
         refresh: false,
         overlay: {},
         frameLoaded: false,
-        viewmode: 'desktop',
-        message: false
+        viewmode: 'desktop'
     };
 
     eventBinded = {
@@ -44,6 +44,7 @@ export default class Inspector extends React.Component {
     hoverCache = false;
     fontLoader = false;
     document = false;
+    messageBox = false;
 
     constructor(props) {
         super(props);
@@ -373,8 +374,11 @@ export default class Inspector extends React.Component {
         });
     };
 
-    setMessage = (text) => {
-        this.setState({message: text, refresh: true});
+    setMessage = (type, text, duration) => {
+        if (!this.messageBox && this.refs.messageBox) {
+            this.messageBox = this.refs.messageBox;
+        }
+        this.messageBox && this.messageBox.set(type, text, duration);
     };
 
     render() {
@@ -385,8 +389,7 @@ export default class Inspector extends React.Component {
             key: 'stylizer-controlbar-element',
             config: controlbar,
             root: this,
-            refresh: state.refresh,
-            message: state.message
+            refresh: state.refresh
         });
 
         const inspectorProps = config.get('inspectorProps', {
@@ -423,13 +426,19 @@ export default class Inspector extends React.Component {
             node: state.overlay
         });
 
+        const messageProps = config.get('messageProps', {
+            ref: 'messageBox',
+            root: this
+        });
+
         return (
             <div { ...inspectorProps }>
                 <ControlBar { ...controllBarProps } />
                 { state.frameLoaded && allowNavigator && <InspectorPanel { ...inspectorPanelProps }/> }
                 { state.frameLoaded && <EditorPanel { ...editorPanelProps } /> }
                 { state.frameLoaded && <Overlay { ...overlayProps } /> }
-                { !state.frameLoaded && <div class="loading-bar" /> }
+                { state.frameLoaded && <MessageBox { ...messageProps } /> }
+                { !state.frameLoaded && <div className="loading-bar" /> }
             </div>
         )
     };
