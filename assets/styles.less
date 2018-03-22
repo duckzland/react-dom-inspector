@@ -1558,6 +1558,10 @@ body[stylizer-vertical="true"] {
     &.minimize {
       height: 100%;
       width: 34px;
+
+      .stylizer-advanced-panel-wrapper {
+        display: none;
+      }
     }
 
     .has-vertical-scrollbar {
@@ -1687,6 +1691,13 @@ body[stylizer-vertical="true"] {
       }
     }
 
+    .CodeMirror {
+      height: ~"calc(100vh - 77px)";
+
+      .CodeMirror-vscrollbar {
+        overflow: auto;
+      }
+    }
   }
 }
 
