@@ -9,6 +9,7 @@ import LayoutIcon from '../../node_modules/react-icons/lib/io/code-working';
 import DesktopIcon from '../../node_modules/react-icons/lib/fa/desktop';
 import TabletIcon from '../../node_modules/react-icons/lib/fa/tablet';
 import MobileIcon from '../../node_modules/react-icons/lib/fa/mobile';
+import AdvancedIcon from '../../node_modules/react-icons/lib/fa/terminal';
 import Configurator from '../modules/Config';
 
 /**
@@ -112,6 +113,11 @@ export default class ControlBar extends React.Component {
             onClick: () => root.toggleViewMode('mobile')
         });
 
+        const advancedIconProps = config.get('EditorPanelAdvancedIconProps', {
+            size: 16,
+            onClick: () => root.toggleEditorMode()
+        });
+
         const layoutIconLabel = config.get('ControlBarLayoutIconLabel', {
             title: 'Change the inspector orientation'
         });
@@ -148,6 +154,10 @@ export default class ControlBar extends React.Component {
             title: 'Change to mobile view mode'
         });
 
+        const advancedIconLabel = config.get('EditorPanelAdvancedIconLabel', {
+            title: !root.state.advanced ? 'Switch Editor Mode to advanced mode' : 'Switch Editor Mode to normal mode'
+        });
+
         return (
             <div { ...headerProps }>
                 <span { ...headerTextProps }>
@@ -160,6 +170,7 @@ export default class ControlBar extends React.Component {
                 </span>
                 <span { ...headerActionProps }>
                     { <span { ...layoutIconLabel }><LayoutIcon { ...layoutIconProps } /></span> }
+                    { <span { ...advancedIconLabel }><AdvancedIcon { ...advancedIconProps } /></span> }
                     { <span { ...hoverIconLabel }><HoverIcon { ...hoverIconProps } /></span> }
                     { <span { ...revertIconLabel }><RevertIcon { ...revertIconProps } /></span> }
                     { <span { ...deleteIconLabel }><DeleteIcon { ...deleteIconProps } /></span> }

@@ -35,7 +35,8 @@ export default class Inspector extends React.Component {
         if ('config' in props)  {
            this.config.insert(props.config);
         }
-        
+
+        this.iterator.destroy();
         this.iterator.iterate(props.document.body, false, 0, this.config.get('InspectorPanelStartingDepth'), []);
     };
 

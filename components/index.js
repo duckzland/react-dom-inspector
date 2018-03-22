@@ -9,9 +9,11 @@ import ControlBar from './views/ControlBar';
 import MessageBox from './views/MessageBox';
 import InspectorPanel from './views/Inspector';
 import EditorPanel from './views/Editor';
+import AdvancedPanel from './views/Advanced';
 import Overlay from './views/Overlay';
 import { forEach, get, isFunction } from 'lodash';
 import './../assets/styles.less';
+import './../assets/codemirror.less';
 
 /**
  * Main Inspector Component for generating the inspector and editor element
@@ -29,7 +31,8 @@ export default class Inspector extends React.Component {
         refresh: false,
         overlay: {},
         frameLoaded: false,
-        viewmode: 'desktop'
+        viewmode: 'desktop',
+        advanced: false
     };
 
     eventBinded = {
@@ -185,6 +188,13 @@ export default class Inspector extends React.Component {
         this.resizeFrame();
         this.iteratorHelper.reset();
         this.setState(this.state);
+    };
+
+    toggleEditorMode = () => {
+        //
+        this.setState({
+            advanced: !this.state.advanced
+        });
     };
 
     killApp = () => {
@@ -420,6 +430,17 @@ export default class Inspector extends React.Component {
             refresh: state.refresh
         });
 
+        const advancedPanelProps = config.get('advancedPanelProps', {
+            key: 'stylizer-editor-element',
+            config: editor,
+            root: this,
+            node: state.node,
+            DOMHelper: DOMHelper,
+            document: this.document,
+            stylizerID: this.getStyleSourceID(),
+            refresh: state.refresh
+        });
+
         const overlayProps = config.get('overlayProps', {
             frame: this.frame,
             wrapper: this.frameWrapper,
@@ -434,9 +455,10 @@ export default class Inspector extends React.Component {
         return (
             <div { ...inspectorProps }>
                 <ControlBar { ...controllBarProps } />
-                { state.frameLoaded && allowNavigator && <InspectorPanel { ...inspectorPanelProps }/> }
-                { state.frameLoaded && <EditorPanel { ...editorPanelProps } /> }
-                { state.frameLoaded && <Overlay { ...overlayProps } /> }
+                { state.frameLoaded && !state.advanced && allowNavigator && <InspectorPanel { ...inspectorPanelProps }/> }
+                { state.frameLoaded && !state.advanced && <EditorPanel { ...editorPanelProps } /> }
+                { state.frameLoaded && !state.advanced && <Overlay { ...overlayProps } /> }
+                { state.frameLoaded && state.advanced && <AdvancedPanel { ...advancedPanelProps } /> }
                 { state.frameLoaded && <MessageBox { ...messageProps } /> }
                 { !state.frameLoaded && <div className="loading-bar" /> }
             </div>

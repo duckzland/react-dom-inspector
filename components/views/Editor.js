@@ -102,7 +102,7 @@ export default class Editor extends React.Component {
 
     render() {
 
-        let { onChangeTab, props, state, config } = this;
+        let { onChangeTab, onChangeMode, props, state, config } = this;
         let ActivePanel = [];
 
         const { root } = props;
@@ -211,6 +211,7 @@ export default class Editor extends React.Component {
                         <div { ...emptyProps }>{ config.get('EditorPanelEmptyText') }</div>
                     </div>
                 }
+
             </div>
         )
     };

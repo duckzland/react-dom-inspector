@@ -14,6 +14,10 @@ module.exports = {
                 loader: ExtractTextPlugin.extract(['css-loader', 'less-loader'])
             },
             {
+                test: /\.css$/,
+                loader: ExtractTextPlugin.extract(['css-loader'])
+            },
+            {
                 test: /\.(png|jpg|woff|woff2|eot|ttf|otf)$/,
                 loaders: ['file-loader']
             },
@@ -60,6 +64,7 @@ module.exports = {
 
         new webpack.optimize.AggressiveMergingPlugin(),
 
+        /**
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 warnings: false,
@@ -68,7 +73,7 @@ module.exports = {
             comments: false,
             sourceMap: false
         }),
-
+        **/
         new webpack.optimize.AggressiveMergingPlugin(),
 
         new CopyWebpackPlugin([

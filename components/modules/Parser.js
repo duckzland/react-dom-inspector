@@ -6,14 +6,14 @@
 export default class Parser {
 
     constructor(style) {
-        return this.parseCSS(style);
+        return style ? this.parseCSS(style) : '';
     }
 
     parseCSS = (source) => {
 
         const arr = (new RegExp('((\\s*?(?:\\/\\*[\\s\\S]*?\\*\\/)?\\s*?@media[\\s\\S]*?){([\\s\\S]*?)}\\s*?})|(([\\s\\S]*?){([\\s\\S]*?)})', 'gi')).exec(source);
-        const selector = arr[2] ? arr[2] : arr[5] ? arr[5] : false;
-        const rules = arr[6] ? arr[6] : false;
+        const selector = arr && arr[2] ? arr[2] : arr && arr[5] ? arr[5] : false;
+        const rules = arr && arr[6] ? arr[6] : false;
 
         return selector && rules ? [{
             selector: selector.split('\r\n').join('\n').trim().replace(/\n+/, "\n"),
