@@ -44,6 +44,9 @@
 @ColorGreen: #4b9701;
 @ColorOrange: #7d3d05;
 @ColorRed: #c50313;
+@ColorPink: #cc629d;
+@ColorPurple: #8763b4;
+@ColorYellow: #bdc66b;
 
 @ToolTipBackground: #03141d;
 @ToolTipText: #d3f7ff;
@@ -1300,6 +1303,150 @@
       color: @FormElementText;
       font-size: 18px;
       line-height: 140px;
+    }
+  }
+
+  /**
+  CodeMirror
+  **/
+  .CodeMirror {
+    height: 285px;
+    direction: ltr;
+    background-color: @FrameBackground !important;
+    color: @FormElementText !important;
+    border: none;
+
+    &.cm-s-stylizer {
+      .CodeMirror-lines {
+        padding: 8px 0;
+      }
+      pre {
+        padding: 0 10px;
+
+        span {
+          font-size: 13px;
+        }
+      }
+      .CodeMirror-scrollbar-filler,
+      .CodeMirror-gutter-filler {
+        background-color: @FormElementText;
+      }
+
+      .CodeMirror-gutters {
+        background-color: darken(@ScrollerBackground, 60%)!important;
+        color: @FormElementText;
+        border: none;
+      }
+
+      .CodeMirror-cursor {
+        border-left: solid thin @FormElementText;
+      }
+
+      .CodeMirror-linenumber {
+        color: darken(@FormElementText, 60%);
+        min-width: 30px;
+        padding-right: 5px;
+        padding-left: 5px;
+      }
+
+      .CodeMirror-selected {
+        background: rgba(255, 255, 255, 0.10);
+      }
+
+      .CodeMirror-line {
+        &::selection,
+        &::-moz-selection {
+          background: rgba(255, 255, 255, 0.10);
+        }
+
+        > span {
+          &::selection,
+          &::-moz-selection {
+            background: rgba(255, 255, 255, 0.10);
+          }
+        }
+      }
+
+      .CodeMirror-scroll {
+        overflow: auto !important;
+      }
+
+      span {
+        &.cm-comment {
+          color: lighten(@ColorBlue, 20%);
+        }
+
+        &.cm-string,
+        &.cm-string-2 {
+          color: @ColorYellow;
+        }
+
+        &.cm-number {
+          color: @FormElementText;
+        }
+
+        &.cm-variable {
+          color: @ColorGreen;
+        }
+
+        &.cm-variable-2 {
+          color: @FormElementText;
+        }
+
+        &.cm-def {
+          color: @ColorGreen;
+        }
+
+        &.cm-operator {
+          color: @ColorPink;
+        }
+
+        &.cm-keyword {
+          color: @ColorPink;
+        }
+
+        &.cm-atom {
+          color: @FormElementText;
+        }
+
+        &.cm-meta {
+          color: @FormElementText;
+        }
+
+        &.cm-tag {
+          color: darken(@FormElementText, 50%);
+        }
+
+        &.cm-attribute {
+          color: @ColorGreen;
+        }
+
+        &.cm-qualifier {
+          color: darken(@FormElementText, 20%);
+        }
+
+        &.cm-property {
+          color: @FormElementPlaceholder;
+        }
+
+        &.cm-builtin {
+          color: @ColorGreen;
+        }
+
+        &.cm-variable-3,
+        &.cm-type {
+          color: @ColorOrange;
+        }
+      }
+
+      .CodeMirror-activeline-background {
+        background: rgba(255,255,255,0.1);
+      }
+
+      .CodeMirror-matchingbracket {
+        text-decoration: underline;
+        color: @FormElementText !important;
+      }
     }
   }
 }

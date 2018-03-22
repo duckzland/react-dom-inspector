@@ -12,8 +12,8 @@ import EditorPanel from './views/Editor';
 import AdvancedPanel from './views/Advanced';
 import Overlay from './views/Overlay';
 import { forEach, get, isFunction } from 'lodash';
-import './../assets/styles.less';
 import './../assets/codemirror.less';
+import './../assets/styles.less';
 
 /**
  * Main Inspector Component for generating the inspector and editor element
@@ -191,7 +191,7 @@ export default class Inspector extends React.Component {
     };
 
     toggleEditorMode = () => {
-        //
+        this.iteratorHelper.reset();
         this.setState({
             advanced: !this.state.advanced
         });

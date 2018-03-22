@@ -26,12 +26,17 @@ export default class Iterator {
 
     iterate = (node, parent, depth, maxDepth, tree) => {
 
+        if ('crawled' in node && node.crawled) {
+            return;
+        }
+        
         this.crawled = [];
 
         this.crawl(node, parent, depth, maxDepth, tree);
         let ParentIndex = parent ? findIndex(this.storage, { uuid: parent.uuid }) : this.storage.length;
         Array.prototype.splice.apply(this.storage, [ParentIndex, 1].concat(this.crawled));
 
+        node.crawled = true;
         this.crawled = [];
 
     };
@@ -94,6 +99,7 @@ export default class Iterator {
     destroy = () => {
         this.storage.forEach((Store, delta) => {
             let node = Store.trackNode();
+            node.crawled = false;
             node && node.removeAttribute && node.removeAttribute(this.config.stylizerAttribute);
             Store = null;
             delete this.storage[delta];

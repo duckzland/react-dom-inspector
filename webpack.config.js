@@ -64,7 +64,6 @@ module.exports = {
 
         new webpack.optimize.AggressiveMergingPlugin(),
 
-        /**
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 warnings: false,
@@ -73,7 +72,7 @@ module.exports = {
             comments: false,
             sourceMap: false
         }),
-        **/
+
         new webpack.optimize.AggressiveMergingPlugin(),
 
         new CopyWebpackPlugin([

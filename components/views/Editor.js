@@ -91,7 +91,7 @@ export default class Editor extends React.Component {
 
         (name !== 'selector') ? node.storeStyle(name, value) : node.storeSelector(value);
 
-        styleElement.insertRule(node.getStyling());
+        styleElement.insertRule(node.getStyling(), styleElement.cssRules.length);
 
         return this;
     };

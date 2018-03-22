@@ -4,6 +4,7 @@ import HamburgerIcon from '../../node_modules/react-icons/lib/io/navicon-round';
 import Configurator from '../modules/Config';
 import Parser from '../modules/Parser';
 import {UnControlled as CodeMirror} from 'react-codemirror2'
+import cssBeautify from 'cssbeautify';
 import { forEach } from 'lodash';
 
 require('codemirror/mode/css/css');
@@ -69,7 +70,11 @@ export default class AdvancedPanel extends React.Component {
             rules.push(rule.cssText);
         });
 
-        return rules.join("\n");
+        return cssBeautify(rules.join("\n"), {
+            indent: '  ',
+            openbrace: 'end-of-line',
+            autosemicolon: true
+        });
     };
 
     onChangeValue = (editor, data, value) => {
@@ -77,12 +82,12 @@ export default class AdvancedPanel extends React.Component {
         const { styleElement } = this;
         const newRules = this.convertCSS(value);
 
-        for (var i = 0; i < styleElement.cssRules.length; i++) {
+        for (var i = styleElement.cssRules.length - 1; i >= 0; i--) {
             styleElement.deleteRule(i);
         }
 
         newRules && forEach(newRules, (rule, i) => {
-            styleElement.insertRule(rule.cssText);
+            styleElement.insertRule(rule.cssText, i);
         });
     };
 
@@ -131,7 +136,7 @@ export default class AdvancedPanel extends React.Component {
             value: this.convertData(),
             options: {
                 mode: 'css',
-                theme: 'dracula',
+                theme: 'stylizer',
                 lineNumbers: true
             },
             onChange: (editor, data, value) => onChangeValue(editor, data, value)

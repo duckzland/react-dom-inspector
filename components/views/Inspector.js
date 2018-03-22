@@ -17,7 +17,7 @@ export default class Inspector extends React.Component {
         active: false,
         minimize: false
     };
-    
+
     config = false;
     
     constructor(props) {
@@ -26,7 +26,7 @@ export default class Inspector extends React.Component {
             InspectorPanelStartingDepth: 2,
             InspectorPanelHeaderText: 'Navigator'
         });
-        
+
         this.iterator = 'iterator' in props ? props.iterator : new Iterator({
             root: props.root,
             sheetID: props.stylizerID
@@ -36,7 +36,6 @@ export default class Inspector extends React.Component {
            this.config.insert(props.config);
         }
 
-        this.iterator.destroy();
         this.iterator.iterate(props.document.body, false, 0, this.config.get('InspectorPanelStartingDepth'), []);
     };
 
