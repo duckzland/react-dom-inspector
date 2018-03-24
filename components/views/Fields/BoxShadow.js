@@ -91,8 +91,10 @@ export default class BoxShadow extends React.Component {
 
 
     render() {
+        console.log(this);
         const { props, config, onChange, onKeypress, state } = this;
-        const { root } = props;
+        const { root, mainRoot } = props;
+        const { polyglot } = mainRoot;
 
         const mainProps = config.get('ElementBoxShadowMainProps', {
             className: 'stylizer-form-row stylizer-box-shadow-element'
@@ -160,31 +162,31 @@ export default class BoxShadow extends React.Component {
         return (
             <div { ...mainProps } >
                 <div { ...wrapperProps }>
-                    <label { ...labelProps }>Color</label>
+                    <label { ...labelProps }>{ polyglot.t('Color') }</label>
                     <ColorPicker { ...ColorProps } />
                 </div>
                 <div { ...wrapperProps }>
-                    <label { ...labelProps }>H-Shadow</label>
+                    <label { ...labelProps }>{ polyglot.t('H-Shadow') }</label>
                     <input { ...HShadowProps } />
                 </div>
                 <div { ...wrapperProps }>
-                    <label { ...labelProps }>V-Shadow</label>
+                    <label { ...labelProps }>{ polyglot.t('V-Shadow') }</label>
                     <input { ...VShadowProps } />
                 </div>
                 <div { ...wrapperProps }>
-                    <label { ...labelProps }>Blur</label>
+                    <label { ...labelProps }>{ polyglot.t('Blur') }</label>
                     <input { ...BlurProps } />
                 </div>
                 <div { ...wrapperProps }>
-                    <label { ...labelProps }>Spread</label>
+                    <label { ...labelProps }>{ polyglot.t('Spread') }</label>
                     <input { ...SpreadProps } />
                 </div>
                 <div { ...wrapperProps }>
-                    <label { ...labelProps }>Inset</label>
+                    <label { ...labelProps }>{ polyglot.t('Inset') }</label>
                     <select { ...InsetProps }>
-                        <option key="inset-initial" value="initial">No Inset</option>
-                        <option key="inset-inset" value="inset">Inset</option>
-                        <option key="inset-inherit" value="inherit">Inherit</option>
+                        <option key="inset-initial" value="initial">{ polyglot.t('No Inset') }</option>
+                        <option key="inset-inset" value="inset">{ polyglot.t('Inset') }</option>
+                        <option key="inset-inherit" value="inherit">{ polyglot.t('Inherit') }</option>
                     </select>
                 </div>
             </div>

@@ -23,8 +23,7 @@ export default class Inspector extends React.Component {
     constructor(props) {
         super(props);
         this.config = new Configurator({
-            InspectorPanelStartingDepth: 2,
-            InspectorPanelHeaderText: 'Navigator'
+            InspectorPanelStartingDepth: 2
         });
 
         this.iterator = 'iterator' in props ? props.iterator : new Iterator({
@@ -127,7 +126,9 @@ export default class Inspector extends React.Component {
 
     render() {
 
-        const { iterator, state, config, onScroll, moveScrollBar } = this;
+        const { iterator, props, state, config, onScroll, moveScrollBar } = this;
+        const { root } = props;
+        const { polyglot } = root;
 
         const panelProps = config.get('inspectorPanelProps', {
             key: 'stylizer-iterator-panel',
@@ -172,8 +173,8 @@ export default class Inspector extends React.Component {
         return (
             <div { ...panelProps }>
                 <h3 { ...headerProps }>
-                    <span { ...headerTextProps }>{ config.get('InspectorPanelHeaderText') }</span>
-                    <span { ...headerActionProps }><span title="Minimize Navigator"><HamburgerIcon { ...hamburgerIconProps } /></span></span>
+                    <span { ...headerTextProps }>{ polyglot.t('Navigator') }</span>
+                    <span { ...headerActionProps }><span title={ polyglot.t('Minimize Navigator') }><HamburgerIcon { ...hamburgerIconProps } /></span></span>
                 </h3>
                 <ScrollArea { ...scrollAreaProps }>
                     { iterator.get().map((node, delta) => {

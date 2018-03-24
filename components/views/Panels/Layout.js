@@ -20,123 +20,125 @@ export default class Layout extends BasePanel {
             empty: null
         });
 
+        const { polyglot } = props.mainRoot;
+
         this.fields = [
             {
                 key: 'layout',
-                title: 'Layout',
+                title: polyglot.t('Layout'),
                 type: 'group',
                 elements: [
-                    { title: 'Display', target: 'display', type: 'element', field: 'select', options: {
-                        block: 'Block',
-                        flex: 'Flex',
-                        inline: 'Inline',
-                        'inline-block': 'Inline Block',
-                        'inline-flex': 'Inline Flex',
-                        'inline-table': 'Inline Table',
-                        'list-item': 'List Item',
-                        none: 'None',
-                        table: 'Table',
-                        'table-caption': 'Table Caption',
-                        'table-cell': 'Table Cell',
-                        'table-column': 'Table Column',
-                        'table-column-group': 'Table Column Group',
-                        'table-footer-group': 'Table Footer Group',
-                        'table-header-group': 'Table Header Group',
-                        'table-row': 'Table Row',
-                        'table-row-group': 'Table Row Group'
+                    { title: polyglot.t('Display'), target: 'display', type: 'element', field: 'select', options: {
+                        block: polyglot.t('Block'),
+                        flex: polyglot.t('Flex'),
+                        inline: polyglot.t('Inline'),
+                        'inline-block': polyglot.t('Inline Block'),
+                        'inline-flex': polyglot.t('Inline Flex'),
+                        'inline-table': polyglot.t('Inline Table'),
+                        'list-item': polyglot.t('List Item'),
+                        none: polyglot.t('None'),
+                        table: polyglot.t('Table'),
+                        'table-caption': polyglot.t('Table Caption'),
+                        'table-cell': polyglot.t('Table Cell'),
+                        'table-column': polyglot.t('Table Column'),
+                        'table-column-group': polyglot.t('Table Column Group'),
+                        'table-footer-group': polyglot.t('Table Footer Group'),
+                        'table-header-group': polyglot.t('Table Header Group'),
+                        'table-row': polyglot.t('Table Row'),
+                        'table-row-group': polyglot.t('Table Row Group')
                     }, default: '', inline: false},
-                    { title: 'Position', target: 'position', type: 'element', field: 'select', options: {
-                        static: 'Static',
-                        absolute: 'Absolute',
-                        fixed: 'Fixed',
-                        relative: 'Relative',
-                        sticky: 'Sticky'
+                    { title: polyglot.t('Position'), target: 'position', type: 'element', field: 'select', options: {
+                        static: polyglot.t('Static'),
+                        absolute: polyglot.t('Absolute'),
+                        fixed: polyglot.t('Fixed'),
+                        relative: polyglot.t('Relative'),
+                        sticky: polyglot.t('Sticky')
                     }, default: '', inline: false},
-                    { title: 'Float', target: 'float', type: 'element', field: 'select', options: {
-                        left: 'Left',
-                        right: 'Right',
-                        none: 'None'
+                    { title: polyglot.t('Float'), target: 'float', type: 'element', field: 'select', options: {
+                        left: polyglot.t('Left'),
+                        right: polyglot.t('Right'),
+                        none: polyglot.t('None')
                     }, default: '', inline: false},
-                    { title: 'Overflow', target: 'overflow', type: 'element', field: 'select', options: {
-                        visible: 'Visible',
-                        hidden: 'Hidden',
-                        auto: 'Auto'
+                    { title: polyglot.t('Overflow'), target: 'overflow', type: 'element', field: 'select', options: {
+                        visible: polyglot.t('Visible'),
+                        hidden: polyglot.t('Hidden'),
+                        auto: polyglot.t('Auto')
                     }, default: '', inline: false},
-                    { title: 'Box Sizing', target: 'box-sizing', type: 'element', field: 'select', options: {
-                        'content-box': 'Content Box',
-                        'border-box': 'Border Box'
+                    { title: polyglot.t('Box Sizing'), target: 'box-sizing', type: 'element', field: 'select', options: {
+                        'content-box': polyglot.t('Content Box'),
+                        'border-box': polyglot.t('Border Box')
                     }, default: '', inline: false}
 
                 ]
             },
             {
                 key: 'position',
-                title: 'Position',
+                title: polyglot.t('Position'),
                 type: 'group',
                 elements: [
-                    {title: 'Top', target: 'top', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'Left', target: 'left', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'Right', target: 'right', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'Bottom', target: 'top', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'Z-Index', target: 'z-index', type: 'element', field: 'text', default: '', inline: false}
+                    {title: polyglot.t('Top'), target: 'top', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('Left'), target: 'left', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('Right'), target: 'right', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('Bottom'), target: 'top', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('Z-Index'), target: 'z-index', type: 'element', field: 'text', default: '', inline: false}
                 ]
             },
             {
                 key: 'flex',
-                title: 'Flex',
+                title: polyglot.t('Flex'),
                 type: 'group',
                 elements: [
-                    {title: 'Basis', target: 'flex-basis', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'Grow', target: 'flex-grow', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'Shrink', target: 'flex-shrink', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'Order', target: 'order', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'Direction', target: 'flex-direction', type: 'element', field: 'select', options: {
-                        row: 'Row',
-                        'row-reverse': 'Row Reverse',
-                        column: 'Column',
-                        'column-reverse': 'Column Reverse',
+                    {title: polyglot.t('Basis'), target: 'flex-basis', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('Grow'), target: 'flex-grow', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('Shrink'), target: 'flex-shrink', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('Order'), target: 'order', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('Direction'), target: 'flex-direction', type: 'element', field: 'select', options: {
+                        row: polyglot.t('Row'),
+                        'row-reverse': polyglot.t('Row Reverse'),
+                        column: polyglot.t('Column'),
+                        'column-reverse': polyglot.t('Column Reverse'),
                     }, default: '', inline: false},
-                    {title: 'Wrap', target: 'flex-wrap', type: 'element', field: 'select', options: {
-                        nowrap: 'No Wrap',
-                        wrap: 'Wrap',
-                        'wrap-reverse': 'Wrap Reverse'
+                    {title: polyglot.t('Wrap'), target: 'flex-wrap', type: 'element', field: 'select', options: {
+                        nowrap: polyglot.t('No Wrap'),
+                        wrap: polyglot.t('Wrap'),
+                        'wrap-reverse': polyglot.t('Wrap Reverse')
                     }, default: '', inline: false}
                 ]
             },
             {
                 key: 'flex-alignment',
-                title: 'Flex Alignment',
+                title: polyglot.t('Flex Alignment'),
                 type: 'group',
                 elements: [
-                    {title: 'Content', target: 'align-content', type: 'element', field: 'select', options: {
-                        stretch: 'Stretch',
-                        center: 'Center',
-                        'flex-start': 'Flex Start',
-                        'flex-end': 'Flex End',
-                        'space-between': 'Space Between',
-                        'space-around': 'Space Around'
+                    {title: polyglot.t('Content'), target: 'align-content', type: 'element', field: 'select', options: {
+                        stretch: polyglot.t('Stretch'),
+                        center: polyglot.t('Center'),
+                        'flex-start': polyglot.t('Flex Start'),
+                        'flex-end': polyglot.t('Flex End'),
+                        'space-between': polyglot.t('Space Between'),
+                        'space-around': polyglot.t('Space Around')
                     }, default: '', inline: false},
-                    {title: 'Items', target: 'align-items', type: 'element', field: 'select', options: {
-                        stretch: 'Stretch',
-                        center: 'Center',
-                        'flex-start': 'Flex Start',
-                        'flex-end': 'Flex End',
-                        'baseline': 'Baseline'
+                    {title: polyglot.t('Items'), target: 'align-items', type: 'element', field: 'select', options: {
+                        stretch: polyglot.t('Stretch'),
+                        center: polyglot.t('Center'),
+                        'flex-start': polyglot.t('Flex Start'),
+                        'flex-end': polyglot.t('Flex End'),
+                        'baseline': polyglot.t('Baseline')
                     }, default: '', inline: false},
-                    {title: 'Self', target: 'align-self', type: 'element', field: 'select', options: {
-                        auto: 'Auto',
-                        stretch: 'Stretch',
-                        center: 'Center',
-                        'flex-start': 'Flex Start',
-                        'flex-end': 'Flex End',
-                        'baseline': 'Baseline'
+                    {title: polyglot.t('Self'), target: 'align-self', type: 'element', field: 'select', options: {
+                        auto: polyglot.t('Auto'),
+                        stretch: polyglot.t('Stretch'),
+                        center: polyglot.t('Center'),
+                        'flex-start': polyglot.t('Flex Start'),
+                        'flex-end': polyglot.t('Flex End'),
+                        'baseline': polyglot.t('Baseline')
                     }, default: '', inline: false},
-                    {title: 'Justify Content', target: 'justify-content', type: 'element', field: 'select', options: {
-                        'flex-start': 'Flex Start',
-                        'flex-end': 'Flex End',
-                        center: 'Center',
-                        'space-between': 'Space Between',
-                        'space-around': 'Space Around'
+                    {title: polyglot.t('Justify Content'), target: 'justify-content', type: 'element', field: 'select', options: {
+                        'flex-start': polyglot.t('Flex Start'),
+                        'flex-end': polyglot.t('Flex End'),
+                        center: polyglot.t('Center'),
+                        'space-between': polyglot.t('Space Between'),
+                        'space-around': polyglot.t('Space Around')
                     }, default: '', inline: false}
                 ]
             }

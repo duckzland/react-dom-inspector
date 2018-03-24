@@ -34,9 +34,7 @@ export default class Editor extends React.Component {
         super(props);
         
         this.config = new Configurator({
-            stylizerID: props.stylizerID,
-            EditorPanelHeaderText: 'Editor',
-            EditorPanelEmptyText: 'No Element Selected'
+            stylizerID: props.stylizerID
         });
         
         if ('config' in props)  {
@@ -102,11 +100,12 @@ export default class Editor extends React.Component {
 
     render() {
 
-        let { onChangeTab, onChangeMode, props, state, config } = this;
+        let { onChangeTab, props, state, config } = this;
         let ActivePanel = [];
 
         const { root } = props;
         const { node } = state;
+        const { polyglot } = root;
 
         const AllowedTabs = ['selector', 'layout', 'spacing', 'border', 'styles', 'typography'];
 
@@ -136,7 +135,7 @@ export default class Editor extends React.Component {
         });
 
         const hamburgerIconLabel = config.get('EditorPanelHamburgerIconLabel', {
-            title: 'Minimize Editor'
+            title: polyglot.t('Minimize Editor')
         });
 
         const tabsWrapperProps = config.get('EditorPanelTabsWrapperProps', {
@@ -156,6 +155,7 @@ export default class Editor extends React.Component {
         const panelProps = config.get('EditorPanelPanelProps', Object.assign(state, {
             key: 'stylizer-active-panel-' + (node && node.uuid ? node.uuid : 'empty'),
             root: this,
+            mainRoot: props.root,
             scroll: state.scroll
         }));
 
@@ -184,7 +184,7 @@ export default class Editor extends React.Component {
             <div { ...editorProps }>
                 <h3 { ...headerProps }>
                     <span { ...headerTextProps }>
-                        { config.get('EditorPanelHeaderText') }
+                        { polyglot.t('Editor') }
                     </span>
                     <span { ...headerActionProps }>
                         <span { ...hamburgerIconLabel }><HamburgerIcon { ...hamburgerIconProps } /></span>
@@ -208,7 +208,7 @@ export default class Editor extends React.Component {
                     </div>
 
                     : <div { ...tabsWrapperProps }>
-                        <div { ...emptyProps }>{ config.get('EditorPanelEmptyText') }</div>
+                        <div { ...emptyProps }>{ polyglot.t('No Element Selected') }</div>
                     </div>
                 }
 

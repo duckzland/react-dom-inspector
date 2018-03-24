@@ -1262,7 +1262,7 @@
     }
   }
 
-  .loading-bar {
+  .stylizer-loading-bar {
     position: fixed;
     left: 0;
     right: 0;
@@ -1298,7 +1298,7 @@
       left: ~"calc(50% - 70px)";
       top: ~"calc(50% - 70px)";
       z-index: 2;
-      content: 'Loading..';
+      content: attr(data-text);
       text-align: center;
       color: @FormElementText;
       font-size: 18px;
@@ -1539,15 +1539,16 @@ body[stylizer-vertical="true"] {
         line-height: 14px;
       }
 
-    }
 
-    .stylizer-header-actions {
-      > span {
-        min-width: 30px;
+      .stylizer-header-actions {
+        > span {
+          min-width: 30px;
+        }
+        svg {
+          margin: 0 0 5px !important;
+        }
       }
-      svg {
-        margin: 0 0 5px !important;
-      }
+
     }
   }
 

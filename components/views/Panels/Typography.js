@@ -22,26 +22,28 @@ export default class Typography extends BasePanel {
             empty: null
         });
 
+        const { polyglot } = props.mainRoot;
+
         this.fields = [
             {
                 key: 'font',
-                title: 'Font',
+                title: polyglot.t('Font'),
                 type: 'group',
                 elements: [
-                    {title: 'color', target: 'color', type: 'element', field: 'color', default: '', inline: false},
-                    {title: 'size', target: 'font-size', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'style', target: 'font-style', type: 'element', field: 'font', mode: 'style', default: '', inline: false},
-                    {title: 'weight', target: 'font-weight', type: 'element', field: 'font', mode: 'weight', default: '', inline: false},
-                    {title: 'family', target: 'font-family', type: 'element', field: 'font', mode: 'family', default: '', inline: false},
-                    {title: 'variant', target: 'font-variant', type: 'element', field: 'select', options: {
-                        normal: 'Normal',
-                        'small-caps': 'Small caps'
+                    {title: polyglot.t('color'), target: 'color', type: 'element', field: 'color', default: '', inline: false},
+                    {title: polyglot.t('size'), target: 'font-size', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('style'), target: 'font-style', type: 'element', field: 'font', mode: 'style', default: '', inline: false},
+                    {title: polyglot.t('weight'), target: 'font-weight', type: 'element', field: 'font', mode: 'weight', default: '', inline: false},
+                    {title: polyglot.t('family'), target: 'font-family', type: 'element', field: 'font', mode: 'family', default: '', inline: false},
+                    {title: polyglot.t('variant'), target: 'font-variant', type: 'element', field: 'select', options: {
+                        normal: polyglot.t('Normal'),
+                        'small-caps': polyglot.t('Small caps')
                     }, default: '', inline: false}
                 ]
             },
             {
                 key: 'text-shadow',
-                title: 'Text Shadow',
+                title: polyglot.t('Text Shadow'),
                 type: 'group',
                 elements:  [
                     { title: false, target: 'text-shadow', type: 'element', field: 'text-shadow', default: '', inline: false}
@@ -49,80 +51,80 @@ export default class Typography extends BasePanel {
             },
             {
                 key: 'letters',
-                title: 'Letters',
+                title: polyglot.t('Letters'),
                 type: 'group',
                 elements: [
-                    {title: 'line height', target: 'line-height', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'vertical align', target: 'vertical-align', type: 'element', field: 'select', options: {
-                        'baseline': 'Baseline',
-                        'sub': 'Sub',
-                        'super': 'Super',
-                        'top': 'Top',
-                        'text-top': 'Text top',
-                        'middle': 'Middle',
-                        'bottom': 'Bottom',
-                        'text-bottom': 'Text bottom'
+                    {title: polyglot.t('line height'), target: 'line-height', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('vertical align'), target: 'vertical-align', type: 'element', field: 'select', options: {
+                        'baseline': polyglot.t('Baseline'),
+                        'sub': polyglot.t('Sub'),
+                        'super': polyglot.t('Super'),
+                        'top': polyglot.t('Top'),
+                        'text-top': polyglot.t('Text top'),
+                        'middle': polyglot.t('Middle'),
+                        'bottom': polyglot.t('Bottom'),
+                        'text-bottom': polyglot.t('Text bottom')
                     }, default: '', inline: false},
-                    {title: 'indent', target: 'text-indent', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'letter spacing', target: 'letter-spacing', type: 'element', field: 'text', default: '', inline: false}
+                    {title: polyglot.t('indent'), target: 'text-indent', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('letter spacing'), target: 'letter-spacing', type: 'element', field: 'text', default: '', inline: false}
                 ]
             },
             {
                 key: 'text',
-                title: 'Text',
+                title: polyglot.t('Text'),
                 type: 'group',
                 elements: [
-                    {title: 'align', target: 'text-align', type: 'element', field: 'select', options: {
-                        'left': 'Left',
-                        'right': 'Right',
-                        'center': 'Center',
-                        'justify': 'Justify'
+                    {title: polyglot.t('align'), target: 'text-align', type: 'element', field: 'select', options: {
+                        'left': polyglot.t('Left'),
+                        'right': polyglot.t('Right'),
+                        'center': polyglot.t('Center'),
+                        'justify': polyglot.t('Justify')
                     }, default: '', inline: false},
 
-                    {title: 'transform', target: 'text-transform', type: 'element', field: 'select', options: {
-                        'none': 'None',
-                        'capitalize': 'Capitalize',
-                        'uppercase': 'Uppercase',
-                        'lowercase': 'Lowercase'
+                    {title: polyglot.t('transform'), target: 'text-transform', type: 'element', field: 'select', options: {
+                        'none': polyglot.t('None'),
+                        'capitalize': polyglot.t('Capitalize'),
+                        'uppercase': polyglot.t('Uppercase'),
+                        'lowercase': polyglot.t('Lowercase')
                     }, default: '', inline: false},
 
-                    {title: 'decoration', target: 'text-decoration', type: 'element', field: 'select', options: {
-                        'none': 'None',
-                        'underline': 'Underline',
-                        'overline': 'Overline',
-                        'line-through': 'Line through'
+                    {title: polyglot.t('decoration'), target: 'text-decoration', type: 'element', field: 'select', options: {
+                        'none': polyglot.t('None'),
+                        'underline': polyglot.t('Underline'),
+                        'overline': polyglot.t('Overline'),
+                        'line-through': polyglot.t('Line through')
                     }, default: '', inline: false},
 
-                    {title: 'overflow', target: 'text-overflow', type: 'element', field: 'select', options: {
-                        'clip': 'Clip',
-                        'ellipsis': 'Ellipsis'
+                    {title: polyglot.t('overflow'), target: 'text-overflow', type: 'element', field: 'select', options: {
+                        'clip': polyglot.t('Clip'),
+                        'ellipsis': polyglot.t('Ellipsis')
                     }, default: '', inline: false}
 
                 ]
             },
             {
                 key: 'words',
-                title: 'Words',
+                title: polyglot.t('Words'),
                 type: 'group',
                 elements: [
-                    {title: 'word spacing', target: 'word-spacing', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('word spacing'), target: 'word-spacing', type: 'element', field: 'text', default: '', inline: false},
 
-                    {title: 'wrap', target: 'word-wrap', type: 'element', field: 'select', options: {
-                        'normal': 'Normal',
-                        'break-word': 'Break word'
+                    {title: polyglot.t('wrap'), target: 'word-wrap', type: 'element', field: 'select', options: {
+                        'normal': polyglot.t('Normal'),
+                        'break-word': polyglot.t('Break word')
                     }, default: '', inline: false},
 
-                    {title: 'break', target: 'word-break', type: 'element', field: 'select', options: {
-                        'normal': 'Normal',
-                        'break-word': 'Break word'
+                    {title: polyglot.t('break'), target: 'word-break', type: 'element', field: 'select', options: {
+                        'normal': polyglot.t('Normal'),
+                        'break-word': polyglot.t('Break word')
                     }, default: '', inline: false},
 
-                    {title: 'white space', target: 'white-space', type: 'element', field: 'select', options: {
-                        'normal': 'Normal',
-                        'nowrap': 'No Wrap',
-                        'pre': 'Pre',
-                        'pre-line': 'Pre Line',
-                        'pre-wrap': 'Pre Wrap'
+                    {title: polyglot.t('white space'), target: 'white-space', type: 'element', field: 'select', options: {
+                        'normal': polyglot.t('Normal'),
+                        'nowrap': polyglot.t('No Wrap'),
+                        'pre': polyglot.t('Pre'),
+                        'pre-line': polyglot.t('Pre Line'),
+                        'pre-wrap': polyglot.t('Pre Wrap')
                     }, default: '', inline: false}
                 ]
             }

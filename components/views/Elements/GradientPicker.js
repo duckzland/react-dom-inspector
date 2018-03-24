@@ -217,7 +217,7 @@ export default class GradientPicker extends React.Component {
             case 'radial' :
                 state.shape && state.shape !== 'custom-size' && context.push(state.shape);
                 state.size && state.shape === 'custom-size' && context.push(state.size);
-                state.position && context.push ('at ' + state.position);
+                state.position && context.push('at ' + state.position);
 
                 context.length && rules.push(context.join(' '));
 
@@ -288,6 +288,7 @@ export default class GradientPicker extends React.Component {
 
     render() {
         const { props, state, config, onChange, onKeypress, onDragStart, onDragExit, onDragMove, onTogglePicker, onAddStop, onRemoveStop } = this;
+        const { polyglot } = props.mainRoot;
         const mainProps = config.get('ElementGradientPickerMainProps', {
             className: props.className + ' stylizer-gradient-element'
         });
@@ -407,50 +408,50 @@ export default class GradientPicker extends React.Component {
                 </div>
                 <div { ...rowProps }>
                     <div { ...wrapperProps }>
-                        <label { ...labelProps }>Repeat</label>
+                        <label { ...labelProps }>{ polyglot.t('Repeat') }</label>
                         <select { ...repeatElementProps }>
-                            <option key="gradient-norepeat" value="none">No Repeat</option>
-                            <option key="gradient-repeat" value="repeat">Repeat</option>
+                            <option key="gradient-norepeat" value="none">{ polyglot.t('No Repeat') }</option>
+                            <option key="gradient-repeat" value="repeat">{ polyglot.t('Repeat') }</option>
                         </select>
                     </div>
                     <div { ...wrapperProps }>
-                        <label { ...labelProps }>Mode</label>
+                        <label { ...labelProps }>{ polyglot.t('Mode') }</label>
                         <select { ...modeElementProps }>
-                            <option key="gradient-linear" value="linear">Linear</option>
-                            <option key="gradient-radial" value="radial">Radial</option>
+                            <option key="gradient-linear" value="linear">{ polyglot.t('Linear') }</option>
+                            <option key="gradient-radial" value="radial">{ polyglot.t('Radial') }</option>
                         </select>
                     </div>
 
                     { state.mode === 'linear'
                         && <div { ...wrapperProps }>
-                            <label { ...labelProps }>Angle</label>
+                            <label { ...labelProps }>{ polyglot.t('Angle') }</label>
                             <input { ...rotateElementProps } />
                         </div> }
 
                     { state.mode === 'radial'
                         && <div { ...wrapperProps }>
-                            <label { ...labelProps }>Shape</label>
+                            <label { ...labelProps }>{ polyglot.t('Shape') }</label>
                             <select { ...shapeElementProps }>
-                                <option key="radial-circle" value="circle">Circle</option>
-                                <option key="radial-eclipse" value="ellipse">Ellipse</option>
-                                <option key="radial-closest-side" value="closest-side">Closest Side</option>
-                                <option key="radial-closest-corner" value="closest-corner">Closest Corner</option>
-                                <option key="radial-farthest-side" value="farthest-side">Farthest Side</option>
-                                <option key="radial-farthest-corner" value="farthest-corner">Farthest Corner</option>
-                                <option key="radial-custom-size" value="custom-size">Custom Size</option>
+                                <option key="radial-circle" value="circle">{ polyglot.t('Circle') }</option>
+                                <option key="radial-eclipse" value="ellipse">{ polyglot.t('Ellipse') }</option>
+                                <option key="radial-closest-side" value="closest-side">{ polyglot.t('Closest Side') }</option>
+                                <option key="radial-closest-corner" value="closest-corner">{ polyglot.t('Closest Corner') }</option>
+                                <option key="radial-farthest-side" value="farthest-side">{ polyglot.t('Farthest Side') }</option>
+                                <option key="radial-farthest-corner" value="farthest-corner">{ polyglot.t('Farthest Corner') }</option>
+                                <option key="radial-custom-size" value="custom-size">{ polyglot.t('Custom Size') }</option>
                             </select>
                         </div> }
 
                     { state.mode === 'radial'
                         && state.shape === 'custom-size'
                         && <div { ...wrapperProps }>
-                            <label { ...labelProps }>Custom Size</label>
+                            <label { ...labelProps }>{ polyglot.t('Custom Size') }</label>
                             <input { ...sizeElementProps } />
                         </div> }
 
                     { state.mode === 'radial'
                         && <div { ...wrapperProps }>
-                            <label { ...labelProps }>Position</label>
+                            <label { ...labelProps }>{ polyglot.t('Position') }</label>
                             <input { ...positionElementProps } />
                         </div> }
                 </div>

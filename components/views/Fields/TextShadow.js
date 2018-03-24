@@ -88,7 +88,8 @@ export default class TextShadow extends React.Component {
 
     render() {
         const { props, config, onChange, onKeypress, state } = this;
-        const { root } = props;
+        const { root, mainRoot } = props;
+        const { polyglot } = mainRoot;
 
         const mainProps = config.get('ElementTextShadowMainProps', {
             className: 'stylizer-form-row stylizer-text-shadow-element'
@@ -140,19 +141,19 @@ export default class TextShadow extends React.Component {
         return (
             <div { ...mainProps } >
                 <div { ...wrapperProps }>
-                    <label { ...labelProps }>Color</label>
+                    <label { ...labelProps }>{ polyglot.t('Color') }</label>
                     <ColorPicker { ...ColorProps } />
                 </div>
                 <div { ...wrapperProps }>
-                    <label { ...labelProps }>H-Shadow</label>
+                    <label { ...labelProps }>{ polyglot.t('H-Shadow') }</label>
                     <input { ...HShadowProps } />
                 </div>
                 <div { ...wrapperProps }>
-                    <label { ...labelProps }>V-Shadow</label>
+                    <label { ...labelProps }>{ polyglot.t('V-Shadow') }</label>
                     <input { ...VShadowProps } />
                 </div>
                 <div { ...wrapperProps }>
-                    <label { ...labelProps }>Blur</label>
+                    <label { ...labelProps }>{ polyglot.t('Blur') }</label>
                     <input { ...BlurProps } />
                 </div>
             </div>

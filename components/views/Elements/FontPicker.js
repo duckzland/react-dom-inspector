@@ -23,6 +23,7 @@ export default class FontPicker extends React.Component {
     config = false;
     mode = null;
     loader = null;
+    polyglot = false;
 
     constructor(props) {
         super(props);
@@ -53,6 +54,8 @@ export default class FontPicker extends React.Component {
         if ('weight' in props) {
             this.state.weight = props.weight;
         }
+        
+        this.polyglot = props.mainRoot.polyglot;
 
         this.loader = props.fontLoaderObject
             ? props.fontLoaderObject
@@ -103,56 +106,57 @@ export default class FontPicker extends React.Component {
     }
 
     generateOptions = (mode, family = false, style = false, weight = false) => {
+        const { polyglot } = this;
         let options = {};
         switch (mode) {
             case 'family' :
                 options = this.loader.getFamily({
-                    'Georgia': 'Georgia',
-                    'Palatino Linotype': 'Palatino Linotype',
-                    'Book Antiqua' : 'Book Antiqua',
-                    'Palatino': 'Palatino',
-                    'Times New Roman': 'Times New Roman',
-                    'Times': 'Times',
-                    'Arial': 'Arial',
-                    'Helvetica': 'Helvetica',
-                    'Arial Black': 'Arial Black',
-                    'Gadget' : 'Gadget',
-                    'Comic Sans MS': 'Comic Sans MS',
-                    'cursive' : 'cursive',
-                    'Impact': 'Impact',
-                    'Charcoal': 'Charcoal',
-                    'Lucida Sans Unicode': 'Lucida Sans Unicode',
-                    'Lucida Grande': 'Lucida Grande',
-                    'Tahoma' : 'Tahoma',
-                    'Geneva' : 'Geneva',
-                    'Trebuchet MS' : 'Trebuchet MS',
-                    'Verdana' : 'Verdana',
-                    'Courier New' : 'Courier New',
-                    'Courier' : 'Courier',
-                    'Lucida Console' : 'Lucida Console',
-                    'Monaco' : 'Monaco'
+                    'Georgia': polyglot.t('Georgia'),
+                    'Palatino Linotype': polyglot.t('Palatino Linotype'),
+                    'Book Antiqua' : polyglot.t('Book Antiqua'),
+                    'Palatino': polyglot.t('Palatino'),
+                    'Times New Roman': polyglot.t('Times New Roman'),
+                    'Times': polyglot.t('Times'),
+                    'Arial': polyglot.t('Arial'),
+                    'Helvetica': polyglot.t('Helvetica'),
+                    'Arial Black': polyglot.t('Arial Black'),
+                    'Gadget' : polyglot.t('Gadget'),
+                    'Comic Sans MS': polyglot.t('Comic Sans MS'),
+                    'cursive' : polyglot.t('cursive'),
+                    'Impact': polyglot.t('Impact'),
+                    'Charcoal': polyglot.t('Charcoal'),
+                    'Lucida Sans Unicode': polyglot.t('Lucida Sans Unicode'),
+                    'Lucida Grande': polyglot.t('Lucida Grande'),
+                    'Tahoma' : polyglot.t('Tahoma'),
+                    'Geneva' : polyglot.t('Geneva'),
+                    'Trebuchet MS' : polyglot.t('Trebuchet MS'),
+                    'Verdana' : polyglot.t('Verdana'),
+                    'Courier New' : polyglot.t('Courier New'),
+                    'Courier' : polyglot.t('Courier'),
+                    'Lucida Console' : polyglot.t('Lucida Console'),
+                    'Monaco' : polyglot.t('Monaco')
                 });
                 break;
 
             case 'weight' :
                 options = this.loader.getWeight(family, style, weight, {
-                    100: '100',
-                    200: '200',
-                    300: '300',
-                    400: '400',
-                    500: '500',
-                    600: '600',
-                    700: '700',
-                    800: '800',
-                    900: '900'
+                    100: polyglot.t('100'),
+                    200: polyglot.t('200'),
+                    300: polyglot.t('300'),
+                    400: polyglot.t('400'),
+                    500: polyglot.t('500'),
+                    600: polyglot.t('600'),
+                    700: polyglot.t('700'),
+                    800: polyglot.t('800'),
+                    900: polyglot.t('900')
                 });
                 break;
 
             case 'style' :
                 options = this.loader.getStyle(family, style, weight,  {
-                    normal: 'Normal',
-                    italic: 'Italic',
-                    oblique: 'Oblique'
+                    normal: polyglot.t('Normal'),
+                    italic: polyglot.t('Italic'),
+                    oblique: polyglot.t('Oblique')
                 });
                 break;
         }
@@ -221,7 +225,7 @@ export default class FontPicker extends React.Component {
                 inputProps.renderItem = (item, isHighlighted) => {
                     const optionProps = config.get('ElementFontPickerAutoCompleteProps', {
                         key: 'stylizer-option-' + props.name + '-' + item.label,
-                        className:  'stylizer-font-element-dropdown-item ' +  isHighlighted ? 'active' : ''
+                        className: 'stylizer-font-element-dropdown-item ' +  isHighlighted ? 'active' : ''
                     });
                     return (
                         <div { ...optionProps }>{ item.label }</div>

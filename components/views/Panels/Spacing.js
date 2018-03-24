@@ -20,47 +20,49 @@ export default class Spacing extends BasePanel {
             empty: null
         });
 
+        const { polyglot } = props.mainRoot;
+
         this.fields = [
             {
                 key: 'width',
-                title: 'Width',
+                title: polyglot.t('Width'),
                 type: 'group',
                 elements: [
-                    {title: 'Min Width', target: 'min-width', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'Width', target: 'width', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'Max Width', target: 'max-width', type: 'element', field: 'text', default: '', inline: false}
+                    {title: polyglot.t('Min Width'), target: 'min-width', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('Width'), target: 'width', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('Max Width'), target: 'max-width', type: 'element', field: 'text', default: '', inline: false}
                 ]
             },
             {
                 key: 'height',
-                title: 'Height',
+                title: polyglot.t('Height'),
                 type: 'group',
                 elements: [
-                    {title: 'Min Height', target: 'min-height', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'Height', target: 'height', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'Max Height', target: 'max-height', type: 'element', field: 'text', default: '', inline: false}
+                    {title: polyglot.t('Min Height'), target: 'min-height', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('Height'), target: 'height', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('Max Height'), target: 'max-height', type: 'element', field: 'text', default: '', inline: false}
                 ]
             },
             {
                 key: 'padding',
-                title: 'Padding',
+                title: polyglot.t('Padding'),
                 type: 'group',
                 elements: [
-                    {title: 'top', target: 'padding-top', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'left', target: 'padding-left', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'right', target: 'padding-right', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'bottom', target: 'padding-bottom', type: 'element', field: 'text', default: '', inline: false}
+                    {title: polyglot.t('top'), target: 'padding-top', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('left'), target: 'padding-left', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('right'), target: 'padding-right', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('bottom'), target: 'padding-bottom', type: 'element', field: 'text', default: '', inline: false}
                 ]
             },
             {
                 key: 'margin',
-                title: 'Margin',
+                title: polyglot.t('Margin'),
                 type: 'group',
                 elements: [
-                    {title: 'top', target: 'margin-top', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'left', target: 'margin-left', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'right', target: 'margin-right', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'bottom', target: 'margin-bottom', type: 'element', field: 'text', default: '', inline: false}
+                    {title: polyglot.t('top'), target: 'margin-top', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('left'), target: 'margin-left', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('right'), target: 'margin-right', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('bottom'), target: 'margin-bottom', type: 'element', field: 'text', default: '', inline: false}
                 ]
             }
         ];

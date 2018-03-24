@@ -27,77 +27,79 @@ export default class Styles extends BasePanel {
             empty: null
         });
 
+        const { polyglot } = props.mainRoot;
+
         this.defaultFields = [
             {
                 key: 'background',
-                title: 'Background',
+                title: polyglot.t('Background'),
                 type: 'group',
                 elements:  [
-                    { title: 'color', target: 'background-color', type: 'element', field: 'color', default: '', inline: false},
-                    { title: 'image', target: 'background-image', type: 'element', field: 'background-image', default: '', inline: false},
-                    { title: 'position', target: 'background-position', type: 'element', field: 'text', default: '', inline: false},
-                    { title: 'size', target: 'background-size', type: 'element', field: 'text', default: '', inline: false},
-                    { title: 'repeat', target: 'background-repeat', type: 'element', field: 'select', options: {
-                        initial: 'None',
-                        repeat : 'Repeat All',
-                        'repeat-x' : 'Horizontally',
-                        'repeat-y' : 'Vertically',
-                        'no-repeat': 'Don\'t Repeat'
+                    { title: polyglot.t('color'), target: 'background-color', type: 'element', field: 'color', default: '', inline: false},
+                    { title: polyglot.t('image'), target: 'background-image', type: 'element', field: 'background-image', default: '', inline: false},
+                    { title: polyglot.t('position'), target: 'background-position', type: 'element', field: 'text', default: '', inline: false},
+                    { title: polyglot.t('size'), target: 'background-size', type: 'element', field: 'text', default: '', inline: false},
+                    { title: polyglot.t('repeat'), target: 'background-repeat', type: 'element', field: 'select', options: {
+                        initial: polyglot.t('None'),
+                        repeat : polyglot.t('Repeat All'),
+                        'repeat-x' : polyglot.t('Horizontally'),
+                        'repeat-y' : polyglot.t('Vertically'),
+                        'no-repeat': polyglot.t('Don\'t Repeat')
                     }, default: '', inline: false}
                 ]
             },
             {
                 key: 'advanced',
-                title: 'Background Adjustment',
+                title: polyglot.t('Background Adjustment'),
                 type: 'group',
                 elements: [
-                    {title: 'attachment', target: 'background-attachment', type: 'element', field: 'select', options: {
-                        scroll: 'Scroll',
-                        fixed: 'Fixed',
-                        local: 'Local'
+                    {title: polyglot.t('attachment'), target: 'background-attachment', type: 'element', field: 'select', options: {
+                        scroll: polyglot.t('Scroll'),
+                        fixed: polyglot.t('Fixed'),
+                        local: polyglot.t('Local')
                     }, default: '', inline: false},
-                    {title: 'clip', target: 'background-clip', type: 'element', field: 'select', options: {
-                        'border-box': 'Border Box',
-                        'padding-box': 'Padding Box',
-                        'content-box': 'Content Box'
+                    {title: polyglot.t('clip'), target: 'background-clip', type: 'element', field: 'select', options: {
+                        'border-box': polyglot.t('Border Box'),
+                        'padding-box': polyglot.t('Padding Box'),
+                        'content-box': polyglot.t('Content Box')
                     }, default: '', inline: false},
 
-                    {title: 'origin', target: 'background-origin', type: 'element', field: 'select', options: {
-                        'padding-box': 'Padding Box',
-                        'border-box': 'Border Box',
-                        'content-box': 'Content Box'
+                    {title: polyglot.t('origin'), target: 'background-origin', type: 'element', field: 'select', options: {
+                        'padding-box': polyglot.t('Padding Box'),
+                        'border-box': polyglot.t('Border Box'),
+                        'content-box': polyglot.t('Content Box')
                     }, default: '', inline: false}
                 ]
             },
             {
                 key: 'visibility',
-                title: 'Visibility',
+                title: polyglot.t('Visibility'),
                 type: 'group',
                 elements: [
-                    {title: 'opacity', target: 'opacity', type: 'element', field: 'text', default: '', inline: false},
-                    {title: 'display', target: 'display', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('opacity'), target: 'opacity', type: 'element', field: 'text', default: '', inline: false},
+                    {title: polyglot.t('display'), target: 'display', type: 'element', field: 'text', default: '', inline: false},
 
-                    {title: 'visibility', target: 'visibility', type: 'element', field: 'select', options: {
-                        visible: 'Visible',
-                        hidden: 'Hidden',
-                        collapse: 'Collapse',
-                        initial: 'Initial',
-                        inherit: 'Inherit'
+                    {title: polyglot.t('visibility'), target: 'visibility', type: 'element', field: 'select', options: {
+                        visible: polyglot.t('Visible'),
+                        hidden: polyglot.t('Hidden'),
+                        collapse: polyglot.t('Collapse'),
+                        initial: polyglot.t('Initial'),
+                        inherit: polyglot.t('Inherit')
                     }, default: '', inline: false},
 
-                    {title: 'overflow', target: 'overflow', type: 'element', field: 'select', options: {
-                        visible: 'Visible',
-                        hidden: 'Hidden',
-                        scroll: 'Scroll',
-                        auto: 'Auto',
-                        initial: 'Initial',
-                        inherit: 'Inherit'
+                    {title: polyglot.t('overflow'), target: 'overflow', type: 'element', field: 'select', options: {
+                        visible: polyglot.t('Visible'),
+                        hidden: polyglot.t('Hidden'),
+                        scroll: polyglot.t('Scroll'),
+                        auto: polyglot.t('Auto'),
+                        initial: polyglot.t('Initial'),
+                        inherit: polyglot.t('Inherit')
                     }, default: '', inline: false}
                 ]
             },
             {
                 key: 'box-shadow',
-                title: 'Box Shadow',
+                title: polyglot.t('Box Shadow'),
                 type: 'group',
                 elements:  [
                     { title: false, target: 'box-shadow', type: 'element', field: 'box-shadow', default: '', inline: false}
@@ -107,7 +109,7 @@ export default class Styles extends BasePanel {
 
         this.gradientPickerFields = [{
             key: 'background',
-            title: 'Create Gradient',
+            title: polyglot.t('Create Gradient'),
             type: 'group',
             toggle: 'off',
             elements:  [{ title: false, target: 'background-image', type: 'element', field: 'gradient', default: '', inline: false}]
@@ -115,7 +117,7 @@ export default class Styles extends BasePanel {
 
         this.imagePickerFields = [{
             key: 'background',
-            title: 'Select Image',
+            title: polyglot.t('Select Image'),
             type: 'group',
             toggle: 'off',
             elements:  [{ title: false, target: 'background-image', type: 'element', field: 'image', default: '', inline: false}]

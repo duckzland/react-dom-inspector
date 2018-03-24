@@ -13,6 +13,7 @@
     "codemirror": "^5.36.0",
     "cssbeautify": "^0.3.1",
     "lodash": "^4.17.4",
+    "node-polyglot": "^2.2.2",
     "react": "^16.1.1",
     "react-autocomplete": "^1.7.2",
     "react-codemirror2": "^4.2.1",
@@ -25,6 +26,7 @@
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
+    "babel-plugin-react-intl": "^2.4.0",
     "babel-plugin-syntax-class-properties": "^6.13.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
@@ -40,6 +42,7 @@
     "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.5",
+    "i18n-extract": "^0.5.1",
     "image-loader": "0.0.1",
     "inline-svg": "^2.2.3",
     "less-loader": "^4.0.5",
@@ -51,7 +54,9 @@
     "svg-url-loader": "^2.3.1",
     "transform-runtime": "0.0.0",
     "webpack": "^3.8.1",
-    "webpack-dev-server": "^2.9.4"
+    "webpack-dev-server": "^2.9.4",
+    "webpack-extract-translation-keys-plugin": "^3.0.0",
+    "webpack-extract-translation-keys-regex-plugin": "^1.0.1"
   },
   "scripts": {
     "test": "mocha"

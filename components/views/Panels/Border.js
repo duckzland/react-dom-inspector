@@ -9,6 +9,9 @@ import { get, forEach } from 'lodash';
  * @author jason.xie@victheme.com
  */
 export default class Border extends BasePanel {
+
+    polyglot = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -21,20 +24,23 @@ export default class Border extends BasePanel {
             }
         };
 
+        this.polyglot = props.mainRoot.polyglot;
+        const { polyglot } = this;
+
         this.config.insert({
             type: 'border',
             empty: null,
             borderOptions: {
-                none : 'None',
-                hidden : 'Hidden',
-                dotted : 'Dotted',
-                dashed : 'Dashed',
-                solid : 'Solid',
-                double : 'Double',
-                groove : 'Groove',
-                ridge : 'Ridge',
-                inset : 'Inset',
-                outset : 'Outset'
+                none : polyglot.t('None'),
+                hidden : polyglot.t('Hidden'),
+                dotted : polyglot.t('Dotted'),
+                dashed : polyglot.t('Dashed'),
+                solid : polyglot.t('Solid'),
+                double : polyglot.t('Double'),
+                groove : polyglot.t('Groove'),
+                ridge : polyglot.t('Ridge'),
+                inset : polyglot.t('Inset'),
+                outset : polyglot.t('Outset')
             }
         });
 
@@ -78,7 +84,7 @@ export default class Border extends BasePanel {
     };
 
     generateBorderFields = (Grouped = false) => {
-        const { fields, config } = this;
+        const { fields, config, polyglot } = this;
 
         fields.map((field, delta) => {
             switch (field.key) {
@@ -95,20 +101,20 @@ export default class Border extends BasePanel {
         Grouped
             ? fields.push({
                 key: 'border',
-                title: 'Border',
+                title: polyglot.t('Border'),
                 type: 'group',
                 toggle: 'off',
                 elements: [
-                    { title: 'color', target: 'border-color', type: 'element', field: 'color', default: '', inline: false },
-                    { title: 'width', target: 'border-width', type: 'element', field: 'text', default: '', inline: false },
-                    { title: 'style', target: 'border-style', type: 'element', field: 'select', options: config.get('borderOptions'), default: '', inline: false }
+                    { title: polyglot.t('color'), target: 'border-color', type: 'element', field: 'color', default: '', inline: false },
+                    { title: polyglot.t('width'), target: 'border-width', type: 'element', field: 'text', default: '', inline: false },
+                    { title: polyglot.t('style'), target: 'border-style', type: 'element', field: 'select', options: config.get('borderOptions'), default: '', inline: false }
                 ]
              })
             : forEach({
-                'border-top' : 'Border Top',
-                'border-left' : 'Border Left',
-                'border-right' : 'Border Right',
-                'border-bottom' : 'Border Bottom'
+                'border-top' : polyglot.t('Border Top'),
+                'border-left' : polyglot.t('Border Left'),
+                'border-right' : polyglot.t('Border Right'),
+                'border-bottom' : polyglot.t('Border Bottom')
             }, (Title, Key) => {
                 fields.push({
                     key: Key,
@@ -116,16 +122,16 @@ export default class Border extends BasePanel {
                     type: 'group',
                     toggle: 'on',
                     elements: [
-                        { title: 'color', target:  Key + '-color', type: 'element', field: 'color', default: '', inline: false },
-                        { title: 'width', target: Key + '-width', type: 'element', field: 'text', default: '', inline: false },
-                        { title: 'style', target: Key + '-style', type: 'element', field: 'select', options: config.get('borderOptions'), default: '', inline: false }
+                        { title: polyglot.t('color'), target:  Key + '-color', type: 'element', field: 'color', default: '', inline: false },
+                        { title: polyglot.t('width'), target: Key + '-width', type: 'element', field: 'text', default: '', inline: false },
+                        { title: polyglot.t('style'), target: Key + '-style', type: 'element', field: 'select', options: config.get('borderOptions'), default: '', inline: false }
                     ]
                 })
             });
     };
 
     generateRadiusFields = (Grouped = false) => {
-        const { fields } = this;
+        const { fields, polyglot } = this;
         fields.map((field, delta) => {
             field.key === 'radius'
                 ? delete fields[delta]
@@ -134,22 +140,22 @@ export default class Border extends BasePanel {
 
         fields.push({
             key: 'radius',
-            title: 'Border Radius',
+            title: polyglot.t('Border Radius'),
             type: 'group',
             toggle: Grouped ? 'off' : 'on',
             elements: Grouped
-                ? [ { title: 'radius', target: 'border-radius', type: 'element', field: 'text', default: '', inline: false } ]
+                ? [ { title: polyglot.t('radius'), target: 'border-radius', type: 'element', field: 'text', default: '', inline: false } ]
                 : [
-                    { title: 'top left', target: 'border-top-left-radius', type: 'element', field: 'text', default: '', inline: false },
-                    { title: 'top right', target: 'border-top-right-radius', type: 'element', field: 'text', default: '', inline: false },
-                    { title: 'bottom left', target: 'border-bottom-left-radius', type: 'element', field: 'text', default: '', inline: false },
-                    { title: 'bottom right', target: 'border-bottom-right-radius', type: 'element', field: 'text', default: '', inline: false }
+                    { title: polyglot.t('top left'), target: 'border-top-left-radius', type: 'element', field: 'text', default: '', inline: false },
+                    { title: polyglot.t('top right'), target: 'border-top-right-radius', type: 'element', field: 'text', default: '', inline: false },
+                    { title: polyglot.t('bottom left'), target: 'border-bottom-left-radius', type: 'element', field: 'text', default: '', inline: false },
+                    { title: polyglot.t('bottom right'), target: 'border-bottom-right-radius', type: 'element', field: 'text', default: '', inline: false }
                 ]
         });
     };
 
     generateOutlineFields = () => {
-        const { fields, config } = this;
+        const { fields, config, polyglot } = this;
 
         fields.map((field, delta) => {
             field.key === 'outline'
@@ -159,13 +165,13 @@ export default class Border extends BasePanel {
 
         fields.push(            {
             key: 'outline',
-            title: 'Outline',
+            title: polyglot.t('Outline'),
             type: 'group',
             elements: [
-                {title: 'color', target: 'outline-color', type: 'element', field: 'color', default: '', inline: false},
-                {title: 'width', target: 'outline-width', type: 'element', field: 'text', default: '', inline: false},
-                {title: 'offset', target: 'outline-offset', type: 'element', field: 'text', default: '', inline: false},
-                {title: 'style', target: 'outline-style', type: 'element', field: 'select', options: config.get('borderOptions'), default: '', inline: false }
+                {title: polyglot.t('color'), target: 'outline-color', type: 'element', field: 'color', default: '', inline: false},
+                {title: polyglot.t('width'), target: 'outline-width', type: 'element', field: 'text', default: '', inline: false},
+                {title: polyglot.t('offset'), target: 'outline-offset', type: 'element', field: 'text', default: '', inline: false},
+                {title: polyglot.t('style'), target: 'outline-style', type: 'element', field: 'select', options: config.get('borderOptions'), default: '', inline: false }
             ]
         });
     };

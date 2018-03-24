@@ -3,10 +3,15 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
+var extractTranslationKeysRegexPlugin = require('webpack-extract-translation-keys-regex-plugin');
 
 module.exports = {
-    entry: './index.js',
-    output: {path: path.resolve(__dirname, ''), filename: 'dist/js/react-dom-inspector.min.js'},
+    entry: {
+        'react-dom-inspector.min': './index.js',
+    },
+    output: {
+        path: path.resolve(__dirname, ''),
+        filename: 'dist/js/[name].js'},
     module: {
         loaders: [
             {
@@ -63,6 +68,12 @@ module.exports = {
         }),
 
         new webpack.optimize.AggressiveMergingPlugin(),
+
+        new extractTranslationKeysRegexPlugin({
+            functionReplace: 'polyglot.t($2$4$1$3$2$4',
+            functionPattern: /polyglot\.t\(\s*(?:"([^"\\]*(?:\\.[^"\\]*)*)(")|'([^'\\]*(?:\\.[^'\\]*)*)('))/gm,
+            output: path.join(__dirname, 'dist', 'translations', 'english.json')
+        }),
 
         new webpack.optimize.UglifyJsPlugin({
             compress: {

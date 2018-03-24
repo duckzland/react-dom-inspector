@@ -29,7 +29,7 @@ export default class Config {
             storedValue = merge(defaultValue, storedValue);
         }
 
-        if (storedValue === '###nothing_found###' && defaultValue ) {
+        if (storedValue === '###nothing_found###') {
             storedValue = defaultValue;
         }
 

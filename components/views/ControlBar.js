@@ -29,9 +29,11 @@ export default class ControlBar extends React.Component {
     constructor(props) {
         super(props);
         
-        this.config = new Configurator({
-            LogoText: 'VicTheme Stylizer'
-        });
+        this.config = new Configurator();
+
+        if ('config' in props)  {
+            this.config.insert(props.config);
+        }
 
         if ('root' in props) {
             this.state.root = props.root;
@@ -40,8 +42,9 @@ export default class ControlBar extends React.Component {
 
     render() {
 
-        const { props, state, config } = this;
+        const { props, config } = this;
         const { root } = props;
+        const { polyglot } = root;
 
         const headerProps = config.get('ControlBarHeaderProps', {
             key: 'stylizer-controlbar',
@@ -113,55 +116,57 @@ export default class ControlBar extends React.Component {
             onClick: () => root.toggleViewMode('mobile')
         });
 
-        const advancedIconProps = config.get('EditorPanelAdvancedIconProps', {
+        const advancedIconProps = config.get('ControlBarAdvancedIconProps', {
             size: 16,
             onClick: () => root.toggleEditorMode()
         });
 
         const layoutIconLabel = config.get('ControlBarLayoutIconLabel', {
-            title: 'Change the inspector orientation'
+            title: polyglot.t('Change the inspector orientation')
         });
 
         const hoverIconLabel = config.get('ControlBarHoverIconLabel', {
-            title: 'Enable mouse hover DOM selector'
+            title: polyglot.t('Enable mouse hover DOM selector')
         });
 
         const revertIconLabel = config.get('ControlBarRevertIconLabel', {
-            title: 'Reset unsaved changes'
+            title: polyglot.t('Reset unsaved changes')
         });
 
         const deleteIconLabel = config.get('ControlBarDeleteIconLabel', {
-            title: 'Delete both saved and unsaved changes'
+            title: polyglot.t('Delete both saved and unsaved changes')
         });
 
         const saveIconLabel = config.get('ControlBarSaveIconLabel', {
-            title: 'Save changes'
+            title: polyglot.t('Save changes')
         });
 
         const closeIconLabel = config.get('ControlBarCloseIconLabel', {
-            title: 'Close Editor'
+            title: polyglot.t('Close Editor')
         });
 
         const desktopIconLabel = config.get('ControlBarDesktopIconLabel', {
-            title: 'Change to desktop view mode'
+            title: polyglot.t('Change to desktop view mode')
         });
 
         const tabletIconLabel = config.get('ControlBarTabletIconLabel', {
-            title: 'Change to tablet view mode'
+            title: polyglot.t('Change to tablet view mode')
         });
 
         const mobileIconLabel = config.get('ControlBarMobileIconLabel', {
-            title: 'Change to mobile view mode'
+            title: polyglot.t('Change to mobile view mode')
         });
 
-        const advancedIconLabel = config.get('EditorPanelAdvancedIconLabel', {
-            title: !root.state.advanced ? 'Switch Editor Mode to advanced mode' : 'Switch Editor Mode to normal mode'
+        const advancedIconLabel = config.get('ControlBarAdvancedIconLabel', {
+            title: !root.state.advanced 
+                ? polyglot.t('Switch Editor Mode to advanced mode')
+                : polyglot.t('Switch Editor Mode to normal mode')
         });
 
         return (
             <div { ...headerProps }>
                 <span { ...headerTextProps }>
-                    { config.get('LogoText') }
+                    { polyglot.t('Victheme Stylizer') }
                 </span>
                 <span { ...headerViewModeProps }>
                     { <span { ...desktopIconLabel }><DesktopIcon { ...desktopIconProps } /></span> }

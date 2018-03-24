@@ -17,11 +17,9 @@ export default class Selector extends React.Component {
         error: false
     };
 
+    polyglot = false;
     testerNode = false;
-    config = {
-        PanelSelectorFieldLabel: 'Selector',
-        PanelSelectorFieldError: 'Invalid CSS selector'
-    };
+    config = false;
 
     constructor(props) {
         super(props);
@@ -33,14 +31,13 @@ export default class Selector extends React.Component {
             this.state.error = !this.validate(props.node.selector);
         }
 
-        this.config = new Configurator({
-            PanelSelectorFieldLabel: 'Selector',
-            PanelSelectorFieldError: 'Invalid CSS selector'
-        });
+        this.config = new Configurator();
 
         if ('config' in props)  {
             this.config.insert(props.config);
         }
+
+        this.polyglot = props.mainRoot.polyglot;
     };
 
     componentWillReceiveProps(nextProps) {
@@ -142,7 +139,7 @@ export default class Selector extends React.Component {
 
     render() {
 
-        const { config, state, isActive, toggle, submit } = this;
+        const { config, state, isActive, toggle, submit, polyglot } = this;
         const tabProps = config.get('PanelSelectorFieldTabProps', {
             key: 'stylizer-tab-selector-' + state.node.uuid,
             className: 'stylizer-tab-content stylizer-content stylizer-tab-panel--selector'
@@ -187,9 +184,9 @@ export default class Selector extends React.Component {
         return (
             <div { ...tabProps }>
                 <div { ...selectorProps }>
-                    <label { ...labelProps }>{ config.PanelSelectorFieldLabel }</label>
+                    <label { ...labelProps }>{ polyglot.t('Selector') }</label>
                     <input { ...inputProps } />
-                    { state.error && config.get('PanelSelectorFieldError') && <div { ...errorProps }>{ config.get('PanelSelectorFieldError') }</div> }
+                    { state.error && config.get('PanelSelectorFieldError') && <div { ...errorProps }>{ polyglot.t('Invalid CSS selector') }</div> }
                 </div>
                 <div { ...badgesProps }>
                     { state.node && state.node.tree && state.node.tree.map((item, delta) => {

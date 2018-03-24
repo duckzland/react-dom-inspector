@@ -171,7 +171,10 @@ export default class ImagePicker extends React.Component {
     };
 
     render() {
+
         const { props, state, config, loader, onSelect, onRemove, onSearch, onUpload, onScroll } = this;
+        const { polyglot } = props.mainRoot;
+
         const mainAreaProps = config.get('ElementImagePickerMainProps', {
             className: props.className + ' stylizer-image-picker-element'
         });
@@ -197,7 +200,7 @@ export default class ImagePicker extends React.Component {
             type: 'text',
             className: 'stylizer-form-input',
             name: 'search',
-            placeholder: 'Search image by filename...',
+            placeholder: polyglot.t('Search image by filename...'),
             value: state.search,
             onChange: onSearch
         });
@@ -269,7 +272,7 @@ export default class ImagePicker extends React.Component {
                     <div { ...elementProps }>
                         <label { ...uploadElementProps }>
                             <input { ...uploadInputProps } />
-                            Upload
+                            { polyglot.t('Upload') }
                         </label>
                     </div>
                     { state.progress && <div { ...elementProps }><progress { ...progressProps }></progress></div> }
@@ -277,7 +280,7 @@ export default class ImagePicker extends React.Component {
                 </div>
                 { Images.length > 0
                     ? <ScrollArea { ...scrollAreaProps }><div { ...scrollAreaContentProps } >{ Images }</div></ScrollArea>
-                    : <div { ...elementProps }>No Image found</div>
+                    : <div { ...elementProps }> { polyglot.t('No Image found') }</div>
                 }
             </div>
         )

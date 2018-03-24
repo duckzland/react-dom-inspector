@@ -12,6 +12,7 @@ import EditorPanel from './views/Editor';
 import AdvancedPanel from './views/Advanced';
 import Overlay from './views/Overlay';
 import { forEach, get, isFunction } from 'lodash';
+import Polyglot from 'node-polyglot';
 import './../assets/codemirror.less';
 import './../assets/styles.less';
 
@@ -46,19 +47,12 @@ export default class Inspector extends React.Component {
     DOMHelper = false;
     hoverCache = false;
     fontLoader = false;
-    document = false;
+    frameDocument = false;
     messageBox = false;
+    polyglot = false;
 
     constructor(props) {
         super(props);
-
-        if ('minimize' in props) {
-            this.state.minimize = props.minimize;
-        }
-
-        if ('allowNavigator' in props) {
-            this.allowNavigator = props.allowNavigator;
-        }
 
         this.config = new Configurator({
             domID: 'dom-inspector'
@@ -67,6 +61,17 @@ export default class Inspector extends React.Component {
         if ('config' in props) {
             this.config.insert(props.config);
         }
+
+        this.polyglot = new Polyglot();
+        if ('translation' in props) {
+            this.polyglot.extend(props.translation);
+        }
+
+        this.allowNavigator = this.config.get('allowNavigator', true);
+        this.state.advanced = this.config.get('advancedMode', false);
+        this.state.viewmode = this.config.get('viewmode', 'desktop');
+        this.state.minimize = this.config.get('minimize', false);
+        this.state.vertical = this.config.get('vertical', false);
         
         this.iteratorHelper = new Iterator({
             root: this,
@@ -77,42 +82,55 @@ export default class Inspector extends React.Component {
     };
 
     componentWillMount() {
-        document.body.setAttribute('stylizer-active', this.state.minimize ? 'true' : 'false');
-        document.body.setAttribute('stylizer-vertical', this.state.vertical ? 'true' : 'false');
-        document.body.setAttribute('stylizer-viewmode', this.state.viewmode);
+        const { body } = document;
+        const { minimize, vertical, viewmode } = this.state;
+
+        body.setAttribute('stylizer-active', minimize ? 'true' : 'false');
+        body.setAttribute('stylizer-vertical', vertical ? 'true' : 'false');
+        body.setAttribute('stylizer-viewmode', viewmode);
     };
 
     componentDidUpdate() {
-        document.body.setAttribute('stylizer-active', this.state.minimize ? 'true' : 'false');
-        document.body.setAttribute('stylizer-vertical', this.state.vertical ? 'true' : 'false');
-        this.state.hover ? this.bindEvent('mousemove') : this.destroyEvent('mousemove');
-        this.state.minimize ? this.destroyEvent('all') : this.bindEvent('click');
-        this.state.activateNode = false;
-        this.state.refresh = false;
+        const { body } = document;
+        const { state, bindEvent, destroyEvent } = this;
+        const { minimize, vertical, hover } = state;
+
+        body.setAttribute('stylizer-active', minimize ? 'true' : 'false');
+        body.setAttribute('stylizer-vertical', vertical ? 'true' : 'false');
+
+        hover ? bindEvent('mousemove') : destroyEvent('mousemove');
+        minimize ? destroyEvent('all') : bindEvent('click');
+
+        state.activateNode = false;
+        state.refresh = false;
     };
 
     bindEvent = (event = 'all') => {
 
-        if (!this.eventBinded.click && (event === 'click' || event === 'all')) {
-            this.document.addEventListener('click', this.captureNode, false);
-            this.eventBinded.click = true;
+        const { eventBinded, captureNode, moveOverlay, frameDocument } = this;
+
+        if (!eventBinded.click && (event === 'click' || event === 'all')) {
+            frameDocument.addEventListener('click', captureNode, false);
+            eventBinded.click = true;
         }
 
-        if (!this.eventBinded.mousemove && (event === 'mousemove' || event === 'all')) {
-            this.document.addEventListener('mousemove', this.moveOverlay, false);
-            this.eventBinded.mousemove = true;
+        if (!eventBinded.mousemove && (event === 'mousemove' || event === 'all')) {
+            frameDocument.addEventListener('mousemove', moveOverlay, false);
+            eventBinded.mousemove = true;
         }
     };
 
     destroyEvent = (event = 'all') => {
-        if (this.eventBinded.click && (event === 'click' || event === 'all')) {
-            this.document.removeEventListener('click', this.captureNode);
-            this.eventBinded.click = false;
+        const { eventBinded, captureNode, moveOverlay, frameDocument } = this;
+
+        if (eventBinded.click && (event === 'click' || event === 'all')) {
+            frameDocument.removeEventListener('click', captureNode);
+            eventBinded.click = false;
         }
 
-        if (this.eventBinded.mousemove && (event === 'mousemove' || event === 'all')) {
-            this.document.removeEventListener('mousemove', this.moveOverlay);
-            this.eventBinded.mousemove = false;
+        if (eventBinded.mousemove && (event === 'mousemove' || event === 'all')) {
+            frameDocument.removeEventListener('mousemove', moveOverlay);
+            eventBinded.mousemove = false;
         }
     };
 
@@ -126,41 +144,49 @@ export default class Inspector extends React.Component {
         this.setState({ frameLoaded: false });
         this.frameWrapper = document.getElementById('stylizer-frame-wrapper');
         this.frame = document.createElement('iframe');
-        this.frame.classList.add('stylizer-' + this.state.viewmode);
-        this.frame.setAttribute('id', 'stylizer-frame');
-        this.frame.setAttribute('scrolling', 'no');
-        this.frame.setAttribute('width', '100%');
-        this.frame.setAttribute('height', '100%');
-        this.frame.setAttribute('sandbox', 'allow-scripts allow-same-origin');
-        this.frame.setAttribute('src', this.config.get('pageSrc'));
-        this.frame.onbeforeunload = (e) => {
+
+        const { frame, frameWrapper, resizeFrame, cloneSheet, bindEvent, destroyEvent, state } = this;
+        const { hover, minimize } = state;
+
+        frame.classList.add('stylizer-' + this.state.viewmode);
+        frame.setAttribute('id', 'stylizer-frame');
+        frame.setAttribute('scrolling', 'no');
+        frame.setAttribute('width', '100%');
+        frame.setAttribute('height', '100%');
+        frame.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+        frame.setAttribute('src', this.config.get('pageSrc'));
+        frame.onbeforeunload = (e) => {
             isFunction(frameBeforeUnloadFunction) && frameBeforeUnloadFunction(e, this);
         };
-        this.frame.onload = (e) => {
-            this.document = this.frame.contentWindow.document;
-            this.DOMHelper = new DOMHelper(this.document);
+        frame.onload = (e) => {
 
-            this.resizeFrame();
-            this.cloneSheet();
+            this.frameDocument = frame.contentWindow.document;
+            this.DOMHelper = new DOMHelper(this.frameDocument);
 
-            this.state.hover ? this.bindEvent('mousemove') : this.destroyEvent('mousemove');
-            this.state.minimize ? this.destroyEvent('all') : this.bindEvent('click');
+            resizeFrame();
+            cloneSheet();
+
+            hover ? bindEvent('mousemove') : destroyEvent('mousemove');
+            minimize ? destroyEvent('all') : bindEvent('click');
 
             isFunction(frameReadyFunction) && frameReadyFunction(e, this);
 
             this.setState({ frameLoaded: true });
         };
 
-        this.frameWrapper.appendChild(this.frame);
+        frameWrapper.appendChild(frame);
 
-        isFunction(frameAppendFunction) && frameAppendFunction(this.frame, this);
+        isFunction(frameAppendFunction) && frameAppendFunction(frame, this);
     };
 
     resizeFrame = () => {
-        this.frame.style.height = Math.max(
-            this.document.body.scrollHeight, this.document.documentElement.scrollHeight,
-            this.document.body.offsetHeight, this.document.documentElement.offsetHeight,
-            this.document.body.clientHeight, this.document.documentElement.clientHeight
+        const { frame, frameDocument } = this;
+        const { body, documentElement } = frameDocument;
+
+        frame.style.height = Math.max(
+            body.scrollHeight, documentElement.scrollHeight,
+            body.offsetHeight, documentElement.offsetHeight,
+            body.clientHeight, documentElement.clientHeight
         ) + 'px';
     };
 
@@ -178,60 +204,69 @@ export default class Inspector extends React.Component {
     };
 
     toggleViewMode = (mode) => {
-        this.state.viewmode = mode;
-        this.state.refresh = true;
-        this.frame.classList.remove('stylizer-desktop');
-        this.frame.classList.remove('stylizer-tablet');
-        this.frame.classList.remove('stylizer-mobile');
-        this.frame.classList.add('stylizer-' + mode);
-        document.body.setAttribute('stylizer-viewmode', this.state.viewmode);
-        this.resizeFrame();
-        this.iteratorHelper.reset();
-        this.setState(this.state);
+        const { frame, state, resizeFrame, iteratorHelper } = this;
+        const { body } = document;
+
+        state.viewmode = mode;
+        state.refresh = true;
+        
+        ['stylizer-desktop', 'stylizer-tablet', 'stylizer-mobile']
+            .map(classText => frame.classList.remove(classText));
+
+        frame.classList.add('stylizer-' + mode);
+        body.setAttribute('stylizer-viewmode', state.viewmode);
+
+        resizeFrame();
+        iteratorHelper.reset();
+        this.setState(state);
     };
 
     toggleEditorMode = () => {
-        this.iteratorHelper.reset();
+        const { iteratorHelper, state} = this;
+
+        iteratorHelper.reset();
         this.setState({
-            advanced: !this.state.advanced
+            advanced: !state.advanced
         });
     };
 
     killApp = () => {
-        const { config } = this;
+        const { config, iteratorHelper, destroyEvent } = this;
         const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
         const killFunction = get(window, mountNode.getAttribute('data-onkill'));
         const unmount = ReactDOM.unmountComponentAtNode(mountNode);
 
         if (unmount) {
-            this.destroyEvent();
+            destroyEvent();
             document.body.removeAttribute('stylizer-active');
-            this.iteratorHelper.destroy();
+            iteratorHelper.destroy();
         }
 
         isFunction(killFunction) && killFunction();
     };
 
     prepareSheet = () => {
-        !this.state.sheetPrepared
+        const { state, frameDocument } = this;
+        !state.sheetPrepared
             && ['desktop', 'tablet', 'mobile'].map((type) => {
-                const sheet = this.document.getElementById('stylizer-original-' + type);
+                const sheet = frameDocument.getElementById('stylizer-original-' + type);
                 sheet.getAttribute('media')
                     && sheet.setAttribute('media-original', sheet.getAttribute('media'));
 
                 sheet.setAttribute('media', 'max-width: 1px');
             });
 
-        this.state.sheetPrepared = true;
+        state.sheetPrepared = true;
     };
 
     cloneSheet = () => {
-
         this.prepareSheet();
 
+        const { frameDocument } = this;
+
         ['desktop', 'tablet', 'mobile'].map((type) => {
-            const original = this.document.getElementById('stylizer-original-' + type);
-            const sheet = this.document.createElement('style');
+            const original = frameDocument.getElementById('stylizer-original-' + type);
+            const sheet = frameDocument.createElement('style');
             const mediaAttr = original.getAttribute('media-original');
 
             sheet.id = 'stylizer-source-' + type;
@@ -239,17 +274,17 @@ export default class Inspector extends React.Component {
             sheet.classList.add('stylizer-sheet');
             mediaAttr && sheet.setAttribute('media', mediaAttr);
 
-            this.document.body.appendChild(sheet);
+            frameDocument.body.appendChild(sheet);
         });
     };
 
     wipeData = () => {
-        const { convertData, config } = this;
+        const { convertData, config, frameDocument } = this;
         const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
         const wipeFunction = get(window, mountNode.getAttribute('data-onwipe'));
 
         ['desktop', 'tablet', 'mobile'].map((type) => {
-            const storage = this.document.getElementById('stylizer-source-' + type);
+            const storage = frameDocument.getElementById('stylizer-source-' + type);
             const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
             storage
                 && isFunction(wipeFunction)
@@ -266,26 +301,28 @@ export default class Inspector extends React.Component {
     };
     
     getStyleOriginalID = () => {
-        return this.state.viewmode ? 'stylizer-original-' + this.state.viewmode : 'stylizer-original-desktop';
+        const { viewmode } = this.state;
+        return viewmode ? 'stylizer-original-' + viewmode : 'stylizer-original-desktop';
     };
     
     getStyleSourceID = () => {
-        return this.state.viewmode ? 'stylizer-source-' + this.state.viewmode : 'stylizer-source-desktop';
+        const { viewmode } = this.state;
+        return viewmode ? 'stylizer-source-' + viewmode : 'stylizer-source-desktop';
     };
     
     revertData = () => {
-        const { convertData, cloneSheet, config } = this;
+        const { convertData, cloneSheet, config, frameDocument } = this;
         const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
         const revertFunction = get(window, mountNode.getAttribute('data-onrevert'));
 
         ['desktop', 'tablet', 'mobile'].map((type) => {
-            const storage = this.document.getElementById('stylizer-source-' + type);
+            const storage = frameDocument.getElementById('stylizer-source-' + type);
             storage
                 && isFunction(revertFunction)
                 && revertFunction(convertData(storage), type, this);
 
             storage
-                && this.document.body.removeChild(storage)
+                && frameDocument.body.removeChild(storage)
         });
 
         cloneSheet();
@@ -314,12 +351,12 @@ export default class Inspector extends React.Component {
     };
 
     saveData = () => {
-        const { convertData, config } = this;
+        const { convertData, config, frameDocument } = this;
         const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
         const saveFunction = get(window, mountNode.getAttribute('data-onsave'));
 
         ['desktop', 'tablet', 'mobile'].map((type) => {
-            const storage = this.document.getElementById('stylizer-source-' + type);
+            const storage = frameDocument.getElementById('stylizer-source-' + type);
             storage
                 && isFunction(saveFunction)
                 && saveFunction(convertData(storage), type, this);
@@ -333,19 +370,26 @@ export default class Inspector extends React.Component {
     };
 
     retrieveOrBuildStorage = (node) => {
-        let tracker = this.DOMHelper.closest(node, {hasAttribute: 'stylizer-uuid'}, 'both');
+        const { iteratorHelper, DOMHelper} = this;
+        let tracker, Store, targetNode;
+
+        tracker = DOMHelper.closest(node, { hasAttribute: 'stylizer-uuid' }, 'both');
         if (tracker.depth > 1) {
-            let Store = this.iteratorHelper.find(tracker.node.getAttribute('stylizer-uuid'));
-            this.iteratorHelper.iterate(tracker.node, Store, Store.depth, Store.depth + tracker.depth, Store.tree);
+            Store = iteratorHelper.find(tracker.node.getAttribute('stylizer-uuid'));
+            iteratorHelper.iterate(tracker.node, Store, Store.depth, Store.depth + tracker.depth, Store.tree);
         }
 
         tracker = null;
-        let targetNode = this.iteratorHelper.find(node.getAttribute('stylizer-uuid'));
+        targetNode = iteratorHelper.find(node.getAttribute('stylizer-uuid'));
+
         return targetNode ? targetNode : false;
     };
 
     captureNode = (e) => {
         const node = e.target;
+        const { retrieveOrBuildStorage } = this;
+        let StoreObject;
+
         if (node.nodeName.toLowerCase() === 'a') {
             e.preventDefault();
         }
@@ -354,7 +398,7 @@ export default class Inspector extends React.Component {
             return true;
         }
 
-        const StoreObject = this.retrieveOrBuildStorage(node);
+        StoreObject = retrieveOrBuildStorage(node);
         StoreObject && this.setState({
             node: StoreObject,
             hover: false,
@@ -364,6 +408,8 @@ export default class Inspector extends React.Component {
 
     moveOverlay = (e) => {
         const node = e.target;
+        const { retrieveOrBuildStorage, state } = this;
+        let StoreObject;
 
         if (node.nodeName.toLowerCase().match(new RegExp('(img|style|script|link|html|body)', 'g'))) {
             this.hoverCache = false;
@@ -376,35 +422,40 @@ export default class Inspector extends React.Component {
         }
 
         this.hoverCache = e;
-        this.state.overlay = node;
+        state.overlay = node;
 
-        const StoreObject = this.retrieveOrBuildStorage(node);
+        StoreObject = retrieveOrBuildStorage(node);
         StoreObject && this.setState({
             node: StoreObject
         });
     };
 
     setMessage = (type, text, duration) => {
-        if (!this.messageBox && this.refs.messageBox) {
-            this.messageBox = this.refs.messageBox;
+        const { refs } = this;
+        let { messageBox } = this;
+
+        if (!messageBox && refs.messageBox) {
+            messageBox = refs.messageBox;
         }
-        this.messageBox && this.messageBox.set(type, text, duration);
+
+        messageBox && messageBox.set(type, text, duration);
     };
 
     render() {
-        const { config, state, props, allowNavigator, DOMHelper, iteratorHelper } = this;
+        const { config, state, props, allowNavigator, DOMHelper, iteratorHelper, getStyleSourceID, frame, frameWrapper, frameDocument, polyglot } = this;
         const { iterator, editor, controlbar } = props;
+        const { refresh, minimize, node, overlay, advanced, frameLoaded } = state;
 
         const controllBarProps = config.get('controlBarProps', {
             key: 'stylizer-controlbar-element',
             config: controlbar,
             root: this,
-            refresh: state.refresh
+            refresh: refresh
         });
 
         const inspectorProps = config.get('inspectorProps', {
             key: 'stylizer-inspector',
-            className: [ 'stylizer-inspector', state.minimize ? 'minimize' : null, !allowNavigator ? 'no-navigator' : null ].join(' '),
+            className: [ 'stylizer-inspector', minimize ? 'minimize' : null, !allowNavigator ? 'no-navigator' : null ].join(' '),
             'stylizer-inspector': "true"
         });
 
@@ -413,38 +464,38 @@ export default class Inspector extends React.Component {
             config: iterator,
             root: this,
             iterator: iteratorHelper,
-            node: state.node,
-            document: this.document,
-            stylizerID: this.getStyleSourceID(),
-            refresh: state.refresh
+            node: node,
+            document: frameDocument,
+            stylizerID: getStyleSourceID(),
+            refresh: refresh
         });
 
         const editorPanelProps = config.get('editorPanelProps', {
             key: 'stylizer-editor-element',
             config: editor,
             root: this,
-            node: state.node,
+            node: node,
             DOMHelper: DOMHelper,
-            document: this.document,
-            stylizerID: this.getStyleSourceID(),
-            refresh: state.refresh
+            document: frameDocument,
+            stylizerID: getStyleSourceID(),
+            refresh: refresh
         });
 
         const advancedPanelProps = config.get('advancedPanelProps', {
             key: 'stylizer-editor-element',
             config: editor,
             root: this,
-            node: state.node,
+            node: node,
             DOMHelper: DOMHelper,
-            document: this.document,
-            stylizerID: this.getStyleSourceID(),
-            refresh: state.refresh
+            document: frameDocument,
+            stylizerID: getStyleSourceID(),
+            refresh: refresh
         });
 
         const overlayProps = config.get('overlayProps', {
-            frame: this.frame,
-            wrapper: this.frameWrapper,
-            node: state.overlay
+            frame: frame,
+            wrapper: frameWrapper,
+            node: overlay
         });
 
         const messageProps = config.get('messageProps', {
@@ -452,15 +503,20 @@ export default class Inspector extends React.Component {
             root: this
         });
 
+        const loaderProps = config.get('loaderProps', {
+            className: 'stylizer-loading-bar',
+            'data-text': polyglot.t('Loading ...')
+        });
+
         return (
             <div { ...inspectorProps }>
                 <ControlBar { ...controllBarProps } />
-                { state.frameLoaded && !state.advanced && allowNavigator && <InspectorPanel { ...inspectorPanelProps }/> }
-                { state.frameLoaded && !state.advanced && <EditorPanel { ...editorPanelProps } /> }
-                { state.frameLoaded && !state.advanced && <Overlay { ...overlayProps } /> }
-                { state.frameLoaded && state.advanced && <AdvancedPanel { ...advancedPanelProps } /> }
-                { state.frameLoaded && <MessageBox { ...messageProps } /> }
-                { !state.frameLoaded && <div className="loading-bar" /> }
+                { frameLoaded && !advanced && allowNavigator && <InspectorPanel { ...inspectorPanelProps }/> }
+                { frameLoaded && !advanced && <EditorPanel { ...editorPanelProps } /> }
+                { frameLoaded && !advanced && <Overlay { ...overlayProps } /> }
+                { frameLoaded && advanced && <AdvancedPanel { ...advancedPanelProps } /> }
+                { frameLoaded && <MessageBox { ...messageProps } /> }
+                { !frameLoaded && <div { ...loaderProps } /> }
             </div>
         )
     };

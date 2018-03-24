@@ -29,8 +29,7 @@ export default class AdvancedPanel extends React.Component {
         super(props);
 
         this.config = new Configurator({
-            stylizerID: props.stylizerID,
-            AdvancedEditorHeaderText: 'Advanced Editor'
+            stylizerID: props.stylizerID
         });
 
         if ('config' in props) {
@@ -94,7 +93,8 @@ export default class AdvancedPanel extends React.Component {
     render() {
 
         const { onChangeValue, props, config } = this;
-        const { root } = props;
+        const { root } = props;;
+        const { polyglot } = root;
 
         const editorProps = config.get('AdvancedEditorEditorProps', {
             key: 'stylizer-editor-panel',
@@ -122,7 +122,7 @@ export default class AdvancedPanel extends React.Component {
         });
 
         const hamburgerIconLabel = config.get('AdvancedEditorHamburgerIconLabel', {
-            title: 'Minimize Editor'
+            title: polyglot.t('Minimize Editor')
         });
 
         const advancedPanelWrapperProps = config.get('AdvancedEditorAdvancedPanelWrapperProps', {
@@ -146,7 +146,7 @@ export default class AdvancedPanel extends React.Component {
             <div { ...editorProps }>
                 <h3 { ...headerProps }>
                     <span { ...headerTextProps }>
-                        { config.get('AdvancedEditorHeaderText') }
+                        { polyglot.t('Advanced Editor') }
                     </span>
                     <span { ...headerActionProps }>
                         <span { ...hamburgerIconLabel }><HamburgerIcon { ...hamburgerIconProps } /></span>
@@ -158,7 +158,5 @@ export default class AdvancedPanel extends React.Component {
                 </div>
             </div>
         )
-    }
-
-;
+    };
 }

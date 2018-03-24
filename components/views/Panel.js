@@ -112,13 +112,10 @@ export default class Panel extends React.Component {
     };
 
     validate = (directive, rule) => {
-        this.testerNode.style[directive] = rule;
-        if (directive.indexOf('color') === -1) {
-            return this.testerNode.style[directive] === rule;
-        }
-        else {
-            return this.testerNode.style[directive].length !== 0;
-        }
+        const { testerNode } = this;
+
+        testerNode.style[directive] = rule;
+        return (directive.indexOf('color') === -1) ? testerNode.style[directive] === rule : testerNode.style[directive].length !== 0;
     };
 
     validateValues = () => {
@@ -154,6 +151,7 @@ export default class Panel extends React.Component {
             name: element.target,
             value: get(state, 'values.' + element.target, element.default),
             root: this,
+            mainRoot: props.mainRoot,
             onChange: onSubmit
         });
 
@@ -163,6 +161,7 @@ export default class Panel extends React.Component {
         });
 
         let InputElement = [];
+
         switch (element.field) {
             case 'text' :
                 inputProps.onKeyDown = onKeypress;
