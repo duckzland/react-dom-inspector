@@ -103,7 +103,7 @@
 
             // Insert the translation strings
             // @see the dist/translation folder for the translated strings
-            Element.setAttribute('data-translation', {
+            Element.setAttribute('data-translation', JSON.stringify({
                 "100": "100",
                 "200": "200",
                 "300": "300",
@@ -347,7 +347,7 @@
                 "Italic": "Italic",
                 "Oblique": "Oblique",
                 "Loading ...": "Loading ..."
-            })
+            }))
         </script>
 
         <!-- Loading the minified stylesheet for the Inspector Element -->
