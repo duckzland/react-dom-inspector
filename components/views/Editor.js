@@ -51,7 +51,7 @@ export default class Editor extends React.Component {
             this.state.root = props.root;
         }
 
-        if (this.config.get('googleFontAPI')) {
+        if (this.config.get('googleFontAPI') && !props.fontLoader) {
             (new FontLoader(this.config.get('googleFontAPI')));
         }
 

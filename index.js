@@ -8,6 +8,7 @@ ReactDOM.render(
     <Inspector
         config={{
             domID: Element.getAttribute('id'),
+            googleFontAPI: Element.getAttribute('data-google-font-api'),
             pageSrc: Element.getAttribute('data-page-src'),
 
             // Optional

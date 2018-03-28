@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import Iterator from './modules/Iterator';
 import DOMHelper from './modules/DOMHelper';
 import Parser from './modules/Parser';
+import FontLoader from './modules/FontLoader';
 import Configurator from './modules/Config';
 import ControlBar from './views/ControlBar';
 import MessageBox from './views/MessageBox';
@@ -162,6 +163,7 @@ export default class Inspector extends React.Component {
 
             this.frameDocument = frame.contentWindow.document;
             this.DOMHelper = new DOMHelper(this.frameDocument);
+            this.fontLoader = new FontLoader(this.config.get('googleFontAPI'), frame.contentWindow);
 
             resizeFrame();
             cloneSheet();
@@ -172,6 +174,9 @@ export default class Inspector extends React.Component {
             isFunction(frameReadyFunction) && frameReadyFunction(e, this);
 
             this.setState({ frameLoaded: true });
+
+            // @bugfix wrong frame height size on boot
+            resizeFrame();
         };
 
         frameWrapper.appendChild(frame);
@@ -184,10 +189,10 @@ export default class Inspector extends React.Component {
         const { body, documentElement } = frameDocument;
 
         frame.style.height = Math.max(
-            body.scrollHeight, documentElement.scrollHeight,
-            body.offsetHeight, documentElement.offsetHeight,
-            body.clientHeight, documentElement.clientHeight
-        ) + 'px';
+                body.scrollHeight, documentElement.scrollHeight,
+                body.offsetHeight, documentElement.offsetHeight,
+                body.clientHeight, documentElement.clientHeight
+            ) + 'px';
     };
 
     toggleMinimize = () => {
@@ -265,6 +270,7 @@ export default class Inspector extends React.Component {
         const { frameDocument } = this;
 
         ['desktop', 'tablet', 'mobile'].map((type) => {
+            const { fontLoader } = this;
             const original = frameDocument.getElementById('stylizer-original-' + type);
             const sheet = frameDocument.createElement('style');
             const mediaAttr = original.getAttribute('media-original');
@@ -275,6 +281,7 @@ export default class Inspector extends React.Component {
             mediaAttr && sheet.setAttribute('media', mediaAttr);
 
             frameDocument.body.appendChild(sheet);
+            fontLoader.defer(fontLoader.parseFont, fontLoader, [sheet, true])
         });
     };
 
@@ -284,8 +291,10 @@ export default class Inspector extends React.Component {
         const wipeFunction = get(window, mountNode.getAttribute('data-onwipe'));
 
         ['desktop', 'tablet', 'mobile'].map((type) => {
+
             const storage = frameDocument.getElementById('stylizer-source-' + type);
             const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
+
             storage
                 && isFunction(wipeFunction)
                 && wipeFunction(convertData(storage), type, this);
@@ -331,10 +340,12 @@ export default class Inspector extends React.Component {
     };
 
     convertData = (storage) => {
+        const { fontLoader } = this;
         const result = {
             storage: storage,
             styles: [],
-            cssText: ''
+            cssText: '',
+            fonts: {}
         };
 
         const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
@@ -347,6 +358,8 @@ export default class Inspector extends React.Component {
 
         result.cssText = result.styles.join("\n");
 
+        result.fonts = fontLoader.parseFont(storage);
+
         return result;
     };
 
@@ -357,12 +370,17 @@ export default class Inspector extends React.Component {
 
         ['desktop', 'tablet', 'mobile'].map((type) => {
             const storage = frameDocument.getElementById('stylizer-source-' + type);
+
             storage
                 && isFunction(saveFunction)
                 && saveFunction(convertData(storage), type, this);
         });
 
         return true;
+    };
+
+    parseFontFamily = () => {
+
     };
 
     setActiveNode = (node) => {
@@ -442,7 +460,7 @@ export default class Inspector extends React.Component {
     };
 
     render() {
-        const { config, state, props, allowNavigator, DOMHelper, iteratorHelper, getStyleSourceID, frame, frameWrapper, frameDocument, polyglot } = this;
+        const { config, state, props, allowNavigator, DOMHelper, iteratorHelper, fontLoader, getStyleSourceID, frame, frameWrapper, frameDocument, polyglot } = this;
         const { iterator, editor, controlbar } = props;
         const { refresh, minimize, node, overlay, advanced, frameLoaded } = state;
 
@@ -476,6 +494,7 @@ export default class Inspector extends React.Component {
             root: this,
             node: node,
             DOMHelper: DOMHelper,
+            fontLoader: fontLoader,
             document: frameDocument,
             stylizerID: getStyleSourceID(),
             refresh: refresh

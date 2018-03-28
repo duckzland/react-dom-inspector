@@ -1,4 +1,4 @@
-import { forEach, find, get, isEqual} from 'lodash';
+import { forEach, find, get, isEqual, isEmpty, indexOf} from 'lodash';
 import WebFontLoader from 'webfontloader';
 
 /**
@@ -13,9 +13,16 @@ export default class FontLoader {
     static googleAPI = null;
     static isFetching = false;
     static families = null;
+    static frame = null;
+    static queues = [];
 
-    constructor(API = false) {
+    constructor(API = false, frame = false) {
         FontLoader.googleAPI = API;
+
+        if (!FontLoader.frame && frame) {
+            FontLoader.frame = frame;
+        }
+
         if (API && FontLoader.library === null && !FontLoader.isFetching) {
             FontLoader.isFetching = true;
             setTimeout(() => {
@@ -24,7 +31,8 @@ export default class FontLoader {
         }
     }
 
-    load() {
+    load = () => {
+        const { processQueue } = this;
         return new Promise(function(resolve, reject) {
             let XHR = new XMLHttpRequest();
 
@@ -32,7 +40,9 @@ export default class FontLoader {
             XHR.onreadystatechange = function() {
                 if (XHR.readyState == 4 && XHR.status == 200) {
                     FontLoader.library = XHR.response;
+                    processQueue();
                 }
+
                 FontLoader.isFetching = false;
                 resolve(XHR.response);
             };
@@ -45,6 +55,21 @@ export default class FontLoader {
             XHR.open('get', 'https://www.googleapis.com/webfonts/v1/webfonts?key=' + FontLoader.googleAPI);
             XHR.send();
         });
+    };
+
+    defer(fn, context = this, args = []) {
+        FontLoader.isFetching
+            ? FontLoader.queues.push({function: fn, context: context, args: args })
+            : fn.apply(context, args);
+    }
+
+    processQueue() {
+        forEach(FontLoader.queues, (queue) => {
+            queue.function.apply(queue.context, queue.args);
+        });
+
+        FontLoader.queues = [];
+
     }
 
     getFamily(defaultFamily = {}) {
@@ -104,7 +129,9 @@ export default class FontLoader {
     getStyle(family = false, style = false, weight = false, defaultStyle = {}) {
 
         if (FontLoader.library && FontLoader.library.items) {
+
             const font = find(FontLoader.library.items, ['family', family]);
+
             if (font) {
                 let fontStyle = {};
                 !weight ? weight = 'none' : null;
@@ -113,7 +140,11 @@ export default class FontLoader {
 
                     const fontWeight = rule.match(/\d+/g);
                     const fontRule = rule.match(/[a-zA-Z]+/g);
-                    const Rule = fontWeight && fontWeight[0] ? rule.replace(fontWeight[0], '') : false;
+                    const Rule = fontWeight && fontWeight[0]
+                        ? rule === fontWeight[0]
+                            ? 'regular'
+                            : rule.replace(fontWeight[0], '')
+                        : false;
 
                     switch (weight) {
                         case 'none' :
@@ -141,14 +172,19 @@ export default class FontLoader {
 
     validate(family = false, style = '', weight = '') {
 
-        let validated = false;
-        let font = false;
-        const checkedRule = weight + style;
+        if ((style === 'regular' || style === 'normal') && weight) {
+            style = '';
+        }
 
-        if (family && !get(FontLoader.families, family, false)) {
+        const checkedRule = weight + style;
+        let validated = false,
+            font = false;
+
+        if (family && FontLoader.families !== null && !get(FontLoader.families, family, false)) {
             family = null;
             validated = false;
         }
+
         if (family && checkedRule === '') {
             validated = true;
         }
@@ -173,15 +209,15 @@ export default class FontLoader {
         let loaded = false;
         if (family && FontLoader.library && FontLoader.library.items) {
             const font = find(FontLoader.library.items, ['family', family]);
-
             if (font) {
-                const variant = style + weight;
-                const rule = variant ? family + ':' + variant : family;
+                const variant = weight + style;
+                const rule = (variant ? family + ':' + variant : family).replace(' ', '+');
 
                 WebFontLoader.load({
                     google: {
                         families: [rule]
-                    }
+                    },
+                    context: FontLoader.frame
                 });
                 loaded = true;
             }
@@ -189,4 +225,62 @@ export default class FontLoader {
 
         return loaded;
     }
+
+    parseFont(storage = false, loadFont = false) {
+
+        const sheet = storage.sheet ? storage.sheet : storage.styleSheet,
+              Docs = FontLoader.frame ? FontLoader.frame.document : false,
+              CS = FontLoader.frame ? FontLoader.frame.window.getComputedStyle : false,
+              fonts = [];
+
+        Docs
+            && CS
+            && sheet
+            && sheet.cssRules
+            && forEach(sheet.cssRules, (rule) => {
+
+                // Don't trust sheet rules, use computed value instead!
+                let Style = CS(Docs.querySelector(rule.selectorText), null),
+                    families  = Style ? get(Style, 'fontFamily', '').split(',') : [];
+
+                if (!families.length) {
+                    return true;
+                }
+
+                forEach(families, (family) => {
+
+                    family = family.replace(/"/g,"").trim();
+
+                    let storedFont = find(fonts, { family: family }),
+                        weight = get(Style, 'fontWeight', ''),
+                        style = get(Style, 'fontStyle', ''),
+                        variant = weight + style,
+                        font = storedFont ? storedFont : {
+                            family: family,
+                            weight: new Set(),
+                            style: new Set(),
+                            rule: new Set()
+                        };
+
+                    if (weight) {
+                        font.weight.add(weight);
+                    }
+
+                    if (style) {
+                        font.style.add(style);
+                    }
+
+                    if (this.validate(family, style, weight)) {
+                        font.rule.add(variant);
+                        loadFont && this.insert(family, style, weight);
+                    }
+
+                    if (!isEmpty(font) && isEmpty(storedFont)) {
+                        fonts.push(font);
+                    }
+                });
+            });
+
+        return fonts;
+    };
 }
