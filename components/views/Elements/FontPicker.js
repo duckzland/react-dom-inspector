@@ -32,12 +32,7 @@ export default class FontPicker extends React.Component {
             this.state.value = props.value;
         }
 
-        this.config = new Configurator();
-
-        if ('config' in props)  {
-            this.config.insert(props.config);
-        }
-
+        this.config = 'config' in props ? props.config : new Configurator();
 
         if ('root' in props) {
             this.state.root = props.root;
@@ -192,11 +187,11 @@ export default class FontPicker extends React.Component {
 
     render() {
         const { props, state, config, mode, change } = this;
-        const mainProps = config.get('ElementFontPickerMainProps', {
+        const mainProps = config.get('elements.fontPicker.props.main', {
             className: props.className + ' stylizer-font-element stylizer-font-element--' + mode
         });
 
-        let inputProps = config.get('ElementFontPickerInputProps', {
+        let inputProps = config.get('elements.fontPicker.props.input', {
             name: 'font-' + mode,
             value: state.value,
             onChange: change
@@ -216,14 +211,14 @@ export default class FontPicker extends React.Component {
                 inputProps.getItemValue = (item) => item.label;
                 inputProps.shouldItemRender = (item, value) => item.label.toLowerCase().indexOf(value.toLowerCase()) !== -1;
                 inputProps.renderMenu = (items, value, style) => {
-                    const menuProps = config.get('ElementFontPickerDropdownMenuProps', {
+                    const menuProps = config.get('elements.fontPicker.props.dropdownMenu', {
                         className: 'stylizer-font-element-dropdown',
                         children: items
                     });
                     return ( <div { ...menuProps } /> )
                 };
                 inputProps.renderItem = (item, isHighlighted) => {
-                    const optionProps = config.get('ElementFontPickerAutoCompleteProps', {
+                    const optionProps = config.get('elements.fontPicker.props.autoComplete', {
                         key: 'stylizer-option-' + props.name + '-' + item.label,
                         className: 'stylizer-font-element-dropdown-item ' +  isHighlighted ? 'active' : ''
                     });
@@ -251,14 +246,14 @@ export default class FontPicker extends React.Component {
                         break;
 
                     default :
-                        const optionEmptyProps = config.get('ElementFontPickerOptionEmptyProps', {
+                        const optionEmptyProps = config.get('elements.fontPicker.props.empty', {
                             key: 'stylizer-option-' + props.name + '-empty',
                             value: ''
                         });
 
                         options.push(<option { ...optionEmptyProps }>{ null }</option>);
                         forEach(state.options, (text, value) => {
-                            const optionProps = config.get('ElementFontPickerOptionProps', {
+                            const optionProps = config.get('elements.fontPicker.props.option', {
                                 key: 'stylizer-option-' + props.name + '-' + value.replace(' ', '-'),
                                 value: value
                             });

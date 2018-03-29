@@ -24,7 +24,8 @@ export default class MessageBox extends React.Component {
 
     constructor(props) {
         super(props);
-        this.config = new Configurator({});
+        this.config = 'config' in props ? props.config : new Configurator();
+
         if ('root' in props) {
             this.state.root = props.root;
         }
@@ -65,12 +66,12 @@ export default class MessageBox extends React.Component {
     render() {
 
         const { state, config } = this;
-        const messageBoxProps = config.get('messageBoxProps', {
+        const messageBoxProps = config.get('message.props.element', {
             key: 'stylizer-message-box',
             className: [ 'stylizer-message-box', 'stylizer-message-box-' + state.type].join(' ')
         });
 
-        const messageBoxIconProps = config.get('messageBoxProps', {
+        const messageBoxIconProps = config.get('message.props.icon', {
             key: 'stylizer-message-box-icon',
             size: 16
         });

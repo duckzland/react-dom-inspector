@@ -32,16 +32,10 @@ export default class Editor extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.config = 'config' in props ? props.config : new Configurator();
         
-        this.config = new Configurator({
-            stylizerID: props.stylizerID
-        });
-        
-        if ('config' in props)  {
-            this.config.insert(props.config);
-        }
-        
-        this.styleElement = (new DOMHelper(props.document)).styleSheet({ id: this.config.get('stylizerID') }, 'style');
+        this.styleElement = (new DOMHelper(props.document)).styleSheet({ id: props.stylizerID }, 'style');
 
         if ('node' in props) {
             this.state.node = props.node;
@@ -55,15 +49,14 @@ export default class Editor extends React.Component {
             (new FontLoader(this.config.get('googleFontAPI')));
         }
 
-        if (this.config.get('imageLoader') && this.config.get('imageFetch')) {
-            (new ImageLoader(this.config.get('imageLoader'), [])).fetch();
+        if (this.config.get('imageLoader.loader') && this.config.get('imageLoader.fetch')) {
+            (new ImageLoader(this.config.get('imageLoader.loader'), [])).fetch();
         }
     };
 
     componentWillReceiveProps(nextProps) {
         let reset = false;
         if ('refresh' in nextProps && nextProps.refresh) {
-            this.config.stylizerID = nextProps.root.getStyleSourceID();
             this.styleElement = (new DOMHelper(nextProps.document)).styleSheet({id: nextProps.root.getStyleSourceID()}, 'style');
             reset = true;
         }
@@ -86,7 +79,6 @@ export default class Editor extends React.Component {
                 styleElement.deleteRule(i);
             }
         }
-
         (name !== 'selector') ? node.storeStyle(name, value) : node.storeSelector(value);
 
         styleElement.insertRule(node.getStyling(), styleElement.cssRules.length);
@@ -109,50 +101,50 @@ export default class Editor extends React.Component {
 
         const AllowedTabs = ['selector', 'layout', 'spacing', 'border', 'styles', 'typography'];
 
-        const editorProps = config.get('EditorPanelEditorProps', {
+        const editorProps = config.get('editor.props.element', {
             key: 'stylizer-editor-panel',
             className: 'stylizer-panels stylizer-editor-panel'
         });
 
-        const headerProps = config.get('EditorPanelHeaderProps', {
+        const headerProps = config.get('editor.props.header', {
             key: 'stylizer-editor-header',
             className: 'stylizer-header'
         });
 
-        const headerTextProps = config.get('EditorPanelHeaderTextProps', {
+        const headerTextProps = config.get('editor.props.headerText', {
             key: 'stylizer-editor-header-text',
             className: 'stylizer-header-text'
         });
 
-        const headerActionProps = config.get('EditorPanelHeaderActionProps', {
+        const headerActionProps = config.get('editor.props.headerAction', {
             key: 'stylizer-editor-header-actions',
             className: 'stylizer-header-actions'
         });
 
-        const hamburgerIconProps = config.get('EditorPanelHamburgerIconProps', {
+        const hamburgerIconProps = config.get('editor.props.hamburgerIcon', {
             size: 16,
             onClick: () => root.toggleMinimize()
         });
 
-        const hamburgerIconLabel = config.get('EditorPanelHamburgerIconLabel', {
+        const hamburgerIconLabel = config.get('editor.props.hamburgerIconLabel', {
             title: polyglot.t('Minimize Editor')
         });
 
-        const tabsWrapperProps = config.get('EditorPanelTabsWrapperProps', {
+        const tabsWrapperProps = config.get('editor.props.tabsWrapper', {
             key: 'stylizer-tabs-wrapper',
             className: 'stylizer-tabs-wrapper'
         });
 
-        const tabsProps = config.get('EditorPanelTabsProps', {
+        const tabsProps = config.get('editor.props.panelTabs', {
             key: 'stylizer-tabs',
             className: 'stylizer-tabs'
         });
 
-        const emptyProps = config.get('EditorPanelEmptyProps', {
+        const emptyProps = config.get('editor.props.empty', {
             className: 'stylizer-selector-empty'
         });
 
-        const panelProps = config.get('EditorPanelPanelProps', Object.assign(state, {
+        const panelProps = config.get('editor.panel.panelElement', Object.assign(state, {
             key: 'stylizer-active-panel-' + (node && node.uuid ? node.uuid : 'empty'),
             root: this,
             mainRoot: props.root,
@@ -195,9 +187,9 @@ export default class Editor extends React.Component {
                     ? <div { ...tabsWrapperProps }>
                         <div { ...tabsProps }>
                             { AllowedTabs.map((TabKey) => {
-                                const selectorItemProps = config.get('EditorPanelSelectorItemProps', {
-                                    key: config.get('EditorPanelPanelItemPrefix', 'stylizer-tab-') + TabKey,
-                                    className: [ config.get('EditorPanelPanelItemPrefix', 'stylizer-tab-') + 'element', state.active === TabKey ? 'active' : null ].join(' '),
+                                const selectorItemProps = config.get('editor.props.selectorItem', {
+                                    key: config.get('editor.tabPrefix', 'stylizer-tab-') + TabKey,
+                                    className: [ config.get('editor.tabPrefix', 'stylizer-tab-') + 'element', state.active === TabKey ? 'active' : null ].join(' '),
                                     onClick: () => onChangeTab(TabKey)
                                 });
 

@@ -22,20 +22,21 @@ export default class Inspector extends React.Component {
     
     constructor(props) {
         super(props);
-        this.config = new Configurator({
-            InspectorPanelStartingDepth: 2
+
+        this.config = 'config' in props ? props.config : new Configurator({
+            navigator: {
+                maxDepth: 2,
+                startingDepth: 2
+            }
         });
 
-        this.iterator = 'iterator' in props ? props.iterator : new Iterator({
-            root: props.root,
-            sheetID: props.stylizerID
-        });
-        
-        if ('config' in props)  {
-           this.config.insert(props.config);
-        }
-
-        this.iterator.iterate(props.document.body, false, 0, this.config.get('InspectorPanelStartingDepth'), []);
+        this.iterator = 'iterator' in props
+            ? props.iterator
+            : (new Iterator({
+                    root: props.root,
+                    sheetID: props.stylizerID
+                }))
+                .iterate(props.document.body, false, 0, this.config.get('navigator.startingDepth'), []);
     };
 
     componentWillReceiveProps(nextProps) {
@@ -106,6 +107,11 @@ export default class Inspector extends React.Component {
             prevActive.refresh = true;
             prevActive.active = false;
         }
+        else {
+            iterator.get().map((Store) => {
+                Store.active = false;
+            });
+        }
 
         node.refresh = true;
         node.active = true;
@@ -130,32 +136,32 @@ export default class Inspector extends React.Component {
         const { root } = props;
         const { polyglot } = root;
 
-        const panelProps = config.get('inspectorPanelProps', {
+        const panelProps = config.get('navigator.props.element', {
             key: 'stylizer-iterator-panel',
             className: [ 'stylizer-panels', 'stylizer-dom-panel', state.minimize ? 'minimize' : ''].join(' ')
         });
 
-        const headerProps = config.get('inspectorPanelHeaderProps', {
+        const headerProps = config.get('navigator.props.header', {
             key: 'stylizer-iterator-header',
             className: 'stylizer-header'
         });
 
-        const headerTextProps = config.get('inspectorPanelHeaderTextProps', {
+        const headerTextProps = config.get('navigator.props.headerText', {
             key: 'stylizer-iterator-header-text',
             className: 'stylizer-header-text'
         });
 
-        const headerActionProps = config.get('inspectorPanelHeaderActionProps', {
+        const headerActionProps = config.get('navigator.props.headerAction', {
             key: 'stylizer-iterator-header-actions',
             className: 'stylizer-header-actions'
         });
 
-        const hamburgerIconProps = config.get('inspectorPanelHamburgerIconProps', {
+        const hamburgerIconProps = config.get('navigator.props.hamburgerIcon', {
             size: 16,
             onClick: () => { this.setState({ minimize: !this.state.minimize }); }
         });
 
-        const scrollAreaProps = config.get('inspectorPanelScrollAreaProps', {
+        const scrollAreaProps = config.get('navigator.props.scrollArea', {
             key: 'stylizer-iterator',
             ref: (el) => { moveScrollBar(el) },
             speed: 0.8,
@@ -178,7 +184,7 @@ export default class Inspector extends React.Component {
                 </h3>
                 <ScrollArea { ...scrollAreaProps }>
                     { iterator.get().map((node, delta) => {
-                        const itemProps = { key: delta, root: this, node: node };
+                        const itemProps = { key: delta, root: this, node: node, config: config };
                         return ( <Items { ...itemProps } /> );
                     })}
                 </ScrollArea>

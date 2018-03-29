@@ -769,6 +769,10 @@
       line-height: 24px;
     }
 
+    .stylizer-header-rotate {
+      background: darken(@ControlBarBackground, 30%);
+    }
+
     .stylizer-header-view-mode {
       background: darken(@ControlBarBackground, 10%);
     }
@@ -1478,31 +1482,12 @@ body[stylizer-vertical] {
     min-height: 100%;
     overflow-x: auto;
     height: max-content;
-    background: @FrameBackground;
+    background: lighten(@FrameBackground, 50%);
 
     iframe {
       display: block;
       border: none;
       width: 100%;
-
-      /**
-      &.stylizer-desktop {
-
-      }
-
-      &.stylizer-tablet {
-        width: 768px;
-        height: 1024px;
-        min-height: 1024px;
-        margin: 60px auto;
-      }
-
-      &.stylizer-mobile {
-        width: 414px;
-        height: 736px;
-        min-height: 736px;
-        margin: 60px auto;
-      }**/
     }
   }
 }
@@ -1768,22 +1753,129 @@ body[stylizer-vertical="false"] {
   View Mode overrides
   **/
 body {
-  &[stylizer-viewmode="tablet"] {
-    #stylizer-frame-wrapper {
-      width: 768px;
-      height: 1024px;
-      margin: 60px auto;
-      overflow-x: auto;
+  &[stylizer-viewmode="tablet-vertical"] {
+
+    #stylizer-viewmode-frame {
+      position: relative;
+
+      &:before {
+        background: transparent url(svg/ipad.svg) no-repeat top center;
+        background-size: contain;
+        position: absolute;
+        content: "";
+        display: block;
+        top: 60px;
+        left: ~"calc(50% - 435px)";
+        width: 870px;
+        height: 1277px;
+        z-index: 1;
+      }
+
+      #stylizer-frame-wrapper {
+        width: 768px;
+        height: 1024px;
+        margin: 180px auto;
+        overflow-x: auto;
+        position: relative;
+        z-index: 2;
+        border: 4px solid #7d89a3;
+        border-radius: 4px;
+      }
     }
   }
 
-  &[stylizer-viewmode="mobile"] {
-    #stylizer-frame-wrapper {
-      width: 414px;
-      height: 736px;
-      min-height: 736px;
-      margin: 60px auto;
-      overflow-x: auto;
+  &[stylizer-viewmode="tablet-horizontal"] {
+
+    #stylizer-viewmode-frame {
+      position: relative;
+
+      &:before {
+        background: transparent url(svg/ipad.svg) no-repeat top center;
+        background-size: contain;
+        position: absolute;
+        content: "";
+        display: block;
+        top: -162px;
+        left: ~"calc(50% - 435px)";
+        width: 870px;
+        height: 1277px;
+        z-index: 1;
+        transform: rotate(90deg);
+      }
+
+      #stylizer-frame-wrapper {
+        width: 1024px;
+        height: 768px;
+        margin: 91px auto;
+        overflow-x: auto;
+        position: relative;
+        z-index: 2;
+        border: 4px solid #7d89a3;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  &[stylizer-viewmode="mobile-vertical"] {
+    #stylizer-viewmode-frame {
+      position: relative;
+
+      &:before {
+        background: transparent url(svg/iphone.svg) no-repeat top center;
+        background-size: contain;
+        position: absolute;
+        content: "";
+        display: block;
+        top: 30px;
+        left: ~"calc(50% - 238px)";
+        width: 476px;
+        height: 990px;
+        z-index: 1;
+      }
+
+      #stylizer-frame-wrapper {
+        width: 414px;
+        height: 736px;
+        min-height: 736px;
+        margin: 151px auto;
+        overflow-x: auto;
+        position: relative;
+        z-index: 2;
+        border: 4px solid #7d89a3;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  &[stylizer-viewmode="mobile-horizontal"] {
+    #stylizer-viewmode-frame {
+      position: relative;
+
+      &:before {
+        background: transparent url(svg/iphone.svg) no-repeat top center;
+        background-size: contain;
+        position: absolute;
+        content: "";
+        display: block;
+        top: -220px;
+        left: ~"calc(50% - 238px)";
+        width: 476px;
+        height: 990px;
+        z-index: 1;
+        transform: rotate(90deg);
+      }
+
+      #stylizer-frame-wrapper {
+        width: 736px;
+        height: 414px;
+        min-height: 414px;
+        margin: 68px auto;
+        overflow-x: auto;
+        position: relative;
+        z-index: 2;
+        border: 4px solid #7d89a3;
+        border-radius: 4px;
+      }
     }
   }
 } 

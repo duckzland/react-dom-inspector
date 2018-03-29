@@ -47,10 +47,8 @@ export default class Overlay extends React.Component {
     constructor(props) {
         super(props);
 
-        this.config = new Configurator();
-        if ('config' in props)  {
-            this.config.insert(props.config);
-        }
+        this.config = 'config' in props ? props.config : new Configurator();
+
         if ('wrapper' in props) {
             this.frameWrapper = props.wrapper;
             this.viewModeWrapper = this.frameWrapper.parentElement;
@@ -185,25 +183,25 @@ export default class Overlay extends React.Component {
     render() {
 
         const { state, config } = this;
-        const overlayBoxProps = config.get('overlayBoxProps', {
+        const overlayBoxProps = config.get('overlay.props.box', {
             key: 'overlay-box',
             className: 'stylizer-overlay-box',
             style: state.position
         });
 
-        const overlayMarginProps = config.get('overlayMarginProps', {
+        const overlayMarginProps = config.get('overlay.props.margin', {
             key: 'overlay-margin',
             className: 'stylizer-overlay-margin',
             style: state.margin
         });
 
-        const overlayPaddingProps = config.get('overlayPaddingProps', {
+        const overlayPaddingProps = config.get('overlay.props.padding', {
             key: 'overlay-padding',
             className: 'stylizer-overlay-padding',
             style: Object.assign({}, state.padding, state.border)
         });
 
-        const overlayContentProps = config.get('overlayContentProps', {
+        const overlayContentProps = config.get('overlay.props.content', {
             key: 'overlay-content',
             className: 'stylizer-overlay-content',
             style: state.size

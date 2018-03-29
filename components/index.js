@@ -34,7 +34,8 @@ export default class Inspector extends React.Component {
         overlay: {},
         frameLoaded: false,
         viewmode: 'desktop',
-        advanced: false
+        advanced: false,
+        navigator: true
     };
 
     eventBinded = {
@@ -43,7 +44,6 @@ export default class Inspector extends React.Component {
     };
 
     config = false;
-    allowNavigator = true;
     iteratorHelper = false;
     DOMHelper = false;
     hoverCache = false;
@@ -56,7 +56,18 @@ export default class Inspector extends React.Component {
         super(props);
 
         this.config = new Configurator({
-            domID: 'dom-inspector'
+            domID: 'dom-inspector',
+            navigator: {
+                show: true,
+                maxDepth: 2,
+                startingDepth: 2
+            },
+            startup: {
+                vertical: false,
+                advanced: false,
+                size: 'desktop',
+                minimize: false
+            }
         });
         
         if ('config' in props) {
@@ -65,14 +76,14 @@ export default class Inspector extends React.Component {
 
         this.polyglot = new Polyglot();
         if ('translation' in props) {
-            this.polyglot.extend(props.translation);
+            this.polyglot.extend(this.config.get('translation', {}));
         }
 
-        this.allowNavigator = this.config.get('allowNavigator', true);
-        this.state.advanced = this.config.get('advancedMode', false);
-        this.state.viewmode = this.config.get('viewmode', 'desktop');
-        this.state.minimize = this.config.get('minimize', false);
-        this.state.vertical = this.config.get('vertical', false);
+        this.state.navigator = this.config.get('navigator.show', true);
+        this.state.advanced = this.config.get('startup.advanced');
+        this.state.viewmode = this.config.get('startup.size', 'desktop');
+        this.state.minimize = this.config.get('startup.minimize');
+        this.state.vertical = this.config.get('startup.vertical');
         
         this.iteratorHelper = new Iterator({
             root: this,
@@ -146,7 +157,7 @@ export default class Inspector extends React.Component {
         this.frameWrapper = document.getElementById('stylizer-frame-wrapper');
         this.frame = document.createElement('iframe');
 
-        const { frame, frameWrapper, resizeFrame, cloneSheet, bindEvent, destroyEvent, state } = this;
+        const { frame, frameWrapper, resizeFrame, cloneSheet, bindEvent, destroyEvent, state, iteratorHelper } = this;
         const { hover, minimize } = state;
 
         frame.classList.add('stylizer-' + this.state.viewmode);
@@ -165,6 +176,7 @@ export default class Inspector extends React.Component {
             this.DOMHelper = new DOMHelper(this.frameDocument);
             this.fontLoader = new FontLoader(this.config.get('googleFontAPI'), frame.contentWindow);
 
+            iteratorHelper.iterate(this.frameDocument.body, false, 0, config.get('navigator.startingDepth'), []);
             resizeFrame();
             cloneSheet();
 
@@ -215,7 +227,7 @@ export default class Inspector extends React.Component {
         state.viewmode = mode;
         state.refresh = true;
         
-        ['stylizer-desktop', 'stylizer-tablet', 'stylizer-mobile']
+        ['stylizer-desktop', 'stylizer-tablet-vertical', 'stylizer-tablet-horizontal', 'stylizer-mobile-vertical', 'stylizer-mobile-horizontal']
             .map(classText => frame.classList.remove(classText));
 
         frame.classList.add('stylizer-' + mode);
@@ -228,10 +240,10 @@ export default class Inspector extends React.Component {
 
     toggleEditorMode = () => {
         const { iteratorHelper, state} = this;
-
         iteratorHelper.reset();
         this.setState({
-            advanced: !state.advanced
+            advanced: !state.advanced,
+            refresh: true
         });
     };
 
@@ -253,7 +265,7 @@ export default class Inspector extends React.Component {
     prepareSheet = () => {
         const { state, frameDocument } = this;
         !state.sheetPrepared
-            && ['desktop', 'tablet', 'mobile'].map((type) => {
+            && ['desktop', 'tablet-vertical', 'tablet-horizontal', 'mobile-vertical', 'mobile-horizontal'].map((type) => {
                 const sheet = frameDocument.getElementById('stylizer-original-' + type);
                 sheet.getAttribute('media')
                     && sheet.setAttribute('media-original', sheet.getAttribute('media'));
@@ -269,7 +281,7 @@ export default class Inspector extends React.Component {
 
         const { frameDocument } = this;
 
-        ['desktop', 'tablet', 'mobile'].map((type) => {
+        ['desktop', 'tablet-vertical', 'tablet-horizontal', 'mobile-vertical', 'mobile-horizontal'].map((type) => {
             const { fontLoader } = this;
             const original = frameDocument.getElementById('stylizer-original-' + type);
             const sheet = frameDocument.createElement('style');
@@ -290,7 +302,7 @@ export default class Inspector extends React.Component {
         const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
         const wipeFunction = get(window, mountNode.getAttribute('data-onwipe'));
 
-        ['desktop', 'tablet', 'mobile'].map((type) => {
+        ['desktop', 'tablet-vertical', 'tablet-horizontal', 'mobile-vertical', 'mobile-horizontal'].map((type) => {
 
             const storage = frameDocument.getElementById('stylizer-source-' + type);
             const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
@@ -324,7 +336,7 @@ export default class Inspector extends React.Component {
         const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
         const revertFunction = get(window, mountNode.getAttribute('data-onrevert'));
 
-        ['desktop', 'tablet', 'mobile'].map((type) => {
+        ['desktop', 'tablet-vertical', 'tablet-horizontal', 'mobile-vertical', 'mobile-horizontal'].map((type) => {
             const storage = frameDocument.getElementById('stylizer-source-' + type);
             storage
                 && isFunction(revertFunction)
@@ -368,7 +380,7 @@ export default class Inspector extends React.Component {
         const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
         const saveFunction = get(window, mountNode.getAttribute('data-onsave'));
 
-        ['desktop', 'tablet', 'mobile'].map((type) => {
+        ['desktop', 'tablet-vertical', 'tablet-horizontal', 'mobile-vertical', 'mobile-horizontal'].map((type) => {
             const storage = frameDocument.getElementById('stylizer-source-' + type);
 
             storage
@@ -377,10 +389,6 @@ export default class Inspector extends React.Component {
         });
 
         return true;
-    };
-
-    parseFontFamily = () => {
-
     };
 
     setActiveNode = (node) => {
@@ -460,26 +468,25 @@ export default class Inspector extends React.Component {
     };
 
     render() {
-        const { config, state, props, allowNavigator, DOMHelper, iteratorHelper, fontLoader, getStyleSourceID, frame, frameWrapper, frameDocument, polyglot } = this;
-        const { iterator, editor, controlbar } = props;
-        const { refresh, minimize, node, overlay, advanced, frameLoaded } = state;
+        const { config, state, DOMHelper, iteratorHelper, fontLoader, getStyleSourceID, frame, frameWrapper, frameDocument, polyglot } = this;
+        const { refresh, minimize, node, overlay, advanced, frameLoaded, navigator } = state;
 
-        const controllBarProps = config.get('controlBarProps', {
+        const mainPanelProps = config.get('props.panel', {
+            key: 'stylizer-inspector',
+            className: [ 'stylizer-inspector', minimize ? 'minimize' : null, !navigator ? 'no-navigator' : null ].join(' '),
+            'stylizer-inspector': "true"
+        });
+
+        const controlBarProps = config.get('controlBar.props.panel', {
             key: 'stylizer-controlbar-element',
-            config: controlbar,
+            config: config,
             root: this,
             refresh: refresh
         });
 
-        const inspectorProps = config.get('inspectorProps', {
-            key: 'stylizer-inspector',
-            className: [ 'stylizer-inspector', minimize ? 'minimize' : null, !allowNavigator ? 'no-navigator' : null ].join(' '),
-            'stylizer-inspector': "true"
-        });
-
-        const inspectorPanelProps = config.get('inspectorPanelProps', {
+        const inspectorPanelProps = config.get('navigator.props.panel', {
             key: 'stylizer-inspector-element',
-            config: iterator,
+            config: config,
             root: this,
             iterator: iteratorHelper,
             node: node,
@@ -488,9 +495,9 @@ export default class Inspector extends React.Component {
             refresh: refresh
         });
 
-        const editorPanelProps = config.get('editorPanelProps', {
+        const editorPanelProps = config.get('editor.props.panel', {
             key: 'stylizer-editor-element',
-            config: editor,
+            config: config,
             root: this,
             node: node,
             DOMHelper: DOMHelper,
@@ -500,9 +507,9 @@ export default class Inspector extends React.Component {
             refresh: refresh
         });
 
-        const advancedPanelProps = config.get('advancedPanelProps', {
+        const advancedPanelProps = config.get('editor.props.advancedEditor.panel', {
             key: 'stylizer-editor-element',
-            config: editor,
+            config: config,
             root: this,
             node: node,
             DOMHelper: DOMHelper,
@@ -511,26 +518,26 @@ export default class Inspector extends React.Component {
             refresh: refresh
         });
 
-        const overlayProps = config.get('overlayProps', {
+        const overlayProps = config.get('overlay.props.panel', {
             frame: frame,
             wrapper: frameWrapper,
             node: overlay
         });
 
-        const messageProps = config.get('messageProps', {
+        const messageProps = config.get('message.props.panel', {
             ref: 'messageBox',
             root: this
         });
 
-        const loaderProps = config.get('loaderProps', {
+        const loaderProps = config.get('loader.props.panel', {
             className: 'stylizer-loading-bar',
             'data-text': polyglot.t('Loading ...')
         });
 
         return (
-            <div { ...inspectorProps }>
-                <ControlBar { ...controllBarProps } />
-                { frameLoaded && !advanced && allowNavigator && <InspectorPanel { ...inspectorPanelProps }/> }
+            <div { ...mainPanelProps }>
+                <ControlBar { ...controlBarProps } />
+                { frameLoaded && !advanced && navigator && <InspectorPanel { ...inspectorPanelProps }/> }
                 { frameLoaded && !advanced && <EditorPanel { ...editorPanelProps } /> }
                 { frameLoaded && !advanced && <Overlay { ...overlayProps } /> }
                 { frameLoaded && advanced && <AdvancedPanel { ...advancedPanelProps } /> }

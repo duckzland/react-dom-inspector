@@ -13,10 +13,7 @@ export default class Items extends React.Component {
 
     constructor(props) {
         super(props);
-        this.config = new Configurator();
-        if ('config' in props)  {
-            this.config.insert(props.config);
-        }
+        this.config = 'config' in props ? props.config : new Configurator();
     };
 
     isLoaded(node) {
@@ -42,7 +39,7 @@ export default class Items extends React.Component {
     render() {
         const { isParent, isProcessed, isChanged, isLoaded, isActive, props, config } = this;
         const { node, root } = props;
-        const itemProps = config.get('InspectorItemsItemProps', {
+        const itemProps = config.get('navigator.props.items', {
             key: 'item-' + node.uuid,
             className: [
                 'stylizer-element',

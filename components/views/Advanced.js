@@ -28,25 +28,18 @@ export default class AdvancedPanel extends React.Component {
     constructor(props) {
         super(props);
 
-        this.config = new Configurator({
-            stylizerID: props.stylizerID
-        });
-
-        if ('config' in props) {
-            this.config.insert(props.config);
-        }
+        this.config = 'config' in props ? props.config : new Configurator();
 
         if ('root' in props) {
             this.state.root = props.root;
         }
 
-        this.styleElement = (new DOMHelper(props.document)).styleSheet({id: this.config.get('stylizerID')}, 'style');
+        this.styleElement = (new DOMHelper(props.document)).styleSheet({id: props.stylizerID}, 'style');
         this.parser = new Parser(false);
     };
 
     componentWillReceiveProps(nextProps) {
         if ('refresh' in nextProps && nextProps.refresh) {
-            this.config.stylizerID = nextProps.root.getStyleSourceID();
             this.styleElement = (new DOMHelper(nextProps.document)).styleSheet({id: nextProps.root.getStyleSourceID()}, 'style');
         }
     };
@@ -96,41 +89,41 @@ export default class AdvancedPanel extends React.Component {
         const { root } = props;;
         const { polyglot } = root;
 
-        const editorProps = config.get('AdvancedEditorEditorProps', {
+        const editorProps = config.get('advancedEditor.props.element', {
             key: 'stylizer-editor-panel',
             className: 'stylizer-panels stylizer-editor-panel'
         });
 
-        const headerProps = config.get('AdvancedEditorHeaderProps', {
+        const headerProps = config.get('advancedEditor.props.header', {
             key: 'stylizer-editor-header',
             className: 'stylizer-header'
         });
 
-        const headerTextProps = config.get('AdvancedEditorHeaderTextProps', {
+        const headerTextProps = config.get('advancedEditor.props.headerText', {
             key: 'stylizer-editor-header-text',
             className: 'stylizer-header-text'
         });
 
-        const headerActionProps = config.get('AdvancedEditorHeaderActionProps', {
+        const headerActionProps = config.get('advancedEditor.props.headerAction', {
             key: 'stylizer-editor-header-actions',
             className: 'stylizer-header-actions'
         });
 
-        const hamburgerIconProps = config.get('AdvancedEditorHamburgerIconProps', {
+        const hamburgerIconProps = config.get('advancedEditor.props.hamburgerIcon', {
             size: 16,
             onClick: () => root.toggleMinimize()
         });
 
-        const hamburgerIconLabel = config.get('AdvancedEditorHamburgerIconLabel', {
+        const hamburgerIconLabel = config.get('advancedEditor.props.headerIconLabel', {
             title: polyglot.t('Minimize Editor')
         });
 
-        const advancedPanelWrapperProps = config.get('AdvancedEditorAdvancedPanelWrapperProps', {
+        const advancedPanelWrapperProps = config.get('advancedEditor.props.panelWrapper', {
             key: 'stylizer-advanced-panel-wrapper',
             className: 'stylizer-advanced-panel-wrapper'
         });
 
-        const advancedPanelCodeMirrorProps = config.get('AdvancedEditorAdvancedPanelCodeMirrorProps', {
+        const advancedPanelCodeMirrorProps = config.get('advancedEditor.props.codeMirror', {
             key: 'stylizer-advanced-panel-codemirror',
             className: 'stylizer-advanced-panel-codemirror',
             value: this.convertData(),

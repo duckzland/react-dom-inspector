@@ -50,11 +50,7 @@ export default class GradientPicker extends React.Component {
             });
         }
 
-        this.config = new Configurator();
-
-        if ('config' in props)  {
-            this.config.insert(props.config);
-        }
+        this.config = 'config' in props ? props.config : new Configurator();
 
         if ('root' in props) {
             this.state.root = props.root;
@@ -259,7 +255,7 @@ export default class GradientPicker extends React.Component {
         }
         else {
             state.activePicker = delta;
-            const chromeProps = config.get('ElementsGradientPickerChromeProps', {
+            const chromeProps = config.get('elements.gradientPicker.props.chrome', {
                 ref: (element) => { this.pickerElement = element },
                 color: data.color ? data.color : '',
                 onChange: onChangePicker
@@ -289,42 +285,42 @@ export default class GradientPicker extends React.Component {
     render() {
         const { props, state, config, onChange, onKeypress, onDragStart, onDragExit, onDragMove, onTogglePicker, onAddStop, onRemoveStop } = this;
         const { polyglot } = props.mainRoot;
-        const mainProps = config.get('ElementGradientPickerMainProps', {
+        const mainProps = config.get('elements.gradientPicker.props.main', {
             className: props.className + ' stylizer-gradient-element'
         });
 
-        const previewProps = config.get('ElementGradientPickerCanvasProps', {
+        const previewProps = config.get('elements.gradientPicker.props.canvas', {
             className: 'stylizer-gradient-canvas',
             ref: (element) => { this.previewElement = element }
         });
 
-        const rowProps = config.get('ElementGradientPickerModeLabelProps', {
+        const rowProps = config.get('elements.gradientPicker.props.modeLabel', {
             className: 'stylizer-form-row'
         });
 
-        const labelProps = config.get('ElementGradientPickerLabelProps', {
+        const labelProps = config.get('elements.gradientPicker.props.label', {
             className: 'stylizer-form-label'
         });
 
-        const wrapperProps = config.get('ElementGradientPickerWrapperProps', {
+        const wrapperProps = config.get('elements.gradientPicker.props.wrapper', {
             className: 'stylizer-form-item'
         });
 
-        const repeatElementProps = config.get('ElementGradientPickerRepeatElementProps', {
+        const repeatElementProps = config.get('elements.gradientPicker.props.repeat', {
             className: 'stylizer-form-input',
             value: state.repeat,
             name: 'repeat',
             onChange: onChange
         });
 
-        const modeElementProps = config.get('ElementGradientPickerModeElementProps', {
+        const modeElementProps = config.get('elements.gradientPicker.props.mode', {
             className: 'stylizer-form-input',
             value: state.mode,
             name: 'mode',
             onChange: onChange
         });
 
-        const rotateElementProps = config.get('ElementGradientPickerRotateProps', {
+        const rotateElementProps = config.get('elements.gradientPicker.props.rotate', {
             type: 'text',
             className: 'stylizer-form-input',
             name: 'rotate',
@@ -333,14 +329,14 @@ export default class GradientPicker extends React.Component {
             onChange: onChange
         });
 
-        const shapeElementProps = config.get('ElementGradientPickerShapeProps', {
+        const shapeElementProps = config.get('elements.gradientPicker.props.shape', {
             className: 'stylizer-form-input',
             name: 'shape',
             value: state.shape,
             onChange: onChange
         });
 
-        const sizeElementProps = config.get('ElementGradientPickerSizeProps', {
+        const sizeElementProps = config.get('elements.gradientPicker.props.size', {
             type: 'text',
             className: 'stylizer-form-input',
             name: 'size',
@@ -348,7 +344,7 @@ export default class GradientPicker extends React.Component {
             onChange: onChange
         });
 
-        const positionElementProps = config.get('ElementGradientPickerOffsetProps', {
+        const positionElementProps = config.get('elements.gradientPicker.props.offset', {
             type: 'text',
             className: 'stylizer-form-input',
             name: 'position',
@@ -356,7 +352,7 @@ export default class GradientPicker extends React.Component {
             onChange: onChange
         });
 
-        const handleElementProps = config.get('ElementGradientPickerHandleWrapperProps', {
+        const handleElementProps = config.get('elements.gradientPicker.props.handleElement', {
             className: 'stylizer-gradient-handle-wrapper',
             ref: (element) => { this.handleElement = element },
             onMouseMove: onDragMove,
@@ -367,7 +363,7 @@ export default class GradientPicker extends React.Component {
 
         let Stops = [];
         forEach(state.stops, (stop, delta) => {
-            const handleProps = config.get('ElementGradientPickerHandleProps', {
+            const handleProps = config.get('elements.gradientPicker.props.handle', {
                 className: 'stylizer-gradient-handle',
                 target: delta,
                 name: 'gradient-stops-drag',
@@ -377,14 +373,14 @@ export default class GradientPicker extends React.Component {
                 onMouseUp: onDragExit
             });
 
-            const handleCloserProps = config.get('ElementGradientPickerHandleCloserProps', {
+            const handleCloserProps = config.get('elements.gradientPicker.props.handleCloser', {
                 key: 'gradient-stops-closer',
                 name: 'gradient-stops-delete',
                 className: 'stylizer-gradient-handle-closer',
                 onClick: () => { onRemoveStop(delta) }
             });
 
-            const handleColorProps = config.get('ElementGradientPickerHandleColorProps', {
+            const handleColorProps = config.get('elements.gradientPicker.props.handleColor', {
                 key: 'gradient-stops-color',
                 name: 'gradient-stops-color',
                 className: 'stylizer-gradient-handle-color',

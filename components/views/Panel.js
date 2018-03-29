@@ -30,8 +30,12 @@ export default class Panel extends React.Component {
 
     constructor(props) {
         super(props);
-        this.config = new Configurator({
-            PanelGroupEmpty: null
+        this.config = 'config' in props ? props.config : new Configurator({
+            panels: {
+                group: {
+                    empty: null
+                }
+            }
         });
     };
 
@@ -129,7 +133,7 @@ export default class Panel extends React.Component {
 
     generateElement = (element) => {
         const { onKeypress, onSubmit, state, props, hasError, config, hookBeforeElementRender } = this;
-        const elementProps = config.get(camelCase('PanelFieldElementProps_'  + element.target), {
+        const elementProps = config.get('panels.props.fields.' + element.target, {
             key: 'stylizer-element-' + element.target + '-' + state.node.uuid,
             className: [
                 'stylizer-form-item',
@@ -139,11 +143,11 @@ export default class Panel extends React.Component {
             ].join(' ')
         });
 
-        const labelProps = config.get(camelCase('PanelFieldLabelProps_' + element.target), {
+        const labelProps = config.get('panels.props.labels.' + element.target, {
             className: 'stylizer-form-label'
         });
 
-        const inputProps = config.get(camelCase('PanelFieldInputProps_' + element.target), {
+        const inputProps = config.get('panels.props.inputs.' + element.target, {
             key: 'input-' + element.target + '-' + state.node.uuid,
             uuid: 'input-' + element.target + '-' + state.node.uuid,
             className: 'stylizer-form-input',
@@ -155,7 +159,7 @@ export default class Panel extends React.Component {
             onChange: onSubmit
         });
 
-        const errorProps = config.get(camelCase('PanelFieldErrorProps_' + element.target), {
+        const errorProps = config.get('panels.props.errors.' + element.target, {
             key: 'input-' + element.target + '-error-' + state.node.uuid,
             className: 'stylizer-error-bag'
         });
@@ -184,13 +188,13 @@ export default class Panel extends React.Component {
             case 'select' :
                 let options = [];
                 if (element.options) {
-                    const optionEmptyProps = config.get('PanelFieldSelectOptionEmptyProps', {
+                    const optionEmptyProps = config.get('panels.props.selectOptionsEmpty', {
                         key: 'stylizer-option-' + element.target + '-empty',
                         value: ''
                     });
                     options.push( <option { ...optionEmptyProps }>{ null }</option> );
                     forEach(element.options, (text, value) => {
-                        const optionProps = config.get(camelCase('PanelFieldSelectOptionProps ' + element.target), {
+                        const optionProps = config.get('panels.props.selectOptions', {
                             key: 'stylizer-option-' + element.target + text.replace(' ', '-'),
                             value: value
                         });
@@ -232,16 +236,16 @@ export default class Panel extends React.Component {
         this.generateToggle(element);
 
         const { state, config, generateElement, toggleOpenIcon, toggleCloseIcon} = this;
-        const elementProps = config.get(camelCase('PanelGroupElementProps ' + element.key), {
+        const elementProps = config.get('panels.props.groupElement', {
             key: 'stylizer-group-' + element.title + '-' + state.node.uuid,
             className: ['stylizer-form-group', 'stylizer-group--' + element.key.replace(' ', '-'), element.inline ? 'stylizer-label-inline' : ''].join(' ')
         });
 
-        const headingProps = config.get(camelCase('PanelGroupHeadingProps ' + element.key), {
+        const headingProps = config.get('panels.props.groupHeading', {
             className: 'stylizer-form-header'
         });
 
-        const wrapperProps = config.get(camelCase('PanelGroupWrapperProps ' + element.key), {
+        const wrapperProps = config.get('panels.props.groupWrapper', {
             className: 'stylizer-form-row'
         });
 
@@ -257,7 +261,7 @@ export default class Panel extends React.Component {
                 <div { ...wrapperProps }>
                     { element.elements
                         ? element.elements.map( (child) => { return generateElement(child) })
-                        : config.get('PanelGroupEmpty')
+                        : config.get('panel.group.empty')
                     }
                 </div>
             </div>
@@ -341,27 +345,27 @@ export default class Panel extends React.Component {
 
         const { leftSpace, rightSpace, fields, config, state, generateGroup, generateElement, onScroll, hookBeforeRender } = this;
 
-        const tabProps = config.get('PanelTabProps', {
+        const tabProps = config.get('panels.props.tabs', {
             key: 'stylizer-tab-' + config.get('type') + '-' + state.node.uuid,
             className: 'stylizer-tab-content stylizer-content-flex stylizer-tab-panel--' + config.get('type')
         });
 
-        const leftSpaceProps = config.get('PanelLeftSpaceProps', {
+        const leftSpaceProps = config.get('panels.props.leftSpace', {
             key: 'stylizer-panel-left-space',
             className: 'stylizer-panel-left-space'
         });
 
-        const centerSpaceProps = config.get('PanelCenterSpaceProps', {
+        const centerSpaceProps = config.get('panels.props.centerSpace', {
             key: 'stylizer-panel-center-space',
             className: 'stylizer-panel-center-space'
         });
 
-        const rightSpaceProps = config.get('PanelRightSpaceProps', {
+        const rightSpaceProps = config.get('panels.props.rightSpace', {
             key: 'stylizer-panel-right-space',
             className: 'stylizer-panel-right-space'
         });
 
-        const scrollAreaProps = config.get('EditorPanelScrollAreaProps', {
+        const scrollAreaProps = config.get('panels.props.scrollArea', {
             key: "stylizer-tab-contents",
             speed: 0.8,
             className: [

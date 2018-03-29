@@ -33,11 +33,7 @@ export default class BoxShadow extends React.Component {
             });
         }
 
-        this.config = new Configurator();
-
-        if ('config' in props)  {
-            this.config.insert(props.config);
-        }
+        this.config = 'config' in props ? props.config : new Configurator();
 
         if ('root' in props) {
             this.state.root = props.root;
@@ -91,24 +87,24 @@ export default class BoxShadow extends React.Component {
 
 
     render() {
-        console.log(this);
+
         const { props, config, onChange, onKeypress, state } = this;
         const { root, mainRoot } = props;
         const { polyglot } = mainRoot;
 
-        const mainProps = config.get('ElementBoxShadowMainProps', {
+        const mainProps = config.get('fields.boxShadow.props.main', {
             className: 'stylizer-form-row stylizer-box-shadow-element'
         });
 
-        const labelProps = config.get('ElementBoxShadowLabelProps', {
+        const labelProps = config.get('fields.boxShadow.props.label', {
             className: 'stylizer-form-label'
         });
 
-        const wrapperProps = config.get('ElementBoxShadowWrapperProps', {
+        const wrapperProps = config.get('fields.boxShadow.props.wrapper', {
             className: 'stylizer-form-item'
         });
 
-        const ColorProps = config.get('ElementBoxShadowColorElementProps', {
+        const ColorProps = config.get('fields.boxShadow.props.color', {
             className: 'stylizer-form-input stylizer-form-input--boxshadow-color',
             value: state.color,
             name: 'color',
@@ -116,7 +112,7 @@ export default class BoxShadow extends React.Component {
             root: root
         });
 
-        const HShadowProps = config.get('ElementBoxShadowHShadowElementProps', {
+        const HShadowProps = config.get('fields.boxShadow.props.hshadow', {
             className: 'stylizer-form-input stylizer-form-input--boxshadow-hshadow',
             value: state.hshadow,
             name: 'hshadow',
@@ -125,7 +121,7 @@ export default class BoxShadow extends React.Component {
             onChange: onChange
         });
 
-        const VShadowProps = config.get('ElementBoxShadowVShadowElementProps', {
+        const VShadowProps = config.get('fields.boxShadow.props.vshadow', {
             className: 'stylizer-form-input stylizer-form-input--boxshadow-vshadow',
             value: state.vshadow,
             name: 'vshadow',
@@ -134,7 +130,7 @@ export default class BoxShadow extends React.Component {
             onChange: onChange
         });
 
-        const BlurProps = config.get('ElementBoxShadowBlurElementProps', {
+        const BlurProps = config.get('fields.boxShadow.props.blur', {
             className: 'stylizer-form-input stylizer-form-input--boxshadow-blur',
             value: state.blur,
             name: 'blur',
@@ -143,7 +139,7 @@ export default class BoxShadow extends React.Component {
             onChange: onChange
         });
 
-        const SpreadProps = config.get('ElementBoxShadowSpreadElementProps', {
+        const SpreadProps = config.get('fields.boxShadow.props.spread', {
             className: 'stylizer-form-input stylizer-form-input--boxshadow-spread',
             value: state.spread,
             name: 'spread',
@@ -152,7 +148,7 @@ export default class BoxShadow extends React.Component {
             onChange: onChange
         });
 
-        const InsetProps = config.get('ElementBoxShadowInsetElementProps', {
+        const InsetProps = config.get('fields.boxShadow.props.inset', {
             className: 'stylizer-form-input stylizer-form-input--boxshadow-inset',
             value: state.inset,
             name: 'inset',

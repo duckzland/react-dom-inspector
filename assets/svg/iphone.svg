@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="34.924736mm"
+   height="72.991928mm"
+   viewBox="0 0 34.924736 72.991928"
+   version="1.1"
+   id="svg4555"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   preserveAspectRatio="false"
+   sodipodi:docname="iphone.svg">
+  <defs
+     id="defs4549" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="-494.85945"
+     inkscape:cy="78.826614"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="2560"
+     inkscape:window-height="1017"
+     inkscape:window-x="1432"
+     inkscape:window-y="1072"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata4552">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-165.47811,-48.081418)">
+    <g
+       style="stroke:#7e89a3"
+       id="iphone"
+       sketch:type="MSLayerGroup"
+       transform="matrix(0.26458333,0,0,0.26458333,165.74243,48.32457)">
+      <path
+         style="fill:#fdfdfd;stroke-width:2"
+         inkscape:connector-curvature="0"
+         d="m 130,257.964 c 0,8.833 -7.191,15.992 -16.062,15.992 H 16.063 c -8.871,0 -16.062,-7.159 -16.062,-15.992 V 16.073 C 0.001,7.24 7.192,0.081 16.063,0.081 h 97.875 C 122.809,0.081 130,7.24 130,16.073 Z"
+         id="path24"
+         sketch:type="MSShapeGroup" />
+      <path
+         inkscape:connector-curvature="0"
+         d="m 77,25.746 c 0,0.635 -0.439,1.147 -0.98,1.147 H 55.918 c -0.542,0 -0.98,-0.513 -0.98,-1.147 v -2.58 c 0,-0.635 0.439,-1.147 0.98,-1.147 H 76.02 c 0.541,0 0.98,0.513 0.98,1.147 z"
+         id="speaker"
+         sketch:type="MSShapeGroup" />
+      <circle
+         id="circle29"
+         sketch:type="MSShapeGroup"
+         cx="66"
+         cy="12"
+         r="3" />
+      <ellipse
+         id="ellipse31"
+         sketch:type="MSShapeGroup"
+         cx="65.040001"
+         cy="254.00101"
+         rx="10.04"
+         ry="10.001" />
+    </g>
+  </g>
+</svg>
