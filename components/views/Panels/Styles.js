@@ -22,7 +22,7 @@ export default class Styles extends BasePanel {
             picker: false
         };
 
-        this.config.insert({
+        props.config.insert({
             type: 'styles',
             empty: null
         });

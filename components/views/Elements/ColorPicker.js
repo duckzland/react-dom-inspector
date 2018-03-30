@@ -2,7 +2,6 @@ import React from 'react';
 import { ChromePicker } from 'react-color';
 import CloseIcon from '../../../node_modules/react-icons/lib/io/close-circled';
 import TrashIcon from '../../../node_modules/react-icons/lib/io/trash-a';
-import Configurator from '../../modules/Config';
 import { get } from 'lodash';
 
 /**
@@ -16,18 +15,11 @@ export default class ColorPicker extends React.Component {
         value: '',
         color: {}
     };
-    config = false;
 
     constructor(props) {
         super(props);
         if ('value' in props) {
             this.state.value = props.value;
-        }
-
-        this.config = 'config' in props ? props.config : new Configurator();
-
-        if ('root' in props) {
-            this.state.root = props.root;
         }
     };
 
@@ -43,14 +35,16 @@ export default class ColorPicker extends React.Component {
     }
 
     show = () => {
-        const { props, state, config, change, isOpen } = this;
+        const { props, state, change, isOpen } = this;
+        const { config, root, uuid } = props;
+
         if (!isOpen()) {
             const chromeProps = config.get('elements.colorPicker.props.chrome', {
                 color: state.color,
                 onChange: change
             });
 
-            props.root.mutateSpace('left', <ChromePicker { ...chromeProps } />, props.uuid);
+            root.mutateSpace('left', <ChromePicker { ...chromeProps } />, uuid);
         }
         this.setState({ displayColorPicker: true });
     };
@@ -112,7 +106,9 @@ export default class ColorPicker extends React.Component {
     };
 
     render() {
-        const { props, state, config, toggle, show, close, isOpen, erase } = this;
+        const { props, state, toggle, show, close, isOpen, erase } = this;
+        const { config } = props;
+
         const mainProps = config.get('elements.colorPicker.props.main', {
             className: props.className + ' stylizer-color-element'
         });

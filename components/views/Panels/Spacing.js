@@ -15,7 +15,7 @@ export default class Spacing extends BasePanel {
             values: {}
         };
 
-        this.config.insert({
+        props.config.insert({
             type: 'spacing',
             empty: null
         });

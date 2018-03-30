@@ -1,9 +1,6 @@
 import React from 'react';
 import ScrollArea from 'react-scrollbar';
-import { get } from 'lodash';
 import HamburgerIcon from '../../node_modules/react-icons/lib/io/navicon-round';
-import Iterator from '../modules/Iterator';
-import Configurator from '../modules/Config';
 import Items from './Items';
 
 /**
@@ -16,27 +13,6 @@ export default class Inspector extends React.Component {
     state = {
         active: false,
         minimize: false
-    };
-
-    config = false;
-    
-    constructor(props) {
-        super(props);
-
-        this.config = 'config' in props ? props.config : new Configurator({
-            navigator: {
-                maxDepth: 2,
-                startingDepth: 2
-            }
-        });
-
-        this.iterator = 'iterator' in props
-            ? props.iterator
-            : (new Iterator({
-                    root: props.root,
-                    sheetID: props.stylizerID
-                }))
-                .iterate(props.document.body, false, 0, this.config.get('navigator.startingDepth'), []);
     };
 
     componentWillReceiveProps(nextProps) {
@@ -55,7 +31,7 @@ export default class Inspector extends React.Component {
     };
 
     resetNodeStatus() {
-        this.iterator.reset();
+        this.props.iterator.reset();
     };
 
     scrollToItem = (node) => {
@@ -88,9 +64,9 @@ export default class Inspector extends React.Component {
 
     activateNode = (node) => {
 
-        const { props, iterator, state } = this;
+        const { props, state } = this;
+        const { root, iterator } = props;
         const { find, iterate } = iterator;
-        const { root } = props;
 
         if (node.hasChildren && !node.processed) {
             iterate(node.trackNode(), node, node.depth, node.depth + 2, node.tree);
@@ -132,13 +108,14 @@ export default class Inspector extends React.Component {
 
     render() {
 
-        const { iterator, props, state, config, onScroll, moveScrollBar } = this;
-        const { root } = props;
+        const { props, state, onScroll, moveScrollBar } = this;
+        const { root, config, iterator } = props;
+        const { minimize, hasHorizontalScrollbar, hasVerticalScrollbar } = state;
         const { polyglot } = root;
 
         const panelProps = config.get('navigator.props.element', {
             key: 'stylizer-iterator-panel',
-            className: [ 'stylizer-panels', 'stylizer-dom-panel', state.minimize ? 'minimize' : ''].join(' ')
+            className: [ 'stylizer-panels', 'stylizer-dom-panel', minimize ? 'minimize' : ''].join(' ')
         });
 
         const headerProps = config.get('navigator.props.header', {
@@ -158,7 +135,7 @@ export default class Inspector extends React.Component {
 
         const hamburgerIconProps = config.get('navigator.props.hamburgerIcon', {
             size: 16,
-            onClick: () => { this.setState({ minimize: !this.state.minimize }); }
+            onClick: () => { this.setState({ minimize: !minimize }); }
         });
 
         const scrollAreaProps = config.get('navigator.props.scrollArea', {
@@ -168,8 +145,8 @@ export default class Inspector extends React.Component {
             className: [
                 'stylizer-content',
                 'stylizer-iterator',
-                state.hasHorizontalScrollbar ? 'has-horizontal-scrollbar' : '',
-                state.hasVerticalScrollbar > 0 ? 'has-vertical-scrollbar': ''
+                hasHorizontalScrollbar ? 'has-horizontal-scrollbar' : '',
+                hasVerticalScrollbar > 0 ? 'has-vertical-scrollbar': ''
             ].join(' '),
             onScroll: onScroll,
             contentClassName: 'content',
@@ -184,7 +161,7 @@ export default class Inspector extends React.Component {
                 </h3>
                 <ScrollArea { ...scrollAreaProps }>
                     { iterator.get().map((node, delta) => {
-                        const itemProps = { key: delta, root: this, node: node, config: config };
+                        const itemProps = { key: delta, root: this, node: node, config: config, mainRoot: root };
                         return ( <Items { ...itemProps } /> );
                     })}
                 </ScrollArea>

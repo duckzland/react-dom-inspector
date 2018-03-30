@@ -1,6 +1,4 @@
 import React from 'react';
-import Configurator from '../modules/Config';
-import { get } from 'lodash';
 
 /**
  * Component for building an overlay for hovered DOM Element
@@ -40,25 +38,8 @@ export default class Overlay extends React.Component {
         }
     };
 
-    config = false;
-    frame = false;
-    frameWrapper = false;
-
-    constructor(props) {
-        super(props);
-
-        this.config = 'config' in props ? props.config : new Configurator();
-
-        if ('wrapper' in props) {
-            this.frameWrapper = props.wrapper;
-            this.viewModeWrapper = this.frameWrapper.parentElement;
-        }
-        if ('frame' in props) {
-            this.frame = props.frame;
-        }
-    };
-
     detectSize = (node) => {
+        const { props } = this;
         const result = {};
         const requiredValue = [
             'border-top-width',
@@ -79,8 +60,8 @@ export default class Overlay extends React.Component {
         this.document = node.ownerDocument;
         let mainBodyStyle = getComputedStyle(document.body);
         let computedStyle = getComputedStyle(node);
-        let frameStyle = getComputedStyle(this.frame);
-        let frameWrapperStyle = getComputedStyle(this.frameWrapper);
+        let frameStyle = getComputedStyle(props.frame);
+        let frameWrapperStyle = getComputedStyle(props.wrapper);
 
         requiredValue.forEach(item => {
             result[item] = parseFloat(computedStyle[item]) || 0;
@@ -102,7 +83,7 @@ export default class Overlay extends React.Component {
         }
 
         Object.assign(result, {
-            top: (_y - this.viewModeWrapper.scrollTop - this.frameWrapper.scrollTop) + parseFloat(mainBodyStyle['padding-top']) + parseFloat(frameStyle['margin-top']) + parseFloat(frameWrapperStyle['margin-top']),
+            top: (_y - props.wrapper.parentElement.scrollTop - props.wrapper.scrollTop) + parseFloat(mainBodyStyle['padding-top']) + parseFloat(frameStyle['margin-top']) + parseFloat(frameWrapperStyle['margin-top']),
             left: _x + parseFloat(frameStyle['margin-left']) +  parseFloat(mainBodyStyle['padding-left']) + parseFloat(frameWrapperStyle['margin-left'])
         });
 
@@ -182,7 +163,9 @@ export default class Overlay extends React.Component {
 
     render() {
 
-        const { state, config } = this;
+        const { state, props } = this;
+        const { config } = props;
+        
         const overlayBoxProps = config.get('overlay.props.box', {
             key: 'overlay-box',
             className: 'stylizer-overlay-box',

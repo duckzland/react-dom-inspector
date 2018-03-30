@@ -521,6 +521,7 @@ export default class Inspector extends React.Component {
         const overlayProps = config.get('overlay.props.panel', {
             frame: frame,
             wrapper: frameWrapper,
+            config: config,
             node: overlay
         });
 

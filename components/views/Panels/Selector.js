@@ -1,5 +1,4 @@
 import React from 'react';
-import Configurator from '../../modules/Config';
 import ArrowIcon from '../../../node_modules/react-icons/lib/io/chevron-right';
 import { get } from 'lodash';
 
@@ -19,7 +18,6 @@ export default class Selector extends React.Component {
 
     polyglot = false;
     testerNode = false;
-    config = false;
 
     constructor(props) {
         super(props);
@@ -30,8 +28,6 @@ export default class Selector extends React.Component {
             this.state.badges = this.selectorToBadges();
             this.state.error = !this.validate(props.node.selector);
         }
-
-        this.config = 'config' in props ? props.config : new Configurator();
 
         this.polyglot = props.mainRoot.polyglot;
     };
@@ -135,14 +131,17 @@ export default class Selector extends React.Component {
 
     render() {
 
-        const { config, state, isActive, toggle, submit, polyglot } = this;
+        const { props, state, isActive, toggle, submit, polyglot } = this;
+        const { config } = props;
+        const { node, error } = state;
+
         const tabProps = config.get('panels.selector.props.tab', {
-            key: 'stylizer-tab-selector-' + state.node.uuid,
+            key: 'stylizer-tab-selector-' + node.uuid,
             className: 'stylizer-tab-content stylizer-content stylizer-tab-panel--selector'
         });
 
         const selectorProps = config.get('panels.selector.props.selector', {
-            key: 'selector-form-' + state.node.uuid,
+            key: 'selector-form-' + node.uuid,
             className: ['stylizer-form-item', state.error ? 'stylizer-has-error' : ' '].join(' ')
         });
 
@@ -151,7 +150,7 @@ export default class Selector extends React.Component {
         });
 
         const inputProps = config.get('panels.selector.props.input', {
-            key: 'input-selector-' + state.node.uuid,
+            key: 'input-selector-' + node.uuid,
             className: 'stylizer-form-input',
             type: 'text',
             name: 'selector',
@@ -160,12 +159,12 @@ export default class Selector extends React.Component {
         });
 
         const errorProps = config.get('panels.selector.props.error', {
-            key: 'input-selector-error-' + state.node.uuid,
+            key: 'input-selector-error-' + node.uuid,
             className: 'stylizer-error-bag'
         });
 
         const badgesProps = config.get('panels.selector.props.badges', {
-            key: 'selector-badges-' + state.node.uuid,
+            key: 'selector-badges-' + node.uuid,
             className: 'stylizer-selector-badges'
         });
 
@@ -182,10 +181,10 @@ export default class Selector extends React.Component {
                 <div { ...selectorProps }>
                     <label { ...labelProps }>{ polyglot.t('Selector') }</label>
                     <input { ...inputProps } />
-                    { state.error && config.get('panels.selector.error', true) && <div { ...errorProps }>{ polyglot.t('Invalid CSS selector') }</div> }
+                    { error && config.get('panels.selector.error', true) && <div { ...errorProps }>{ polyglot.t('Invalid CSS selector') }</div> }
                 </div>
                 <div { ...badgesProps }>
-                    { state.node && state.node.tree && state.node.tree.map((item, delta) => {
+                    { node && node.tree && node.tree.map((item, delta) => {
                         const badgeProps = config.get('panels.selector.props.badge', {
                             key: 'badges-' + delta,
                             onClick: () => { toggle(item) },
@@ -195,9 +194,9 @@ export default class Selector extends React.Component {
                         return (
                             <span { ...badgeProps }>
                                 <span { ...badgeItemProps }>{ item }</span>
-                                { state.node
-                                    && state.node.tree
-                                    && state.node.tree[delta + 1]
+                                { node
+                                    && node.tree
+                                    && node.tree[delta + 1]
                                     && <ArrowIcon { ...badgeIconProps } /> }
                             </span>
                         )

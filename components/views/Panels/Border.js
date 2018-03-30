@@ -27,7 +27,7 @@ export default class Border extends BasePanel {
         this.polyglot = props.mainRoot.polyglot;
         const { polyglot } = this;
 
-        this.config.insert({
+        props.config.insert({
             type: 'border',
             empty: null,
             borderOptions: {
@@ -84,7 +84,8 @@ export default class Border extends BasePanel {
     };
 
     generateBorderFields = (Grouped = false) => {
-        const { fields, config, polyglot } = this;
+        const { fields, polyglot, props } = this;
+        const { config } = props;
 
         fields.map((field, delta) => {
             switch (field.key) {
@@ -155,7 +156,8 @@ export default class Border extends BasePanel {
     };
 
     generateOutlineFields = () => {
-        const { fields, config, polyglot } = this;
+        const { fields, props, polyglot } = this;
+        const { config } = props;
 
         fields.map((field, delta) => {
             field.key === 'outline'
@@ -179,6 +181,7 @@ export default class Border extends BasePanel {
     convertBorderValues = (Grouped = false) => {
         const { state } = this;
         const { values, node } = state;
+        const { removeStyle } = node;
 
         if (!values) {
             return false;
@@ -205,7 +208,7 @@ export default class Border extends BasePanel {
                         values['border-' + subkey] = values[key + '-' + subkey];
                     }
                     delete values[key + '-' + subkey];
-                    node && node.removeStyle(key + '-' + subkey);
+                    node && removeStyle(key + '-' + subkey);
                 });
             });
         }
@@ -231,7 +234,7 @@ export default class Border extends BasePanel {
                 'border-style'
             ], (key) => {
                 delete values[key];
-                node && node.removeStyle(key);
+                node && removeStyle(key);
             });
         }
     };
@@ -239,6 +242,7 @@ export default class Border extends BasePanel {
     convertRadiusValues = (Grouped = false) => {
         const { state } = this;
         const { values, node } = state;
+        const { removeStyle, storeStyle } = node;
 
         if (!values) {
             return false;
@@ -254,11 +258,11 @@ export default class Border extends BasePanel {
             ], (key) => {
                 values[key] && radius.push(values[key]);
                 delete values[key];
-                node && node.removeStyle(key);
+                node && removeStyle(key);
             });
 
             values['border-radius'] = radius.join(' ');
-            node && node.storeStyle('border-radius', radius.join(' '))
+            node && storeStyle('border-radius', radius.join(' '))
         }
         else {
             const value = get(values, 'border-radius', '').split(' ');
@@ -270,12 +274,12 @@ export default class Border extends BasePanel {
             }
 
             delete values['border-radius'];
-            node && node.removeStyle('border-radius');
+            node && removeStyle('border-radius');
         }
     };
 
     refreshElements = () => {
-        const { state } = this;
+        const { state, onSubmit } = this;
         const { values } = state;
 
         if (!values) {
@@ -283,17 +287,17 @@ export default class Border extends BasePanel {
         }
 
         forEach(values, (value, name) => {
-             this.onSubmit({
-                 target: {
-                     name: name,
-                     value: value
-                 }
-             });
+            onSubmit({
+                target: {
+                    name: name,
+                    value: value
+                }
+            });
         });
     };
 
     onToggleLock = (element) => {
-        const { state } = this;
+        const { state, convertBorderValues, convertRadiusValues, generateBorderFields, generateRadiusFields, generateOutlineFields, refreshElements } = this;
         const { grouped } = state;
 
         switch(element.key) {
@@ -303,17 +307,17 @@ export default class Border extends BasePanel {
             case 'border-bottom' :
             case 'border' :
                 grouped.border = !grouped.border;
-                this.convertBorderValues(grouped.border);
+                convertBorderValues(grouped.border);
                 break;
             case 'radius' :
                 grouped.radius = !grouped.radius;
-                this.convertRadiusValues(grouped.radius);
+                convertRadiusValues(grouped.radius);
                 break;
         }
 
-        this.generateBorderFields(grouped.border);
-        this.generateRadiusFields(grouped.radius);
-        this.generateOutlineFields();
-        this.refreshElements();
+        generateBorderFields(grouped.border);
+        generateRadiusFields(grouped.radius);
+        generateOutlineFields();
+        refreshElements();
     };
 }

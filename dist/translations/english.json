@@ -20,6 +20,7 @@
   "Change to mobile view mode": "Change to mobile view mode",
   "Switch Editor Mode to advanced mode": "Switch Editor Mode to advanced mode",
   "Switch Editor Mode to normal mode": "Switch Editor Mode to normal mode",
+  "Rotate this layout": "Rotate this layout",
   "Victheme Stylizer": "Victheme Stylizer",
   "Navigator": "Navigator",
   "Minimize Navigator": "Minimize Navigator",
@@ -241,6 +242,5 @@
   "V-Shadow": "V-Shadow",
   "Blur": "Blur",
   "Spread": "Spread",
-  "No Inset": "No Inset",
-  "Rotate this layout": "Rotate this layout"
+  "No Inset": "No Inset"
 }

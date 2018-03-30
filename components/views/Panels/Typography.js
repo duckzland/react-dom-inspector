@@ -17,7 +17,7 @@ export default class Typography extends BasePanel {
             values: {}
         };
 
-        this.config.insert({
+        props.config.insert({
             type: 'typography',
             empty: null
         });

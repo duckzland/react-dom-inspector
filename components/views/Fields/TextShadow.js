@@ -1,5 +1,4 @@
 import React from 'react';
-import Configurator from '../../modules/Config';
 import ColorPicker from '../Elements/ColorPicker';
 import TextShadowParser from '../../modules/TextShadowParser';
 
@@ -19,8 +18,6 @@ export default class TextShadow extends React.Component {
         vshadow: '',
         blur: ''
     };
-    
-    config = false;
 
     constructor(props) {
         super(props);
@@ -29,16 +26,6 @@ export default class TextShadow extends React.Component {
             Parsed && forEach(Parsed, (val, key) => {
                 this.state[key] = val;
             });
-        }
-
-        this.config = new Configurator();
-
-        if ('config' in props)  {
-            this.config.insert(props.config);
-        }
-
-        if ('root' in props) {
-            this.state.root = props.root;
         }
     };
 
@@ -51,11 +38,12 @@ export default class TextShadow extends React.Component {
 
     onSubmit = () => {
         const { state, props } = this;
+        const { hshadow, vshadow, blur, color } = state;
         let value = [
-            state.hshadow,
-            state.vshadow,
-            state.blur,
-            state.color
+            hshadow,
+            vshadow,
+            blur,
+            color
         ].join(' ').trim();
 
         props.onChange && props.onChange({
@@ -87,8 +75,8 @@ export default class TextShadow extends React.Component {
 
 
     render() {
-        const { props, config, onChange, onKeypress, state } = this;
-        const { root, mainRoot } = props;
+        const { props, onChange, onKeypress, state } = this;
+        const { root, mainRoot, config } = props;
         const { polyglot } = mainRoot;
 
         const mainProps = config.get('ElementTextShadowMainProps', {
@@ -108,7 +96,8 @@ export default class TextShadow extends React.Component {
             value: state.color,
             name: 'color',
             onChange: onChange,
-            root: root
+            root: root,
+            config: config
         });
 
         const HShadowProps = config.get('ElementTextShadowHShadowElementProps', {

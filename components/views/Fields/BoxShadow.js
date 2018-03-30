@@ -1,8 +1,6 @@
 import React from 'react';
-import Configurator from '../../modules/Config';
 import ColorPicker from '../Elements/ColorPicker';
 import BoxShadowParser from '../../modules/BoxShadowParser';
-
 import { forEach } from 'lodash';
 
 /**
@@ -32,12 +30,6 @@ export default class BoxShadow extends React.Component {
                 this.state[key] = val;
             });
         }
-
-        this.config = 'config' in props ? props.config : new Configurator();
-
-        if ('root' in props) {
-            this.state.root = props.root;
-        }
     };
 
     onChange = (e) => {
@@ -49,13 +41,14 @@ export default class BoxShadow extends React.Component {
 
     onSubmit = () => {
         const { state, props } = this;
+        const { hshadow, vshadow, blur, spread, color, inset } = state;
         let value = [
-            state.hshadow,
-            state.vshadow,
-            state.blur,
-            state.spread,
-            state.color,
-            state.inset
+            hshadow,
+            vshadow,
+            blur,
+            spread,
+            color,
+            inset
         ].join(' ').trim();
 
         props.onChange && props.onChange({
@@ -88,8 +81,8 @@ export default class BoxShadow extends React.Component {
 
     render() {
 
-        const { props, config, onChange, onKeypress, state } = this;
-        const { root, mainRoot } = props;
+        const { props, onChange, onKeypress, state } = this;
+        const { root, mainRoot, config } = props;
         const { polyglot } = mainRoot;
 
         const mainProps = config.get('fields.boxShadow.props.main', {
@@ -109,7 +102,8 @@ export default class BoxShadow extends React.Component {
             value: state.color,
             name: 'color',
             onChange: onChange,
-            root: root
+            root: root,
+            config: config
         });
 
         const HShadowProps = config.get('fields.boxShadow.props.hshadow', {

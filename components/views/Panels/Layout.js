@@ -15,7 +15,7 @@ export default class Layout extends BasePanel {
             values: {}
         };
 
-        this.config.insert({
+        props.config.insert({
             type: 'layout',
             empty: null
         });

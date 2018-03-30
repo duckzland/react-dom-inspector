@@ -1,6 +1,4 @@
 import React from 'react';
-import Configurator from '../modules/Config';
-import { get } from 'lodash';
 
 /**
  * Class for building the Inspector single items
@@ -8,13 +6,6 @@ import { get } from 'lodash';
  * @author jason.xie@victheme.com
  */
 export default class Items extends React.Component {
-
-    config = false;
-
-    constructor(props) {
-        super(props);
-        this.config = 'config' in props ? props.config : new Configurator();
-    };
 
     isLoaded(node) {
         return 'styles' in node && node.styles && node.styles.length !== 0;
@@ -37,8 +28,8 @@ export default class Items extends React.Component {
     };
 
     render() {
-        const { isParent, isProcessed, isChanged, isLoaded, isActive, props, config } = this;
-        const { node, root } = props;
+        const { isParent, isProcessed, isChanged, isLoaded, isActive, props } = this;
+        const { node, root, config } = props;
         const itemProps = config.get('navigator.props.items', {
             key: 'item-' + node.uuid,
             className: [

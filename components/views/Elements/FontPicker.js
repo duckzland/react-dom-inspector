@@ -1,6 +1,5 @@
 import React from 'react';
 import Autocomplete from 'react-autocomplete';
-import Configurator from '../../modules/Config';
 import FontLoader from '../../modules/FontLoader';
 import { get, forEach } from 'lodash';
 
@@ -20,7 +19,6 @@ export default class FontPicker extends React.Component {
         error: false
     };
 
-    config = false;
     mode = null;
     loader = null;
     polyglot = false;
@@ -30,12 +28,6 @@ export default class FontPicker extends React.Component {
 
         if ('value' in props) {
             this.state.value = props.value;
-        }
-
-        this.config = 'config' in props ? props.config : new Configurator();
-
-        if ('root' in props) {
-            this.state.root = props.root;
         }
         
         if ('family' in props) {
@@ -54,7 +46,7 @@ export default class FontPicker extends React.Component {
 
         this.loader = props.fontLoaderObject
             ? props.fontLoaderObject
-            : new FontLoader(this.config.get('googleFontAPI', false));
+            : new FontLoader(props.config.get('googleFontAPI', false));
 
         if (!this.loader.validate(
                 get(props, 'family', ''),
@@ -186,7 +178,9 @@ export default class FontPicker extends React.Component {
     };
 
     render() {
-        const { props, state, config, mode, change } = this;
+        const { props, state, mode, change } = this;
+        const { config } = props;
+
         const mainProps = config.get('elements.fontPicker.props.main', {
             className: props.className + ' stylizer-font-element stylizer-font-element--' + mode
         });

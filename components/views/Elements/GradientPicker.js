@@ -2,7 +2,6 @@ import React from 'react';
 import { ChromePicker } from 'react-color';
 import CloseIcon from '../../../node_modules/react-icons/lib/io/close-circled';
 import GradientParser from '../../modules/GradientParser';
-import Configurator from '../../modules/Config';
 import { get, set, forEach, orderBy } from 'lodash';
 
 /**
@@ -31,7 +30,6 @@ export default class GradientPicker extends React.Component {
         ]
     };
 
-    config = false;
     prefix = '';
 
     handleElement = null;
@@ -48,12 +46,6 @@ export default class GradientPicker extends React.Component {
             Parsed && forEach(Parsed, (val, key) => {
                 this.state[key] = val;
             });
-        }
-
-        this.config = 'config' in props ? props.config : new Configurator();
-
-        if ('root' in props) {
-            this.state.root = props.root;
         }
 
         ['-o-', '-ms-', '-moz-', '-webkit-', ''].map((prefix) => {
@@ -245,10 +237,11 @@ export default class GradientPicker extends React.Component {
     };
 
     onTogglePicker = (delta) => {
-        const { props, state, config, onChangePicker, pickerElement } = this;
+        const { props, state, onChangePicker, pickerElement } = this;
+        const { config, root, uuid } = props;
         const data = get(state, 'stops.' + delta, false);
 
-        props.root.mutateSpace('left', null, null, true);
+        root.mutateSpace('left', null, null, true);
 
         if (pickerElement && delta === state.activePicker) {
             state.activePicker = false;
@@ -261,7 +254,7 @@ export default class GradientPicker extends React.Component {
                 onChange: onChangePicker
             });
 
-            props.root.mutateSpace('left', <ChromePicker { ...chromeProps } />, props.uuid);
+            root.mutateSpace('left', <ChromePicker { ...chromeProps } />, uuid);
         }
 
         this.setState(state);
@@ -283,8 +276,10 @@ export default class GradientPicker extends React.Component {
     };
 
     render() {
-        const { props, state, config, onChange, onKeypress, onDragStart, onDragExit, onDragMove, onTogglePicker, onAddStop, onRemoveStop } = this;
+        const { props, state, onChange, onKeypress, onDragStart, onDragExit, onDragMove, onTogglePicker, onAddStop, onRemoveStop } = this;
+        const { config } = props;
         const { polyglot } = props.mainRoot;
+
         const mainProps = config.get('elements.gradientPicker.props.main', {
             className: props.className + ' stylizer-gradient-element'
         });

@@ -1,6 +1,4 @@
 import React from 'react';
-import { get } from 'lodash';
-import Configurator from '../modules/Config';
 import SuccessIcon from '../../node_modules/react-icons/lib/io/checkmark-circled.js';
 import ErrorIcon from '../../node_modules/react-icons/lib/io/alert-circled.js';
 import NoticeIcon from '../../node_modules/react-icons/lib/io/plus-circled.js';
@@ -16,22 +14,13 @@ export default class MessageBox extends React.Component {
         message: false,
         duration: false,
         type: false,
-        show: false,
-        root: false
-    };
-
-    config = false;
-
-    constructor(props) {
-        super(props);
-        this.config = 'config' in props ? props.config : new Configurator();
-
-        if ('root' in props) {
-            this.state.root = props.root;
-        }
+        show: false
     };
 
     set = (type, message, duration) => {
+
+        const { clear, props } = this;
+
         if (message.length > 0) {
             this.setState({
                 type: type,
@@ -40,18 +29,15 @@ export default class MessageBox extends React.Component {
                 show: true
             });
 
-            if (duration) {
-                setTimeout(() => { this.clear();}, duration);
-            }
+            duration && setTimeout(() => { clear() }, duration);
         }
         else {
-            this.clear();
+            clear();
         }
 
-        this.state.root.setState({refresh: true});
+        props.root.setState({ refresh: true });
 
     };
-
 
     clear = () => {
         this.setState({
@@ -60,15 +46,18 @@ export default class MessageBox extends React.Component {
             duration: false,
             show: false
         });
-        this.state.root.setState({refresh: true});
+        this.props.root.setState({ refresh: true });
     };
 
     render() {
 
-        const { state, config } = this;
+        const { state, props } = this;
+        const { config } = props.root;
+        const { show, type } = state;
+
         const messageBoxProps = config.get('message.props.element', {
             key: 'stylizer-message-box',
-            className: [ 'stylizer-message-box', 'stylizer-message-box-' + state.type].join(' ')
+            className: [ 'stylizer-message-box', 'stylizer-message-box-' + type].join(' ')
         });
 
         const messageBoxIconProps = config.get('message.props.icon', {
@@ -78,7 +67,7 @@ export default class MessageBox extends React.Component {
 
         const Icon = [];
 
-        switch (state.type) {
+        switch (type) {
             case 'notice' :
                 Icon.push(
                     <NoticeIcon { ...messageBoxIconProps } />
@@ -99,7 +88,7 @@ export default class MessageBox extends React.Component {
         }
 
         return (
-            state.show && <div { ...messageBoxProps }>
+            show && <div { ...messageBoxProps }>
                 { Icon }
                 <span>{ state.message }</span>
             </div>

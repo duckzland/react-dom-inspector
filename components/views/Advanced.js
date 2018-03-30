@@ -1,9 +1,7 @@
 import React from 'react';
-import DOMHelper from '../modules/DOMHelper';
 import HamburgerIcon from '../../node_modules/react-icons/lib/io/navicon-round';
-import Configurator from '../modules/Config';
 import Parser from '../modules/Parser';
-import {UnControlled as CodeMirror} from 'react-codemirror2'
+import { UnControlled as CodeMirror } from 'react-codemirror2'
 import cssBeautify from 'cssbeautify';
 import { forEach } from 'lodash';
 
@@ -16,41 +14,29 @@ require('codemirror/mode/css/css');
  */
 export default class AdvancedPanel extends React.Component {
 
-    state = {
-        root: false,
-        errors: {}
-    };
-
     parser = false;
     styleElement = false;
-    config = false;
 
     constructor(props) {
         super(props);
-
-        this.config = 'config' in props ? props.config : new Configurator();
-
-        if ('root' in props) {
-            this.state.root = props.root;
-        }
-
-        this.styleElement = (new DOMHelper(props.document)).styleSheet({id: props.stylizerID}, 'style');
+        this.styleElement = props.DOMHelper.styleSheet({ id: props.root.getStyleSourceID() }, 'style');
         this.parser = new Parser(false);
     };
 
     componentWillReceiveProps(nextProps) {
         if ('refresh' in nextProps && nextProps.refresh) {
-            this.styleElement = (new DOMHelper(nextProps.document)).styleSheet({id: nextProps.root.getStyleSourceID()}, 'style');
+            this.styleElement = nextProps.DOMHelper.styleSheet({ id: nextProps.root.getStyleSourceID() }, 'style');
         }
     };
 
     convertCSS = (cssText) => {
+        const body = this.props.document.body;
         const storage = this.props.document.createElement('style');
               storage.innerHTML = cssText;
 
-        this.props.document.body.appendChild(storage);
+        body.appendChild(storage);
         const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
-        this.props.document.body.removeChild(storage);
+        body.removeChild(storage);
 
         return sheet.cssRules ? sheet.cssRules : false;
     };
@@ -85,9 +71,9 @@ export default class AdvancedPanel extends React.Component {
 
     render() {
 
-        const { onChangeValue, props, config } = this;
-        const { root } = props;;
-        const { polyglot } = root;
+        const { onChangeValue, convertData, props } = this;
+        const { root, config } = props;
+        const { polyglot, toggleMinimize } = root;
 
         const editorProps = config.get('advancedEditor.props.element', {
             key: 'stylizer-editor-panel',
@@ -111,7 +97,7 @@ export default class AdvancedPanel extends React.Component {
 
         const hamburgerIconProps = config.get('advancedEditor.props.hamburgerIcon', {
             size: 16,
-            onClick: () => root.toggleMinimize()
+            onClick: () => toggleMinimize()
         });
 
         const hamburgerIconLabel = config.get('advancedEditor.props.headerIconLabel', {
@@ -126,7 +112,7 @@ export default class AdvancedPanel extends React.Component {
         const advancedPanelCodeMirrorProps = config.get('advancedEditor.props.codeMirror', {
             key: 'stylizer-advanced-panel-codemirror',
             className: 'stylizer-advanced-panel-codemirror',
-            value: this.convertData(),
+            value: convertData(),
             options: {
                 mode: 'css',
                 theme: 'stylizer',

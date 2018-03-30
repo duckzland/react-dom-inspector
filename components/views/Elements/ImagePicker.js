@@ -1,7 +1,6 @@
 import React from 'react';
 import ScrollArea from 'react-scrollbar';
 import ImageLoader from '../../modules/ImageLoader';
-import Configurator from '../../modules/Config';
 import CloseIcon from '../../../node_modules/react-icons/lib/io/close-circled';
 import { get, set, forEach, size } from 'lodash';
 
@@ -22,7 +21,6 @@ export default class ImagePicker extends React.Component {
         showCount: 0
     };
 
-    config = false;
     loader = null;
 
     progressElement = null;
@@ -39,8 +37,7 @@ export default class ImagePicker extends React.Component {
             this.state.value = props.value;
         }
 
-        this.config = 'config' in props ? props.config : new Configurator();
-        this.config.insert({
+        props.config.insert({
             imageLoader: {
                 loader: {
                     upload: {
@@ -62,15 +59,11 @@ export default class ImagePicker extends React.Component {
             }
         });
 
-        if ('root' in props) {
-            this.state.root = props.root;
-        }
-
         this.loader = props.imageLoaderObject 
             ? props.imageLoaderObject 
             : new ImageLoader(
-                this.config.get('imageLoader.loader', {}),
-                this.config.get('imageLoader.library', false)
+                props.config.get('imageLoader.loader', {}),
+                props.config.get('imageLoader.library', false)
         );
 
         const maybeImage = this.loader.find(this.state.value.replace('url(', '').replace(')', '').split('/').pop().split('#')[0].split('?')[0]);
@@ -170,7 +163,8 @@ export default class ImagePicker extends React.Component {
 
     render() {
 
-        const { props, state, config, loader, onSelect, onRemove, onSearch, onUpload, onScroll } = this;
+        const { props, state, loader, onSelect, onRemove, onSearch, onUpload, onScroll } = this;
+        const { config } = props;
         const { polyglot } = props.mainRoot;
 
         const mainAreaProps = config.get('elements.imagePicker.props.main', {

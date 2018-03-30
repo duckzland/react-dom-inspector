@@ -1,5 +1,4 @@
 import React from 'react';
-import { get } from 'lodash';
 import HoverIcon from '../../node_modules/react-icons/lib/io/compose';
 import DeleteIcon from '../../node_modules/react-icons/lib/io/trash-b';
 import RevertIcon from '../../node_modules/react-icons/lib/fa/refresh';
@@ -11,7 +10,6 @@ import TabletIcon from '../../node_modules/react-icons/lib/fa/tablet';
 import MobileIcon from '../../node_modules/react-icons/lib/fa/mobile';
 import AdvancedIcon from '../../node_modules/react-icons/lib/fa/terminal';
 import RotatorIcon from '../../node_modules/react-icons/lib/fa/rotate-left';
-import Configurator from '../modules/Config';
 
 /**
  * Class for generating the Control Bar element markup
@@ -20,28 +18,10 @@ import Configurator from '../modules/Config';
  */
 export default class ControlBar extends React.Component {
 
-    state = {
-        root: false,
-        errors: {}
-    };
-
-    config = false;
-
-    constructor(props) {
-        super(props);
-
-        this.config = 'config' in props ? props.config : new Configurator();
-
-        if ('root' in props) {
-            this.state.root = props.root;
-        }
-    };
-
     render() {
-
-        const { props, config } = this;
-        const { root } = props;
-        const { polyglot } = root;
+        const { root } = this.props;
+        const { config, polyglot, toggleViewMode, toggleLayout, toggleHoverInspector, toggleEditorMode, revertData, saveData, wipeData, killApp } = root;
+        const { vertical, hover, viewmode, advanced } = root.state;
 
         const headerProps = config.get('controlBar.props.header', {
             key: 'stylizer-controlbar',
@@ -70,80 +50,66 @@ export default class ControlBar extends React.Component {
 
         const layoutIconProps = config.get('controlBar.props.layoutIcon', {
             size: 16,
-            transform: root.state.vertical === false ? 'rotate(90)' : '',
-            onClick: () => root.toggleLayout()
+            transform: !vertical ? 'rotate(90)' : '',
+            onClick: () => toggleLayout()
         });
 
         const hoverIconProps = config.get('controlBar.props.hoverIcon', {
             size: 16,
-            color: root.state.hover ? '#13a6d9' : '',
-            onClick: () => root.toggleHoverInspector()
+            color: hover ? '#13a6d9' : '',
+            onClick: () => toggleHoverInspector()
         });
 
         const revertIconProps = config.get('controlBar.props.revertIcon', {
             size: 16,
-            onClick: () => root.revertData()
+            onClick: () => revertData()
         });
 
         const deleteIconProps = config.get('controlBar.props.deleteIcon', {
             size: 16,
-            onClick: () => root.wipeData()
+            onClick: () => wipeData()
         });
 
         const saveIconProps = config.get('controlBar.props.saveIcon', {
             size: 16,
-            onClick: () => root.saveData()
+            onClick: () => saveData()
         });
 
         const closeIconProps = config.get('controlBar.props.closeIcon', {
             size: 16,
-            onClick: () => root.killApp()
+            onClick: () => killApp()
         });
 
         const desktopIconProps = config.get('controlBar.props.desktopIcon', {
             size: 16,
-            transform: root.state.viewmode === 'desktop' ? 'scale(1.2)' : '',
-            onClick: () => root.toggleViewMode('desktop')
+            transform: viewmode === 'desktop' ? 'scale(1.2)' : '',
+            onClick: () => toggleViewMode('desktop')
         });
 
         const tabletIconProps = config.get('controlBar.props.tabletIcon', {
             size: 16,
-            transform: root.state.viewmode === 'tablet' ? 'scale(1.2)' : '',
-            onClick: () => root.toggleViewMode('tablet-vertical')
+            transform: viewmode === 'tablet' ? 'scale(1.2)' : '',
+            onClick: () => toggleViewMode('tablet-vertical')
         });
 
         const mobileIconProps = config.get('controlBar.props.mobileIcon', {
             size: 16,
-            transform: root.state.viewmode === 'mobile' ? 'scale(1.2)' : '',
-            onClick: () => root.toggleViewMode('mobile-vertical')
+            transform: viewmode === 'mobile' ? 'scale(1.2)' : '',
+            onClick: () => toggleViewMode('mobile-vertical')
         });
 
         const rotateIconProps = config.get('controlBar.props.rotateIcon', {
             size: 16,
-            transform: root.state.viewmode === 'mobile-horizontal' || root.state.viewmode === 'tablet-horizontal' ? 'scale(1.2)' : '',
+            transform: viewmode.indexOf('horizontal') !== -1 ? 'scale(1.2)' : '',
             onClick: () => {
-                let rotate = false;
-                switch (root.state.viewmode) {
-                    case 'mobile-vertical' :
-                        rotate = 'mobile-horizontal';
-                        break;
-                    case 'mobile-horizontal' :
-                        rotate = 'mobile-vertical';
-                        break;
-                    case 'tablet-vertical' :
-                        rotate = 'tablet-horizontal';
-                        break;
-                    case 'tablet-horizontal' :
-                        rotate = 'tablet-vertical';
-                        break;
-                }
-                rotate && root.toggleViewMode(rotate);
+                (viewmode.indexOf('horizontal') !== -1 && toggleViewMode(viewmode.replace('horizontal', 'vertical')))
+                || (viewmode.indexOf('vertical') !== -1 && toggleViewMode(viewmode.replace('vertical', 'horizontal')));
             }
         });
 
         const advancedIconProps = config.get('controlBar.props.advancedIcon', {
             size: 16,
-            onClick: () => root.toggleEditorMode()
+            onClick: () => toggleEditorMode()
         });
 
         const layoutIconLabel = config.get('controlBar.props.layoutIconLabel', {
@@ -183,7 +149,7 @@ export default class ControlBar extends React.Component {
         });
 
         const advancedIconLabel = config.get('controlBar.props.advancedIconLabel', {
-            title: !root.state.advanced 
+            title: !advanced
                 ? polyglot.t('Switch Editor Mode to advanced mode')
                 : polyglot.t('Switch Editor Mode to normal mode')
         });
@@ -197,10 +163,9 @@ export default class ControlBar extends React.Component {
                 <span { ...headerTextProps }>
                     { polyglot.t('Victheme Stylizer') }
                 </span>
-                { root.state.viewmode !== 'desktop'
-                    && <span { ...headerRotateProps }>
-                        <span { ...rotateIconLabel }><RotatorIcon { ...rotateIconProps } /></span>
-                    </span> }
+                { viewmode.match(/horizontal|vertical/) && <span { ...headerRotateProps }>
+                    <span { ...rotateIconLabel }><RotatorIcon { ...rotateIconProps } /></span>
+                </span> }
                 <span { ...headerViewModeProps }>
                     { <span { ...desktopIconLabel }><DesktopIcon { ...desktopIconProps } /></span> }
                     { <span { ...tabletIconLabel }><TabletIcon { ...tabletIconProps } /></span> }

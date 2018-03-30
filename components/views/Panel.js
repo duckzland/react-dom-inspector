@@ -1,13 +1,12 @@
 import React from 'react';
 import ScrollArea from 'react-scrollbar';
-import Configurator from '../modules/Config';
 import ColorPicker  from './Elements/ColorPicker';
 import FontPicker from './Elements/FontPicker';
 import GradientPicker from './Elements/GradientPicker';
 import ImagePicker from './Elements/ImagePicker';
 import ToggleOpenIcon from '../../node_modules/react-icons/lib/fa/unlock';
 import ToggleLockedIcon from '../../node_modules/react-icons/lib/fa/lock';
-import { get, forEach, camelCase } from 'lodash';
+import { get, forEach } from 'lodash';
 
 /**
  * Base Class for Creating Editor Panels
@@ -26,19 +25,6 @@ export default class Panel extends React.Component {
         content: null
     };
 
-    config = false;
-
-    constructor(props) {
-        super(props);
-        this.config = 'config' in props ? props.config : new Configurator({
-            panels: {
-                group: {
-                    empty: null
-                }
-            }
-        });
-    };
-
     initialize(props) {
         this.testerNode = document.createElement('span');
 
@@ -46,10 +32,6 @@ export default class Panel extends React.Component {
             this.state.node = props.node;
             this.state.values = this.getValues();
             this.state.errors = this.validateValues();
-        }
-        
-        if ('config' in props)  {
-            this.config.insert(props.config);
         }
 
         if (!'fields' in this) {
@@ -132,7 +114,9 @@ export default class Panel extends React.Component {
     };
 
     generateElement = (element) => {
-        const { onKeypress, onSubmit, state, props, hasError, config, hookBeforeElementRender } = this;
+        const { onKeypress, onSubmit, state, props, hasError, hookBeforeElementRender } = this;
+        const { config } = props;
+
         const elementProps = config.get('panels.props.fields.' + element.target, {
             key: 'stylizer-element-' + element.target + '-' + state.node.uuid,
             className: [
@@ -155,6 +139,7 @@ export default class Panel extends React.Component {
             name: element.target,
             value: get(state, 'values.' + element.target, element.default),
             root: this,
+            config: config,
             mainRoot: props.mainRoot,
             onChange: onSubmit
         });
@@ -235,7 +220,9 @@ export default class Panel extends React.Component {
 
         this.generateToggle(element);
 
-        const { state, config, generateElement, toggleOpenIcon, toggleCloseIcon} = this;
+        const { state, props, generateElement, toggleOpenIcon, toggleCloseIcon} = this;
+        const { config } = props;
+
         const elementProps = config.get('panels.props.groupElement', {
             key: 'stylizer-group-' + element.title + '-' + state.node.uuid,
             className: ['stylizer-form-group', 'stylizer-group--' + element.key.replace(' ', '-'), element.inline ? 'stylizer-label-inline' : ''].join(' ')
@@ -261,7 +248,7 @@ export default class Panel extends React.Component {
                 <div { ...wrapperProps }>
                     { element.elements
                         ? element.elements.map( (child) => { return generateElement(child) })
-                        : config.get('panel.group.empty')
+                        : config.get('panel.group.empty', null)
                     }
                 </div>
             </div>
@@ -343,7 +330,8 @@ export default class Panel extends React.Component {
 
     render() {
 
-        const { leftSpace, rightSpace, fields, config, state, generateGroup, generateElement, onScroll, hookBeforeRender } = this;
+        const { leftSpace, rightSpace, fields, props, state, generateGroup, generateElement, onScroll, hookBeforeRender } = this;
+        const { config } = props;
 
         const tabProps = config.get('panels.props.tabs', {
             key: 'stylizer-tab-' + config.get('type') + '-' + state.node.uuid,

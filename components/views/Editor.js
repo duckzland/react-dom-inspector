@@ -1,9 +1,6 @@
 import React from 'react';
 import ScrollArea from 'react-scrollbar';
-import { get } from 'lodash';
 import HamburgerIcon from '../../node_modules/react-icons/lib/io/navicon-round';
-import DOMHelper from '../modules/DOMHelper';
-import Configurator from '../modules/Config';
 import FontLoader from '../modules/FontLoader';
 import ImageLoader from '../modules/ImageLoader';
 import BorderPanel from './Panels/Border';
@@ -22,42 +19,30 @@ export default class Editor extends React.Component {
 
     state = {
         active: 'selector',
-        node: false,
-        root: false,
-        errors: {}
+        node: false
     };
 
     styleElement = false;
-    config = false;
 
     constructor(props) {
         super(props);
 
-        this.config = 'config' in props ? props.config : new Configurator();
+        const { config, root, node, DOMHelper } = props;
         
-        this.styleElement = (new DOMHelper(props.document)).styleSheet({ id: props.stylizerID }, 'style');
+        this.styleElement = DOMHelper.styleSheet({ id: root.getStyleSourceID() }, 'style');
+        this.state.node = node;
 
-        if ('node' in props) {
-            this.state.node = props.node;
-        }
-
-        if ('root' in props) {
-            this.state.root = props.root;
-        }
-
-        if (this.config.get('googleFontAPI') && !props.fontLoader) {
-            (new FontLoader(this.config.get('googleFontAPI')));
-        }
-
-        if (this.config.get('imageLoader.loader') && this.config.get('imageLoader.fetch')) {
-            (new ImageLoader(this.config.get('imageLoader.loader'), [])).fetch();
+        if (config.get('imageLoader.loader') && config.get('imageLoader.fetch')) {
+            (new ImageLoader(config.get('imageLoader.loader'), [])).fetch();
         }
     };
 
     componentWillReceiveProps(nextProps) {
         let reset = false;
         if ('refresh' in nextProps && nextProps.refresh) {
-            this.styleElement = (new DOMHelper(nextProps.document)).styleSheet({id: nextProps.root.getStyleSourceID()}, 'style');
+            this.styleElement = nextProps
+                                    .DOMHelper
+                                    .styleSheet({id: nextProps.root.getStyleSourceID()}, 'style');
             reset = true;
         }
         this.state.node = nextProps.node;
@@ -71,8 +56,8 @@ export default class Editor extends React.Component {
     rebuildStyling = (e) => {
 
         const { name, value } = e.target;
-        const { styleElement, state } = this;
-        const { node } = state;
+        const { styleElement } = this;
+        const { node } = this.state;
 
         for (var i = 0; i < styleElement.cssRules.length; i++) {
             if (styleElement.cssRules[i].selectorText === node.selector) {
@@ -92,14 +77,14 @@ export default class Editor extends React.Component {
 
     render() {
 
-        let { onChangeTab, props, state, config } = this;
         let ActivePanel = [];
 
-        const { root } = props;
-        const { node } = state;
+        const { onChangeTab, props, state } = this;
+        const { root, config } = props;
+        const { node, active } = state;
         const { polyglot } = root;
 
-        const AllowedTabs = ['selector', 'layout', 'spacing', 'border', 'styles', 'typography'];
+        const AllowedTabs = [ 'selector', 'layout', 'spacing', 'border', 'styles', 'typography' ];
 
         const editorProps = config.get('editor.props.element', {
             key: 'stylizer-editor-panel',
@@ -147,7 +132,8 @@ export default class Editor extends React.Component {
         const panelProps = config.get('editor.panel.panelElement', Object.assign(state, {
             key: 'stylizer-active-panel-' + (node && node.uuid ? node.uuid : 'empty'),
             root: this,
-            mainRoot: props.root,
+            mainRoot: root,
+            config: config,
             scroll: state.scroll
         }));
 
@@ -189,7 +175,7 @@ export default class Editor extends React.Component {
                             { AllowedTabs.map((TabKey) => {
                                 const selectorItemProps = config.get('editor.props.selectorItem', {
                                     key: config.get('editor.tabPrefix', 'stylizer-tab-') + TabKey,
-                                    className: [ config.get('editor.tabPrefix', 'stylizer-tab-') + 'element', state.active === TabKey ? 'active' : null ].join(' '),
+                                    className: [ config.get('editor.tabPrefix', 'stylizer-tab-') + 'element', active === TabKey ? 'active' : null ].join(' '),
                                     onClick: () => onChangeTab(TabKey)
                                 });
 
@@ -203,7 +189,6 @@ export default class Editor extends React.Component {
                         <div { ...emptyProps }>{ polyglot.t('No Element Selected') }</div>
                     </div>
                 }
-
             </div>
         )
     };
