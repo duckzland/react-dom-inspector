@@ -69,7 +69,7 @@ export default class Inspector extends React.Component {
                 minimize: false
             }
         });
-        
+
         if ('config' in props) {
             this.config.insert(props.config);
         }
@@ -84,14 +84,16 @@ export default class Inspector extends React.Component {
         this.state.viewmode = this.config.get('startup.size', 'desktop');
         this.state.minimize = this.config.get('startup.minimize');
         this.state.vertical = this.config.get('startup.vertical');
-        
+
         this.iteratorHelper = new Iterator({
             root: this,
             sheetID: this.getStyleSourceID()
         });
 
         this.generateFrame();
-    };
+    }
+
+;
 
     componentWillMount() {
         const { body } = document;
@@ -153,7 +155,7 @@ export default class Inspector extends React.Component {
         const frameAppendFunction = get(window, mountNode.getAttribute('data-onframeappend'));
         const frameBeforeUnloadFunction = get(window, mountNode.getAttribute('data-onframebeforeunload'));
 
-        this.setState({ frameLoaded: false });
+        this.setState({frameLoaded: false});
         this.frameWrapper = document.getElementById('stylizer-frame-wrapper');
         this.frame = document.createElement('iframe');
 
@@ -169,6 +171,8 @@ export default class Inspector extends React.Component {
         frame.setAttribute('src', this.config.get('pageSrc'));
         frame.onbeforeunload = (e) => {
             isFunction(frameBeforeUnloadFunction) && frameBeforeUnloadFunction(e, this);
+            e.preventDefault();
+            return false;
         };
         frame.onload = (e) => {
 
@@ -185,7 +189,7 @@ export default class Inspector extends React.Component {
 
             isFunction(frameReadyFunction) && frameReadyFunction(e, this);
 
-            this.setState({ frameLoaded: true });
+            this.setState({frameLoaded: true});
 
             // @bugfix wrong frame height size on boot
             resizeFrame();
@@ -208,15 +212,15 @@ export default class Inspector extends React.Component {
     };
 
     toggleMinimize = () => {
-        this.setState({ minimize: !this.state.minimize });
+        this.setState({minimize: !this.state.minimize});
     };
 
     toggleHoverInspector = () => {
-        this.setState({ hover: !this.state.hover });
+        this.setState({hover: !this.state.hover});
     };
 
     toggleLayout = () => {
-        this.setState({ vertical: !this.state.vertical });
+        this.setState({vertical: !this.state.vertical});
         this.resizeFrame();
     };
 
@@ -226,7 +230,7 @@ export default class Inspector extends React.Component {
 
         state.viewmode = mode;
         state.refresh = true;
-        
+
         ['stylizer-desktop', 'stylizer-tablet-vertical', 'stylizer-tablet-horizontal', 'stylizer-mobile-vertical', 'stylizer-mobile-horizontal']
             .map(classText => frame.classList.remove(classText));
 
@@ -268,7 +272,7 @@ export default class Inspector extends React.Component {
             && ['desktop', 'tablet-vertical', 'tablet-horizontal', 'mobile-vertical', 'mobile-horizontal'].map((type) => {
                 const sheet = frameDocument.getElementById('stylizer-original-' + type);
                 sheet.getAttribute('media')
-                    && sheet.setAttribute('media-original', sheet.getAttribute('media'));
+                && sheet.setAttribute('media-original', sheet.getAttribute('media'));
 
                 sheet.setAttribute('media', 'max-width: 1px');
             });
@@ -308,29 +312,29 @@ export default class Inspector extends React.Component {
             const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
 
             storage
-                && isFunction(wipeFunction)
-                && wipeFunction(convertData(storage), type, this);
+            && isFunction(wipeFunction)
+            && wipeFunction(convertData(storage), type, this);
 
             sheet
-                && sheet.cssRules
-                && forEach(sheet.cssRules, (rule, delta) => {
-                    sheet.deleteRule(0);
-                });
+            && sheet.cssRules
+            && forEach(sheet.cssRules, (rule, delta) => {
+                sheet.deleteRule(0);
+            });
         });
 
-        this.setState({ refresh: true });
+        this.setState({refresh: true});
     };
-    
+
     getStyleOriginalID = () => {
         const { viewmode } = this.state;
         return viewmode ? 'stylizer-original-' + viewmode : 'stylizer-original-desktop';
     };
-    
+
     getStyleSourceID = () => {
         const { viewmode } = this.state;
         return viewmode ? 'stylizer-source-' + viewmode : 'stylizer-source-desktop';
     };
-    
+
     revertData = () => {
         const { convertData, cloneSheet, config, frameDocument } = this;
         const mountNode = ReactDOM.findDOMNode(document.getElementById(config.get('domID')));
@@ -339,16 +343,16 @@ export default class Inspector extends React.Component {
         ['desktop', 'tablet-vertical', 'tablet-horizontal', 'mobile-vertical', 'mobile-horizontal'].map((type) => {
             const storage = frameDocument.getElementById('stylizer-source-' + type);
             storage
-                && isFunction(revertFunction)
-                && revertFunction(convertData(storage), type, this);
+            && isFunction(revertFunction)
+            && revertFunction(convertData(storage), type, this);
 
             storage
-                && frameDocument.body.removeChild(storage)
+            && frameDocument.body.removeChild(storage)
         });
 
         cloneSheet();
 
-        this.setState({ refresh: true });
+        this.setState({refresh: true});
     };
 
     convertData = (storage) => {
@@ -357,10 +361,11 @@ export default class Inspector extends React.Component {
             storage: storage,
             styles: [],
             cssText: '',
-            fonts: {}
+            fonts: []
         };
 
         const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
+        const rawFonts = fontLoader.parseFont(storage);
 
         sheet
             && sheet.cssRules
@@ -370,7 +375,16 @@ export default class Inspector extends React.Component {
 
         result.cssText = result.styles.join("\n");
 
-        result.fonts = fontLoader.parseFont(storage);
+        forEach(rawFonts, (font) => {
+
+            result.fonts.push({
+                family: font.family,
+                googleFont: font.googleFont,
+                rule: [...font.rule],
+                style: [...font.style],
+                weight: [...font.weight]
+            })
+        });
 
         return result;
     };
@@ -392,14 +406,14 @@ export default class Inspector extends React.Component {
     };
 
     setActiveNode = (node) => {
-        this.setState({ node: node });
+        this.setState({node: node});
     };
 
     retrieveOrBuildStorage = (node) => {
         const { iteratorHelper, DOMHelper} = this;
         let tracker, Store, targetNode;
 
-        tracker = DOMHelper.closest(node, { hasAttribute: 'stylizer-uuid' }, 'both');
+        tracker = DOMHelper.closest(node, {hasAttribute: 'stylizer-uuid'}, 'both');
         if (tracker.depth > 1) {
             Store = iteratorHelper.find(tracker.node.getAttribute('stylizer-uuid'));
             iteratorHelper.iterate(tracker.node, Store, Store.depth, Store.depth + tracker.depth, Store.tree);
@@ -439,7 +453,7 @@ export default class Inspector extends React.Component {
 
         if (node.nodeName.toLowerCase().match(new RegExp('(img|style|script|link|html|body)', 'g'))) {
             this.hoverCache = false;
-            this.setState({ overlay: false });
+            this.setState({overlay: false});
             return true;
         }
 
@@ -473,7 +487,7 @@ export default class Inspector extends React.Component {
 
         const mainPanelProps = config.get('props.panel', {
             key: 'stylizer-inspector',
-            className: [ 'stylizer-inspector', minimize ? 'minimize' : null, !navigator ? 'no-navigator' : null ].join(' '),
+            className: ['stylizer-inspector', minimize ? 'minimize' : null, !navigator ? 'no-navigator' : null].join(' '),
             'stylizer-inspector': "true"
         });
 
@@ -546,5 +560,7 @@ export default class Inspector extends React.Component {
                 { !frameLoaded && <div { ...loaderProps } /> }
             </div>
         )
-    };
+    }
+
+;
 }

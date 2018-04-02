@@ -12,6 +12,7 @@
     "babel-polyfill": "^6.26.0",
     "codemirror": "^5.36.0",
     "cssbeautify": "^0.3.1",
+    "es5-polyfill": "0.0.6",
     "lodash": "^4.17.4",
     "node-polyglot": "^2.2.2",
     "react": "^16.1.1",

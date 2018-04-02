@@ -226,6 +226,10 @@ export default class FontLoader {
         return loaded;
     }
 
+    isGoogleFont(family) {
+        return find(FontLoader.library.items, { family: family }) ? true : false;
+    }
+
     parseFont(storage = false, loadFont = false) {
 
         const sheet = storage.sheet ? storage.sheet : storage.styleSheet,
@@ -257,10 +261,13 @@ export default class FontLoader {
                         variant = weight + style,
                         font = storedFont ? storedFont : {
                             family: family,
+                            googleFont: false,
                             weight: new Set(),
                             style: new Set(),
                             rule: new Set()
                         };
+
+                    font.googleFont = this.isGoogleFont(family);
 
                     if (weight) {
                         font.weight.add(weight);

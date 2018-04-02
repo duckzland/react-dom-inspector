@@ -150,7 +150,7 @@ export default class Store {
 
                             case 'font' :
                                 ['font-style', 'font-variant', 'font-weight', 'font-stretch', 'font-size', 'font-family', 'line-height'].map((path) => {
-                                    let style = elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })];
+                                    let style = elements.style[path.replace(/\s(-)/g, function($1) { return $1.toUpperCase(); })].replace(/"/g, '');
                                     if (style && !style.match(skippedRule)) {
                                         set(this.styles, path, style);
                                     }

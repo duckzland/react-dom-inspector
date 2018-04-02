@@ -1,7 +1,9 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import ScrollArea from 'react-scrollbar';
 import HamburgerIcon from '../../node_modules/react-icons/lib/io/navicon-round';
 import Items from './Items';
+import { get } from 'lodash';
 
 /**
  * Class for generating the Inspector main wrapper markup
@@ -12,8 +14,12 @@ export default class Inspector extends React.Component {
 
     state = {
         active: false,
-        minimize: false
+        minimize: false,
+        scrolledLeft: 0,
+        scrolledTop: 0
     };
+
+    refresh = false;
 
     componentWillReceiveProps(nextProps) {
         if ('refresh' in nextProps && nextProps.refresh) {
@@ -36,33 +42,35 @@ export default class Inspector extends React.Component {
 
     scrollToItem = (node) => {
         const DOMNode = node.trackNode();
-        if (DOMNode) {
-            this.state.scrolledLeft = DOMNode.offsetLeft;
-            this.state.scrolledTop = DOMNode.offsetTop;
-        }
+        DOMNode && DOMNode.scrollIntoView();
     };
 
-    moveScrollBar = (el) => {
-        if (!el) {
+    moveScrollBar = (node) => {
+
+        const scrollBar = get(this, 'refs.stylizer-iterator-scrollbar');
+        const activeItem = get(this, 'refs.stylizer-inspector-items-' + node.uuid);
+        const activeItemDOM = activeItem ? ReactDOM.findDOMNode(activeItem) : false;
+
+        if (!scrollBar || !scrollBar.scrollArea || !activeItem || !activeItemDOM) {
             return false;
         }
 
-        const { scrollXTo, scrollYTo } = el.scrollArea;
-        const { scrolledLeft, scrolledTop } = this.state;
-        const { leftPosition, topPosition } = el.state;
+        const { topPosition, leftPosition, containerHeight, containerWidth } = scrollBar.state;
+        const { scrollXTo, scrollYTo } = scrollBar.scrollArea;
+        const { offsetTop, offsetLeft } = activeItemDOM;
 
-        scrolledLeft
-            && (scrolledLeft !== leftPosition)
-            && scrollXTo(parseInt(scrolledLeft));
+        if (topPosition > offsetTop || (topPosition + containerHeight) < offsetTop) {
+            scrollYTo(offsetTop);
+        }
 
-        scrolledTop
-            && (scrolledTop !== topPosition)
-            && scrollYTo(parseInt(scrolledTop));
+        if (leftPosition > offsetLeft || (leftPosition + containerWidth) < offsetLeft) {
+            scrollXTo(offsetLeft);
+        }
 
         return true;
     };
 
-    activateNode = (node) => {
+    activateNode = (node, scrollIntoView = false) => {
 
         const { props, state } = this;
         const { root, iterator } = props;
@@ -93,7 +101,8 @@ export default class Inspector extends React.Component {
         node.active = true;
 
         root.setActiveNode(node);
-        this.scrollToItem(node);
+        scrollIntoView && this.scrollToItem(node);
+        this.moveScrollBar(node);
         this.setState({ active : node.uuid });
     };
 
@@ -140,7 +149,7 @@ export default class Inspector extends React.Component {
 
         const scrollAreaProps = config.get('navigator.props.scrollArea', {
             key: 'stylizer-iterator',
-            ref: (el) => { moveScrollBar(el) },
+            ref: 'stylizer-iterator-scrollbar',
             speed: 0.8,
             className: [
                 'stylizer-content',
@@ -161,7 +170,7 @@ export default class Inspector extends React.Component {
                 </h3>
                 <ScrollArea { ...scrollAreaProps }>
                     { iterator.get().map((node, delta) => {
-                        const itemProps = { key: delta, root: this, node: node, config: config, mainRoot: root };
+                        const itemProps = { key: delta, ref: 'stylizer-inspector-items-' + node.uuid, root: this, node: node, config: config, mainRoot: root };
                         return ( <Items { ...itemProps } /> );
                     })}
                 </ScrollArea>

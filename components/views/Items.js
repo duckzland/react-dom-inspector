@@ -41,7 +41,7 @@ export default class Items extends React.Component {
                 isProcessed(node) ? 'processed' : ''
             ].join(' '),
             'data-depth' : node.depth,
-            onClick: () => { root.activateNode(node) }
+            onClick: () => { root.activateNode(node, true) }
         });
 
         return (

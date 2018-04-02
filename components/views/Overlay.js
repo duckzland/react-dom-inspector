@@ -3,7 +3,6 @@ import React from 'react';
 /**
  * Component for building an overlay for hovered DOM Element
  *
- * @todo Refactor this properly!
  * @author jason.xie@victheme.com
  */
 export default class Overlay extends React.Component {
@@ -58,33 +57,62 @@ export default class Overlay extends React.Component {
         ];
 
         this.document = node.ownerDocument;
+
         let mainBodyStyle = getComputedStyle(document.body);
         let computedStyle = getComputedStyle(node);
         let frameStyle = getComputedStyle(props.frame);
         let frameWrapperStyle = getComputedStyle(props.wrapper);
+        let frameParentStyle = props.wrapper !== props.frame.parentNode ? getComputedStyle(props.frame.parentNode) : false;
 
         requiredValue.forEach(item => {
-            result[item] = parseFloat(computedStyle[item]) || 0;
+            result[item] = parseFloat(computedStyle[item].match(/\d+/)) || 0;
         });
 
+        // Set the size
         Object.assign(result, {
             width: node.offsetWidth - result['border-left-width'] - result['border-right-width'] - result['padding-left'] - result['padding-right'],
             height: node.offsetHeight - result['border-top-width'] - result['border-bottom-width'] - result['padding-top'] - result['padding-bottom']
         });
 
-        let _x = node.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
-        let _y = node.getBoundingClientRect().top - parseFloat(computedStyle['margin-top']);
+        // Define the node sizing
+        let _x = node.getBoundingClientRect().left - parseFloat(computedStyle['margin-left'].match(/\d+/));
+        let _y = node.getBoundingClientRect().top - parseFloat(computedStyle['margin-top'].match(/\d+/));
         let el = node.parent;
+
+        // Get the parent nodes sizing
         while (el) {
             computedStyle = getComputedStyle(el);
-            _x += el.frameElement.getBoundingClientRect().left - parseFloat(computedStyle['margin-left']);
-            _y += el.frameElement.getBoundingClientRect().top - parseFloat(computedStyle['margin-top']);
+            _x += el.frameElement.getBoundingClientRect().left - parseFloat(computedStyle['margin-left'].match(/\d+/));
+            _y += el.frameElement.getBoundingClientRect().top - parseFloat(computedStyle['margin-top'].match(/\d+/));
             el = el.parent;
         }
 
+        // mainBody
+        _x += parseFloat(mainBodyStyle['padding-left'].match(/\d+/));
+        _y += parseFloat(mainBodyStyle['padding-top'].match(/\d+/));
+
+        // frameStyle
+        _x += props.frame.offsetLeft;
+        _y += parseFloat(frameStyle['margin-top'].match(/\d+/));
+
+        // frameWrapper
+        _x += props.wrapper.offsetLeft;
+        _y += parseFloat(frameWrapperStyle['margin-top'].match(/\d+/)) + parseFloat(frameWrapperStyle['border-top-width'].match(/\d+/));
+
+        // In case Frame parent is not the frameWrapper
+        if (frameParentStyle) {
+            _x += props.frame.parentNode.offsetLeft;
+            _y += parseFloat(frameParentStyle['margin-top'].match(/\d+/)) + parseFloat(frameParentStyle['border-top-width'].match(/\d+/));
+            _y -= props.frame.parentNode.scrollTop;
+        }
+
+        // Adjust the scrolled value
+        _y -= props.wrapper.parentElement.scrollTop;
+        _y -= props.wrapper.scrollTop;
+
         Object.assign(result, {
-            top: (_y - props.wrapper.parentElement.scrollTop - props.wrapper.scrollTop) + parseFloat(mainBodyStyle['padding-top']) + parseFloat(frameStyle['margin-top']) + parseFloat(frameWrapperStyle['margin-top']),
-            left: _x + parseFloat(frameStyle['margin-left']) +  parseFloat(mainBodyStyle['padding-left']) + parseFloat(frameWrapperStyle['margin-left'])
+            top: _y,
+            left: _x
         });
 
         this.setState({
