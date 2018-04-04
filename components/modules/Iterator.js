@@ -1,5 +1,5 @@
 import Store from './Store';
-import { findIndex, find } from 'lodash';
+import { findIndex, find, forEach } from 'lodash';
 
 /**
  * Class for helping to iterate and build the Store object
@@ -65,7 +65,11 @@ export default class Iterator {
 
         'className' in node
             && node.className.length
-            && currentNode.push('.' + node.className.replace(/\s+/g,"."));
+            && forEach(node.className.trim().split(' ').filter(n => true), (className) => {
+                className.length
+                    && className.indexOf('.') === -1
+                    && currentNode.push('.' + className);
+            });
 
         tree.push(currentNode.join(''));
 

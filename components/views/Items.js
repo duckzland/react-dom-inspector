@@ -39,7 +39,7 @@ export default class Items extends React.Component {
                 isChanged(node) ? 'changed' : '',
                 isParent(node) ? 'parents' : '',
                 isProcessed(node) ? 'processed' : ''
-            ].join(' '),
+            ].filter(n => true).join(' '),
             'data-depth' : node.depth,
             onClick: () => { root.activateNode(node, true) }
         });

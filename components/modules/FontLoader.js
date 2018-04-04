@@ -244,7 +244,8 @@ export default class FontLoader {
             && forEach(sheet.cssRules, (rule) => {
 
                 // Don't trust sheet rules, use computed value instead!
-                let Style = CS(Docs.querySelector(rule.selectorText), null),
+                let Element = Docs.querySelector(rule.selectorText),
+                    Style = Element ? CS(Element, null) : false,
                     families  = Style ? get(Style, 'fontFamily', '').split(',') : [];
 
                 if (!families.length) {
