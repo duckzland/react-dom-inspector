@@ -6,12 +6,10 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 var extractTranslationKeysRegexPlugin = require('webpack-extract-translation-keys-regex-plugin');
 
 module.exports = {
-    entry: {
-        'react-dom-inspector.min': './index.js',
-    },
+    entry: './index.js',
     output: {
         path: path.resolve(__dirname, ''),
-        filename: 'dist/js/[name].js'},
+        filename: 'dist/js/react-dom-inspector.min.js'},
     module: {
         loaders: [
             {
@@ -33,7 +31,9 @@ module.exports = {
             {
                 test: /.js?$/,
                 loader: 'babel-loader',
-                exclude: /node_modules/,
+                exclude: [
+                    path.resolve(__dirname, 'node_modules')
+                ],
                 query: {
                     plugins: [
                         'transform-runtime',
@@ -45,6 +45,15 @@ module.exports = {
                     presets: ['es2015', 'react']
                 }
             }
+        ]
+    },
+    watchOptions: {
+        ignored: [
+            path.resolve(__dirname, 'examples/assets'),
+            path.resolve(__dirname, 'examples/assets/*/*'),
+            path.resolve(__dirname, 'examples/assets/js/react-dom-inspector.min.js'),
+            path.resolve(__dirname, 'examples/assets/css/style.min.css'),
+            path.resolve(__dirname, 'node_modules')
         ]
     },
     plugins: [
@@ -75,7 +84,6 @@ module.exports = {
             output: path.join(__dirname, 'dist', 'translations', 'english.json')
         }),
 
-        /**
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 warnings: false,
@@ -84,7 +92,7 @@ module.exports = {
             comments: false,
             sourceMap: false
         }),
-**/
+
         new webpack.optimize.AggressiveMergingPlugin(),
 
         new CopyWebpackPlugin([

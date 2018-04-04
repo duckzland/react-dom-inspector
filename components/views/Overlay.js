@@ -94,15 +94,21 @@ export default class Overlay extends React.Component {
         // frameStyle
         _x += props.frame.offsetLeft;
         _y += parseFloat(frameStyle['margin-top'].match(/\d+/));
+        _y += parseFloat(frameStyle['border-top-width'].match(/\d+/));
+        _y += parseFloat(frameStyle['top'].match(/\d+/));
 
         // frameWrapper
         _x += props.wrapper.offsetLeft;
-        _y += parseFloat(frameWrapperStyle['margin-top'].match(/\d+/)) + parseFloat(frameWrapperStyle['border-top-width'].match(/\d+/));
+        _y += parseFloat(frameWrapperStyle['margin-top'].match(/\d+/));
+        _y += parseFloat(frameWrapperStyle['border-top-width'].match(/\d+/));
+        _y += parseFloat(frameWrapperStyle['top'].match(/\d+/));
 
         // In case Frame parent is not the frameWrapper
         if (frameParentStyle) {
             _x += props.frame.parentNode.offsetLeft;
-            _y += parseFloat(frameParentStyle['margin-top'].match(/\d+/)) + parseFloat(frameParentStyle['border-top-width'].match(/\d+/));
+            _y += parseFloat(frameParentStyle['margin-top'].match(/\d+/));
+            _y += parseFloat(frameParentStyle['border-top-width'].match(/\d+/));
+            _y += parseFloat(frameParentStyle['top'].match(/\d+/));
             _y -= props.frame.parentNode.scrollTop;
         }
 

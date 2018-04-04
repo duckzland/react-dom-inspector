@@ -14,7 +14,7 @@ import AdvancedPanel from './views/Advanced';
 import Overlay from './views/Overlay';
 import { forEach, get, isFunction } from 'lodash';
 import Polyglot from 'node-polyglot';
-import './../assets/codemirror.less';
+import './../assets/codemirror.css';
 import './../assets/styles.less';
 
 /**
@@ -171,6 +171,7 @@ export default class Inspector extends React.Component {
             e.preventDefault();
             return false;
         };
+
         frame.onload = (e) => {
 
             this.frameDocument = frame.contentWindow.document;
@@ -185,7 +186,7 @@ export default class Inspector extends React.Component {
 
             isFunction(frameReadyFunction) && frameReadyFunction(e, this);
 
-            this.setState({frameLoaded: true});
+            this.setState({ frameLoaded: true });
 
             triggerFrameEvent('resize');
         };
@@ -209,9 +210,9 @@ export default class Inspector extends React.Component {
     };
 
     triggerFrameEvent = (event) => {
-        const { frameDocument } = this;
+        const { frame } = this;
         const evt = new Event(event);
-        evt && frameDocument.window.dispatchEvent(evt);
+        evt && frame.contentWindow.dispatchEvent(evt);
     };
 
     toggleMinimize = () => {
@@ -348,11 +349,11 @@ export default class Inspector extends React.Component {
         ['desktop', 'tablet-vertical', 'tablet-horizontal', 'mobile-vertical', 'mobile-horizontal'].map((type) => {
             const storage = frameDocument.getElementById('stylizer-source-' + type);
             storage
-            && isFunction(revertFunction)
-            && revertFunction(convertData(storage), type, this);
+                && isFunction(revertFunction)
+                && revertFunction(convertData(storage), type, this);
 
             storage
-            && frameDocument.body.removeChild(storage)
+                && frameDocument.body.removeChild(storage);
         });
 
         cloneSheet();
@@ -565,7 +566,5 @@ export default class Inspector extends React.Component {
                 { !frameLoaded && <div { ...loaderProps } /> }
             </div>
         )
-    }
-
-;
+    };
 }
