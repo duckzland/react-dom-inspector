@@ -159,14 +159,11 @@ export default class Inspector extends React.Component {
         this.frameWrapper = document.getElementById('stylizer-frame-wrapper');
         this.frame = document.createElement('iframe');
 
-        const { frame, frameWrapper, resizeFrame, cloneSheet, bindEvent, destroyEvent, state, iteratorHelper } = this;
+        const { frame, frameWrapper, triggerFrameEvent, cloneSheet, bindEvent, destroyEvent, state, iteratorHelper } = this;
         const { hover, minimize } = state;
 
         frame.classList.add('stylizer-' + this.state.viewmode);
         frame.setAttribute('id', 'stylizer-frame');
-        frame.setAttribute('scrolling', 'no');
-        frame.setAttribute('width', '100%');
-        frame.setAttribute('height', '100%');
         frame.setAttribute('sandbox', 'allow-scripts allow-same-origin');
         frame.setAttribute('src', this.config.get('pageSrc'));
         frame.onbeforeunload = (e) => {
@@ -181,7 +178,6 @@ export default class Inspector extends React.Component {
             this.fontLoader = new FontLoader(this.config.get('googleFontAPI'), frame.contentWindow);
 
             iteratorHelper.iterate(this.frameDocument.body, false, 0, config.get('navigator.startingDepth'), []);
-            resizeFrame();
             cloneSheet();
 
             hover ? bindEvent('mousemove') : destroyEvent('mousemove');
@@ -191,8 +187,7 @@ export default class Inspector extends React.Component {
 
             this.setState({frameLoaded: true});
 
-            // @bugfix wrong frame height size on boot
-            resizeFrame();
+            triggerFrameEvent('resize');
         };
 
         frameWrapper.appendChild(frame);
@@ -201,7 +196,7 @@ export default class Inspector extends React.Component {
     };
 
     resizeFrame = () => {
-        const { frame, frameDocument } = this;
+        const { frame, triggerFrameEvent, frameDocument } = this;
         const { body, documentElement } = frameDocument;
 
         frame.style.height = Math.max(
@@ -209,6 +204,14 @@ export default class Inspector extends React.Component {
                 body.offsetHeight, documentElement.offsetHeight,
                 body.clientHeight, documentElement.clientHeight
             ) + 'px';
+
+        triggerFrameEvent('resize');
+    };
+
+    triggerFrameEvent = (event) => {
+        const { frameDocument } = this;
+        const evt = new Event(event);
+        evt && frameDocument.window.dispatchEvent(evt);
     };
 
     toggleMinimize = () => {
@@ -220,12 +223,13 @@ export default class Inspector extends React.Component {
     };
 
     toggleLayout = () => {
+        const { triggerFrameEvent } = this;
         this.setState({vertical: !this.state.vertical});
-        this.resizeFrame();
+        triggerFrameEvent('resize');
     };
 
     toggleViewMode = (mode) => {
-        const { frame, state, resizeFrame, iteratorHelper } = this;
+        const { frame, state, triggerFrameEvent, iteratorHelper } = this;
         const { body } = document;
 
         state.viewmode = mode;
@@ -235,11 +239,12 @@ export default class Inspector extends React.Component {
             .map(classText => frame.classList.remove(classText));
 
         frame.classList.add('stylizer-' + mode);
+
         body.setAttribute('stylizer-viewmode', state.viewmode);
 
-        resizeFrame();
         iteratorHelper.reset();
         this.setState(state);
+        triggerFrameEvent('resize');
     };
 
     toggleEditorMode = () => {

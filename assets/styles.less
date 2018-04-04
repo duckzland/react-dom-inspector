@@ -56,6 +56,21 @@
 /**
   Generic Styling for both vertical and horizontal
   **/
+
+/**
+  Reset required
+  **/
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/**
+  Inspector
+  **/
 .stylizer-inspector {
   position: fixed;
   left: 0;
@@ -1267,6 +1282,9 @@
     }
   }
 
+  /**
+    Loading Bar
+    **/
   .stylizer-loading-bar {
     position: fixed;
     left: 0;
@@ -1456,6 +1474,36 @@
   }
 }
 
+
+/**
+  Frames
+  **/
+#stylizer-viewmode-frame {
+  background: lighten(@FrameBackground, 50%);
+  right: 0;
+  min-width: 0;
+  position: fixed;
+  top: 35px;
+  height: 100%;
+  bottom: 0;
+  left: 0;
+
+  #stylizer-frame-wrapper {
+    right: auto;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+}
 @keyframes rotate {
   0% {
     transform: rotateZ(0deg);
@@ -1466,51 +1514,20 @@
 }
 
 /**
-  Body Elements
-  **/
-body[stylizer-vertical] {
-  height: 100vh;
-  max-height: 100vh;
-  min-height: 100vh;
-  overflow: hidden;
-  padding-top: 35px;
-
-  /**
-  Styling for the Iframe
-  **/
-  #stylizer-viewmode-frame {
-    width: 100%;
-    min-height: 100%;
-    overflow-x: auto;
-    height: max-content;
-    background: lighten(@FrameBackground, 50%);
-
-    iframe {
-      display: block;
-      border: none;
-      width: 100%;
-    }
-  }
-}
-
-/**
   Vertical Overrides
   **/
 body[stylizer-vertical="true"] {
 
   &[stylizer-active="false"] {
-    padding-left: 390px;
-
     #stylizer-viewmode-frame {
-      height: ~"calc(100vh - 35px)";
-      max-height: ~"calc(100vh - 35px)";
-      min-height: ~"calc(100vh - 35px)";
+      left: 390px;
     }
-
   }
 
   &[stylizer-active="true"] {
-    padding-left: 34px;
+    #stylizer-viewmode-frame {
+      left: 34px;
+    }
 
     .stylizer-header {
       flex-direction: column-reverse;
@@ -1697,15 +1714,8 @@ body[stylizer-vertical="true"] {
 body[stylizer-vertical="false"] {
 
   &[stylizer-active="false"] {
-
-    height: ~"calc(100vh - 320px)";
-    max-height: ~"calc(100vh - 320px)";
-    min-height: ~"calc(100vh - 320px)";
-
     #stylizer-viewmode-frame {
       height: ~"calc(100vh - 355px)";
-      max-height: ~"calc(100vh - 355px)";
-      min-height: ~"calc(100vh - 355px)";
     }
 
     .stylizer-panels {
@@ -1734,14 +1744,8 @@ body[stylizer-vertical="false"] {
   }
 
   &[stylizer-active="true"] {
-    height: ~"calc(100vh - 69px)";
-    max-height: ~"calc(100vh - 69px)";
-    min-height: ~"calc(100vh - 69px)";
-
     #stylizer-viewmode-frame {
       height: ~"calc(100vh - 69px)";
-      max-height: ~"calc(100vh - 69px)";
-      min-height: ~"calc(100vh - 69px)";
     }
   }
 
@@ -1757,7 +1761,7 @@ body {
   &[stylizer-viewmode="tablet-vertical"] {
 
     #stylizer-viewmode-frame {
-      position: relative;
+      overflow-x: auto;
 
       &:before {
         background: transparent url(svg/ipad.svg) no-repeat top center;
@@ -1788,7 +1792,7 @@ body {
   &[stylizer-viewmode="tablet-horizontal"] {
 
     #stylizer-viewmode-frame {
-      position: relative;
+      overflow-x: auto;
 
       &:before {
         background: transparent url(svg/ipad.svg) no-repeat top center;
@@ -1818,8 +1822,9 @@ body {
   }
 
   &[stylizer-viewmode="mobile-vertical"] {
+
     #stylizer-viewmode-frame {
-      position: relative;
+      overflow-x: auto;
 
       &:before {
         background: transparent url(svg/iphone.svg) no-repeat top center;
@@ -1849,8 +1854,9 @@ body {
   }
 
   &[stylizer-viewmode="mobile-horizontal"] {
+
     #stylizer-viewmode-frame {
-      position: relative;
+      overflow-x: auto;
 
       &:before {
         background: transparent url(svg/iphone.svg) no-repeat top center;
