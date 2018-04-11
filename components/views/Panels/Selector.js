@@ -1,6 +1,5 @@
 import React from 'react';
 import ArrowIcon from '../../../node_modules/react-icons/lib/io/chevron-right';
-import { get } from 'lodash';
 
 /**
  * Component for building the stylizer selector form item markup
@@ -16,9 +15,6 @@ export default class Selector extends React.Component {
         error: false
     };
 
-    polyglot = false;
-    testerNode = false;
-
     constructor(props) {
         super(props);
 
@@ -28,8 +24,6 @@ export default class Selector extends React.Component {
             this.state.badges = this.selectorToBadges();
             this.state.error = !this.validate(props.node.selector);
         }
-
-        this.polyglot = props.mainRoot.polyglot;
     };
 
     componentWillReceiveProps(nextProps) {
@@ -46,33 +40,55 @@ export default class Selector extends React.Component {
     selectorToBadges = () => {
         const { state } = this;
         const { node }  = state;
+        const Tree = node.tree ? node.tree : [];
+        const Selectors = node.selector.trim().replace('>', '').replace('  ', ' ').split(' ');
 
         state.badges = [];
-        node.tree && node.tree.map((item) => {
-            if (state.selector.trim().indexOf(item.trim()) !== -1) {
-                state.badges.push(item.trim());
-            }
+        Tree.map((item) => {
+            Selectors.map((selector) => {
+                if (item.trim().indexOf(selector) !== -1) {
+                    state.badges.push(item.trim());
+                }
+            });
         });
         return state.badges;
     };
 
     badgesToSelector = () => {
         const { badges, node } = this.state;
-        let Badges = [];
-        node.tree && node.tree.map((selector, delta) => {
+        const Tree = node.tree ? node.tree : [];
+        let Badges = [], Selector = '';
+
+        Tree.map((selector) => {
             if (badges.indexOf(selector) !== -1) {
                 Badges.push(selector);
             }
         });
-        return Badges.join(' > ').trim();
+
+        Badges.map((badge, delta) => {
+
+            const selfIndex = Tree.indexOf(badge);
+            const nextIndex = Tree.indexOf(Badges[delta + 1]);
+
+            Selector += badge;
+            if (nextIndex === selfIndex + 1) {
+                Selector += ' >';
+            }
+
+            if (nextIndex) {
+                Selector += ' ';
+            }
+        });
+
+        return Selector.trim();
     };
 
     toggle = (selector) => {
 
-        const { state } = this;
+        const { state, props, badgesToSelector, validate } = this;
         const { badges } = state;
 
-        let Index = badges.indexOf(selector);
+        const Index = badges.indexOf(selector);
         if (Index === -1) {
             badges.push(selector);
         }
@@ -80,15 +96,15 @@ export default class Selector extends React.Component {
             badges.splice(Index, 1);
         }
 
-        let refresh = {
-            selector: this.badgesToSelector(),
+        const refresh = {
+            selector: badgesToSelector(),
             badges: badges
         };
 
-        refresh.error = !this.validate(refresh.selector);
+        refresh.error = !validate(refresh.selector);
 
         if (!refresh.error) {
-            this.props.root.rebuildStyling({
+            props.root.rebuildStyling({
                 target: {
                     name: 'selector',
                     value: refresh.selector
@@ -115,11 +131,12 @@ export default class Selector extends React.Component {
     };
 
     submit = (e) => {
+        const { validate, selectorToBadges } = this;
         const { value } = e.target;
         let refresh = {
             selector: value,
-            error: !this.validate(value),
-            badges: this.selectorToBadges()
+            error: !validate(value),
+            badges: selectorToBadges()
         };
 
         if (!refresh.error) {
@@ -131,18 +148,22 @@ export default class Selector extends React.Component {
 
     render() {
 
-        const { props, state, isActive, toggle, submit, polyglot } = this;
+        const { props, state, isActive, toggle, submit } = this;
         const { config } = props;
+        const { polyglot } = props.mainRoot;
         const { node, error } = state;
+        const { uuid } = node;
+        const { selector } = state;
+        const Tree = node.tree ? node.tree : [];
 
         const tabProps = config.get('panels.selector.props.tab', {
-            key: 'stylizer-tab-selector-' + node.uuid,
+            key: 'stylizer-tab-selector-' + uuid,
             className: 'stylizer-tab-content stylizer-content stylizer-tab-panel--selector'
         });
 
         const selectorProps = config.get('panels.selector.props.selector', {
-            key: 'selector-form-' + node.uuid,
-            className: ['stylizer-form-item', state.error ? 'stylizer-has-error' : ' '].join(' ')
+            key: 'selector-form-' + uuid,
+            className: ['stylizer-form-item', state.error ? 'stylizer-has-error' : ' '].join(' ').replace('  ', ' ')
         });
 
         const labelProps = config.get('panels.selector.props.label', {
@@ -150,21 +171,21 @@ export default class Selector extends React.Component {
         });
 
         const inputProps = config.get('panels.selector.props.input', {
-            key: 'input-selector-' + node.uuid,
+            key: 'input-selector-' + uuid,
             className: 'stylizer-form-input',
             type: 'text',
             name: 'selector',
-            value: state.selector,
+            value: selector,
             onChange: submit
         });
 
         const errorProps = config.get('panels.selector.props.error', {
-            key: 'input-selector-error-' + node.uuid,
+            key: 'input-selector-error-' + uuid,
             className: 'stylizer-error-bag'
         });
 
         const badgesProps = config.get('panels.selector.props.badges', {
-            key: 'selector-badges-' + node.uuid,
+            key: 'selector-badges-' + uuid,
             className: 'stylizer-selector-badges'
         });
 
@@ -184,20 +205,16 @@ export default class Selector extends React.Component {
                     { error && config.get('panels.selector.error', true) && <div { ...errorProps }>{ polyglot.t('Invalid CSS selector') }</div> }
                 </div>
                 <div { ...badgesProps }>
-                    { node && node.tree && node.tree.map((item, delta) => {
+                    { Tree.map((item, delta) => {
                         const badgeProps = config.get('panels.selector.props.badge', {
                             key: 'badges-' + delta,
                             onClick: () => { toggle(item) },
                             className: ['stylizer-selector-badge', isActive(item) ? 'active' : ' '].join(' ')
                         });
-
                         return (
                             <span { ...badgeProps }>
                                 <span { ...badgeItemProps }>{ item }</span>
-                                { node
-                                    && node.tree
-                                    && node.tree[delta + 1]
-                                    && <ArrowIcon { ...badgeIconProps } /> }
+                                { Tree[delta + 1] && <ArrowIcon { ...badgeIconProps } /> }
                             </span>
                         )
                     }) }

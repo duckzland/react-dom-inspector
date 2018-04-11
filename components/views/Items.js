@@ -27,8 +27,12 @@ export default class Items extends React.Component {
         return node.processed;
     };
 
+    isStyled(node) {
+        return node.hasStyles();
+    }
+
     render() {
-        const { isParent, isProcessed, isChanged, isLoaded, isActive, props } = this;
+        const { isParent, isProcessed, isChanged, isLoaded, isActive, isStyled, props } = this;
         const { node, root, config } = props;
         const itemProps = config.get('navigator.props.items', {
             key: 'item-' + node.uuid,
@@ -38,8 +42,9 @@ export default class Items extends React.Component {
                 isActive(node) ? 'active' : '',
                 isChanged(node) ? 'changed' : '',
                 isParent(node) ? 'parents' : '',
-                isProcessed(node) ? 'processed' : ''
-            ].filter(n => true).join(' '),
+                isProcessed(node) ? 'processed' : '',
+                isStyled(node) ? 'overridden' : '',
+            ].join(' ').replace('  ', ' ').trim(),
             'data-depth' : node.depth,
             onClick: () => { root.activateNode(node, true) }
         });

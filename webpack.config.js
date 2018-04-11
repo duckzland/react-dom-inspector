@@ -72,7 +72,7 @@ module.exports = {
         new OptimizeCssAssetsPlugin({
             assetNameRegExp: /\.min\.css$/g,
             cssProcessor: require('cssnano'),
-            cssProcessorOptions: {discardComments: {removeAll: true}},
+            cssProcessorOptions: {discardComments: {removeAll: true}, zindex: false},
             canPrint: true
         }),
 
@@ -84,6 +84,7 @@ module.exports = {
             output: path.join(__dirname, 'dist', 'translations', 'english.json')
         }),
 
+        /**
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 warnings: false,
@@ -91,7 +92,7 @@ module.exports = {
             },
             comments: false,
             sourceMap: false
-        }),
+        }),**/
 
         new webpack.optimize.AggressiveMergingPlugin(),
 

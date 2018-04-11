@@ -46,6 +46,7 @@ export default class Store {
         this.changed = false;
 
         this.generateSelector();
+        this.generateStyling(true, node);
     };
 
     trackNode = () => {
@@ -79,13 +80,13 @@ export default class Store {
         )
     };
 
-    generateStyling = (reset = false) => {
+    generateStyling = (reset = false, DOMNode = false) => {
 
         if (this.styles && !reset) {
             return this.styles;
         }
 
-        let node = this.trackNode();
+        let node = DOMNode ? DOMNode : this.trackNode();
 
         this.resetStyle();
         if (!node) {
@@ -207,6 +208,11 @@ export default class Store {
         }
         return false;
     };
+
+    hasStyles = () => {
+        return (typeof this.styles !== 'undefined' && Object.keys(this.styles).length > 0)
+    };
+
 
     getStyle = (target) => {
         return get(this.styles, target, '');

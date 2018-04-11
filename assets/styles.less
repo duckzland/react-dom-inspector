@@ -8,7 +8,7 @@
 @InspectorElementMargin: 15px;
 
 @ScrollerBackground: #082739;
-@ScrollerElement: #051118;
+@ScrollerElement: #196597;
 
 @ControlBarBackground: #196597;
 @ControlBarText: #d3f7ff;
@@ -722,6 +722,7 @@ body {
         text-overflow: ellipsis;
         white-space: nowrap;
         font-size: 12px;
+        transition: all ease-in-out 0.3s;
       }
 
       &.active {
@@ -880,24 +881,25 @@ body {
       .scrollbar {
         background: @ScrollerElement;
         cursor: pointer;
+        border-radius: 5px;
       }
 
       &.vertical {
-        width: 16px;
+        width: 10px;
 
         .scrollbar {
-          width: 16px;
+          width: 10px;
           margin: 0;
           min-height: 20px !important;
         }
       }
 
       &.horizontal {
-        height: 16px;
+        height: 10px;
         bottom: 0;
 
         .scrollbar {
-          height: 16px;
+          height: 10px;
           margin: 0;
           min-width: 20px !important;
         }
@@ -1033,7 +1035,7 @@ body {
 
       .stylizer-element {
         background: @InspectorElementBackground;
-        color: @InspectorElementText;
+        color: @EditorText;
         padding: 6px 10px;
         margin-bottom: 8px;
         white-space: nowrap;
@@ -1043,29 +1045,41 @@ body {
         font-weight: 300;
         border-left: 5px solid @InspectorElementBackground;
         min-width: 100%;
+        transition: all ease-in-out 0.3s;
 
         &.overridden {
-          background: darken(@ColorBlue, 40%);
-          border-left: 3px solid darken(@ColorOrange, 10%) !important;
-        }
-
-        &.active {
-          background: @ColorGreen;
-          border-left: 3px solid @ColorGreen !important;
+          background: lighten(@InspectorElementBackground, 7%);
+          border-left: 3px solid darken(@ColorBlue, 4%) !important;
         }
 
         &.changed {
-          background: @ColorOrange;
-          border-left: 3px solid darken(@ColorBlue, 10%) !important;
+          background: lighten(@ColorOrange, 5%);
+          border-left: 3px solid darken(@ColorOrange, 5%) !important;
+        }
+
+        &.active {
+          background: lighten(@ColorGreen, 5%);
+          border-left: 3px solid darken(@ColorGreen, 5%) !important;
+          color: @InspectorElementText !important;
+        }
+
+        &:last-child {
+          margin-bottom: 30px;
         }
 
         &.parents {
-          &:not(.processed) {
+          &.processed {
             border-left: 3px solid lighten(@InspectorElementBackground, 25%);
           }
 
-          &.processed {
+          &:not(.processed) {
             border-left: 3px solid lighten(@InspectorElementBackground, 8%);
+            color: darken(@EditorText, 30%);
+
+            &:hover {
+              border-left: 3px solid lighten(@InspectorElementBackground, 25%);
+              color: @EditorText;
+            }
           }
         }
       }
@@ -1258,7 +1272,7 @@ body {
     min-width: 200px;
     z-index: 999;
     padding: 10px 20px 10px 50px;
-    border-radius: 4px;
+    border-radius: 6px;
     box-shadow: 1px 2px 8px #555;
     transition: all 0.6s ease-in-out;
 
@@ -1282,7 +1296,8 @@ body {
     }
 
     > span {
-      font-size: 18px;
+      font-size: 13px;
+      font-weight: 600;
       line-height: 140%;
     }
   }
@@ -1296,41 +1311,46 @@ body {
     right: 0;
     bottom: 0;
     top: 0;
-    background: rgba(0,0,0,.5);
-    z-index: 10;
+    background: rgba(0,0,0,.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 999999;
 
     &:before {
-      background: @FormElementBackground;
-      border: 10px solid @ColorBlue;
-      width: 140px;
-      height: 140px;
+      background-position: 0 0, 0 30px, 30px -30px, -30px 0;
+      background-image:
+        linear-gradient(45deg, @ColorRed 25%, transparent 25%),
+        linear-gradient(-45deg, @ColorRed 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, @ColorRed 75%),
+        linear-gradient(-45deg, transparent 75%, @ColorRed 75%);
+      width: 120px;
+      height: 120px;
       position: absolute;
       border-radius: 100%;
-      left: ~"calc(50% - 70px)";
-      top: ~"calc(50% - 70px)";
-      transform: translate(-50%, -50%);
-      opacity: 0.7;
-      box-shadow: rgba(255, 255, 255, 0.6) -4px -5px 3px -3px;
-      animation: rotate 2s infinite linear;
-      z-index: 2;
-      content: '';
+      left: ~"calc(50% - 60px)";
+      top: ~"calc(50% - 60px)";
+      transform: translate(-50%,-50%);
+      opacity: .7;
+      animation: rotate 4s infinite linear;
+      z-index: 12;
+      content: "";
+      background-size: 60px 60px;
     }
 
     &:after {
-      background: @FormElementBackground;
-      border: 10px solid @ColorBlue;
-      width: 140px;
-      height: 140px;
+      background: @ColorBlue;
+      width: 100px;
+      height: 100px;
       position: absolute;
       border-radius: 100%;
-      left: ~"calc(50% - 70px)";
-      top: ~"calc(50% - 70px)";
-      z-index: 2;
+      left: ~"calc(50% - 50px)";
+      top: ~"calc(50% - 50px)";
+      z-index: 12;
       content: attr(data-text);
       text-align: center;
       color: @FormElementText;
-      font-size: 18px;
-      line-height: 140px;
+      font-size: 14px;
+      line-height: 100px;
     }
   }
 

@@ -73,7 +73,7 @@ export default class Iterator {
 
         tree.push(currentNode.join(''));
 
-        let Storage = new Store(node, depth, tree, this.config);
+        const Storage = new Store(node, depth, tree, this.config);
         this.crawled.push(Storage);
 
         if (parent) {

@@ -42,7 +42,7 @@ export default class Inspector extends React.Component {
 
     scrollToItem = (node) => {
         const DOMNode = node.trackNode();
-        DOMNode && DOMNode.scrollIntoView();
+        DOMNode && DOMNode.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
     };
 
     moveScrollBar = (node) => {
@@ -59,11 +59,11 @@ export default class Inspector extends React.Component {
         const { scrollXTo, scrollYTo } = scrollBar.scrollArea;
         const { offsetTop, offsetLeft } = activeItemDOM;
 
-        if (topPosition > offsetTop || (topPosition + containerHeight) < offsetTop) {
+        if (topPosition > offsetTop || (topPosition + (containerHeight * 0.75)) < offsetTop) {
             scrollYTo(offsetTop);
         }
 
-        if (leftPosition > offsetLeft || (leftPosition + containerWidth) < offsetLeft) {
+        if (leftPosition > offsetLeft || (leftPosition + (containerWidth + 0.75)) < offsetLeft) {
             scrollXTo(offsetLeft);
         }
 
@@ -100,31 +100,31 @@ export default class Inspector extends React.Component {
         node.refresh = true;
         node.active = true;
 
-        root.setActiveNode(node);
+        this.state.active = node.uuid;
         scrollIntoView && this.scrollToItem(node);
+
+        // This will call setState which will refresh parent -> child state including this element.
+        root.setActiveNode(node);
         this.moveScrollBar(node);
-        this.setState({ active : node.uuid });
     };
 
     onScroll = (value) => {
-        this.setState({
-            scrolledLeft: value.leftPosition,
-            scrolledTop: value.topPosition,
-            hasVerticalScrollbar: value.containerHeight < value.realHeight,
-            hasHorizontalScrollbar: value.containerWidth < value.realWidth
-        });
+        this.state.scrolledLeft = value.leftPosition;
+        this.state.scrolledTop = value.topPosition;
+        this.state.hasVerticalScrollbar = value.containerHeight < value.realHeight;
+        this.state.hasHorizontalScrollbar = value.containerWidth < value.realWidth;
     };
 
     render() {
 
-        const { props, state, onScroll, moveScrollBar } = this;
+        const { props, state, onScroll } = this;
         const { root, config, iterator } = props;
         const { minimize, hasHorizontalScrollbar, hasVerticalScrollbar } = state;
         const { polyglot } = root;
 
         const panelProps = config.get('navigator.props.element', {
             key: 'stylizer-iterator-panel',
-            className: [ 'stylizer-panels', 'stylizer-dom-panel', minimize ? 'minimize' : ''].join(' ')
+            className: [ 'stylizer-panels', 'stylizer-dom-panel', minimize ? 'minimize' : ''].join(' ').replace('  ', ' ')
         });
 
         const headerProps = config.get('navigator.props.header', {
@@ -156,7 +156,7 @@ export default class Inspector extends React.Component {
                 'stylizer-iterator',
                 hasHorizontalScrollbar ? 'has-horizontal-scrollbar' : '',
                 hasVerticalScrollbar > 0 ? 'has-vertical-scrollbar': ''
-            ].join(' '),
+            ].join(' ').replace('  ', ' ').trim(),
             onScroll: onScroll,
             contentClassName: 'content',
             horizontal: true

@@ -91,9 +91,7 @@ export default class Inspector extends React.Component {
         });
 
         this.generateFrame();
-    }
-
-;
+    };
 
     componentWillMount() {
         const { body } = document;
@@ -120,7 +118,6 @@ export default class Inspector extends React.Component {
     };
 
     bindEvent = (event = 'all') => {
-
         const { eventBinded, captureNode, moveOverlay, frameDocument } = this;
 
         if (!eventBinded.click && (event === 'click' || event === 'all')) {
@@ -169,11 +166,11 @@ export default class Inspector extends React.Component {
         frame.onbeforeunload = (e) => {
             isFunction(frameBeforeUnloadFunction) && frameBeforeUnloadFunction(e, this);
             e.preventDefault();
+
             return false;
         };
 
         frame.onload = (e) => {
-
             this.frameDocument = frame.contentWindow.document;
             this.DOMHelper = new DOMHelper(this.frameDocument);
             this.fontLoader = new FontLoader(this.config.get('googleFontAPI'), frame.contentWindow);
@@ -216,16 +213,16 @@ export default class Inspector extends React.Component {
     };
 
     toggleMinimize = () => {
-        this.setState({minimize: !this.state.minimize});
+        this.setState({ minimize: !this.state.minimize });
     };
 
     toggleHoverInspector = () => {
-        this.setState({hover: !this.state.hover});
+        this.setState({ hover: !this.state.hover });
     };
 
     toggleLayout = () => {
         const { triggerFrameEvent } = this;
-        this.setState({vertical: !this.state.vertical});
+        this.setState({ vertical: !this.state.vertical });
         triggerFrameEvent('resize');
     };
 
@@ -278,7 +275,7 @@ export default class Inspector extends React.Component {
             && ['desktop', 'tablet-vertical', 'tablet-horizontal', 'mobile-vertical', 'mobile-horizontal'].map((type) => {
                 const sheet = frameDocument.getElementById('stylizer-original-' + type);
                 sheet.getAttribute('media')
-                && sheet.setAttribute('media-original', sheet.getAttribute('media'));
+                    && sheet.setAttribute('media-original', sheet.getAttribute('media'));
 
                 sheet.setAttribute('media', 'max-width: 1px');
             });
@@ -318,14 +315,14 @@ export default class Inspector extends React.Component {
             const sheet = storage.sheet ? storage.sheet : storage.styleSheet;
 
             storage
-            && isFunction(wipeFunction)
-            && wipeFunction(convertData(storage), type, this);
+                && isFunction(wipeFunction)
+                && wipeFunction(convertData(storage), type, this);
 
             sheet
-            && sheet.cssRules
-            && forEach(sheet.cssRules, (rule, delta) => {
-                sheet.deleteRule(0);
-            });
+                && sheet.cssRules
+                && forEach(sheet.cssRules, (rule, delta) => {
+                    sheet.deleteRule(0);
+                });
         });
 
         this.setState({refresh: true});
@@ -382,7 +379,6 @@ export default class Inspector extends React.Component {
         result.cssText = result.styles.join("\n");
 
         forEach(rawFonts, (font) => {
-
             result.fonts.push({
                 family: font.family,
                 googleFont: font.googleFont,
@@ -488,12 +484,13 @@ export default class Inspector extends React.Component {
     };
 
     render() {
+
         const { config, state, DOMHelper, iteratorHelper, fontLoader, getStyleSourceID, frame, frameWrapper, frameDocument, polyglot } = this;
         const { refresh, minimize, node, overlay, advanced, frameLoaded, navigator } = state;
 
         const mainPanelProps = config.get('props.panel', {
             key: 'stylizer-inspector',
-            className: ['stylizer-inspector', minimize ? 'minimize' : null, !navigator ? 'no-navigator' : null].join(' '),
+            className: ['stylizer-inspector', minimize ? 'minimize' : null, !navigator ? 'no-navigator' : null].join(' ').replace('  ', ' '),
             'stylizer-inspector': "true"
         });
 
