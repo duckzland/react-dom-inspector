@@ -18,7 +18,7 @@ export default class Store {
 
     types = new Set();
 
-    constructor(node, depth, tree, config = false) {
+    constructor(node, depth, tree, config = false, parent = false) {
 
         config && Object.assign(this.config, config);
 
@@ -46,6 +46,7 @@ export default class Store {
         this.refresh = false;
         this.active = false;
         this.changed = false;
+        this.parent = parent;
 
         this.generateSelector();
         this.generateStyling(true, node);

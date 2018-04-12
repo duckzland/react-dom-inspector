@@ -272,9 +272,7 @@ export default class Panel extends React.Component {
         Space.ownerKey = ownerKey;
     }
 
-    onToggleLock = (element) => {};
-
-    onSubmit = (e) => {
+    submit = (e) => {
         const { hasError } = this;
         const { value, name } = e.target;
         let refresh = {
@@ -292,6 +290,12 @@ export default class Panel extends React.Component {
         }
 
         this.setState(refresh);
+    };
+
+    onToggleLock = (element) => {};
+
+    onSubmit = (e) => {
+        this.submit(e);
     };
 
     onKeypress = (e) => {

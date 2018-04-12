@@ -73,7 +73,14 @@ export default class Iterator {
 
         tree.push(currentNode.join(''));
 
-        const Storage = new Store(node, depth, tree, this.config);
+        let nodeParent = parent;
+        if (nodeParent.depth !== (depth - 1)) {
+            if (parent.parent && parent.parent.depth === depth - 1) {
+                nodeParent = parent.parent;
+            }
+        }
+
+        const Storage = new Store(node, depth, tree, this.config, nodeParent);
         this.crawled.push(Storage);
 
         if (parent) {
