@@ -44,21 +44,15 @@ export default class Panel extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        let refresh = {};
         if ('node' in nextProps && nextProps.node) {
             this.state.node = nextProps.node;
-            refresh = {
-                node: nextProps.node,
-                values: this.getValues(),
-                errors: this.validateValues()
-            };
+            this.state.values = this.getValues();
+            this.state.errors = this.validateValues();
         }
 
         if ('scroll' in nextProps) {
-            refresh.scroll = nextProps.scroll;
+            this.state.scroll = nextProps.scroll;
         }
-
-        this.setState(refresh);
     };
 
     hasError = (key) => {

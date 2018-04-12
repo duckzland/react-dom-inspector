@@ -242,6 +242,7 @@ export default class Inspector extends React.Component {
 
         iteratorHelper.reset();
         this.setState(state);
+
         triggerFrameEvent('resize');
     };
 

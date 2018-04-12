@@ -16,6 +16,8 @@ export default class Store {
         disallowNodeName: 'img|script|style|link'
     };
 
+    types = new Set();
+
     constructor(node, depth, tree, config = false) {
 
         config && Object.assign(this.config, config);
@@ -219,11 +221,14 @@ export default class Store {
     };
 
     removeStyle = (target) => {
-       delete this.styles[target];
+        delete this.styles[target];
+        !this.hasStyles() && this.resetStyle();
     };
 
     resetStyle = () => {
         this.styles = {};
+        this.changed = false;
+        this.types.clear();
     };
 
     storeStyle = (target, value) => {
@@ -240,9 +245,14 @@ export default class Store {
         return this.selector + ' {' + rules.join(' ') + '}';
     };
 
+    getTypes = () => {
+        return this.types;
+    };
+
     reset = () => {
         this.generateStyling(true);
         this.changed = false;
+        this.types.clear();
     }
 
 }

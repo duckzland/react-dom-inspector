@@ -1,4 +1,5 @@
 import React from 'react';
+import { isNaN } from 'lodash';
 
 /**
  * Component for building an overlay for hovered DOM Element
@@ -38,7 +39,7 @@ export default class Overlay extends React.Component {
     };
 
     detectSize = (node) => {
-        const { props } = this;
+        const { props, convertNumeric } = this;
         const result = {};
         const requiredValue = [
             'border-top-width',
@@ -65,56 +66,68 @@ export default class Overlay extends React.Component {
         let frameParentStyle = props.wrapper !== props.frame.parentNode ? getComputedStyle(props.frame.parentNode) : false;
 
         requiredValue.forEach(item => {
-            result[item] = parseFloat(computedStyle[item].match(/\d+/)) || 0;
+            result[item] = convertNumeric(computedStyle[item]);
         });
+
+        let _width = convertNumeric(node.offsetWidth);
+            _width -= convertNumeric(result['border-left-width']);
+            _width -= convertNumeric(result['border-right-width']);
+            _width -= convertNumeric(result['padding-left']);
+            _width -= convertNumeric(result['padding-right']);
+
+        let _height = convertNumeric(node.offsetHeight);
+            _height -= convertNumeric(result['border-top-width']);
+            _height -= convertNumeric(result['border-bottom-width']);
+            _height -= convertNumeric(result['padding-top']);
+            _height -= convertNumeric(result['padding-bottom']);
 
         // Set the size
         Object.assign(result, {
-            width: node.offsetWidth - result['border-left-width'] - result['border-right-width'] - result['padding-left'] - result['padding-right'],
-            height: node.offsetHeight - result['border-top-width'] - result['border-bottom-width'] - result['padding-top'] - result['padding-bottom']
+            width: _width,
+            height: _height
         });
 
         // Define the node sizing
-        let _x = node.getBoundingClientRect().left - parseFloat(computedStyle['margin-left'].match(/\d+/));
-        let _y = node.getBoundingClientRect().top - parseFloat(computedStyle['margin-top'].match(/\d+/));
+        let _x = (convertNumeric(node.getBoundingClientRect().left) - convertNumeric(computedStyle['margin-left']));
+        let _y = (convertNumeric(node.getBoundingClientRect().top) - convertNumeric(computedStyle['margin-top']));
         let el = node.parent;
 
         // Get the parent nodes sizing
         while (el) {
             computedStyle = getComputedStyle(el);
-            _x += el.frameElement.getBoundingClientRect().left - parseFloat(computedStyle['margin-left'].match(/\d+/));
-            _y += el.frameElement.getBoundingClientRect().top - parseFloat(computedStyle['margin-top'].match(/\d+/));
+            _x += (convertNumeric(el.frameElement.getBoundingClientRect().left) - convertNumeric(computedStyle['margin-left']));
+            _y += (convertNumeric(el.frameElement.getBoundingClientRect().top) - convertNumeric(computedStyle['margin-top']));
             el = el.parent;
         }
 
         // mainBody
-        _x += parseFloat(mainBodyStyle['padding-left'].match(/\d+/));
-        _y += parseFloat(mainBodyStyle['padding-top'].match(/\d+/));
+        _x += convertNumeric(mainBodyStyle['padding-left']);
+        _y += convertNumeric(mainBodyStyle['padding-top']);
 
         // frameStyle
-        _x += props.frame.offsetLeft;
-        _y += parseFloat(frameStyle['margin-top'].match(/\d+/));
-        _y += parseFloat(frameStyle['border-top-width'].match(/\d+/));
-        _y += parseFloat(frameStyle['top'].match(/\d+/));
+        _x += convertNumeric(props.frame.offsetLeft);
+        _y += convertNumeric(frameStyle['margin-top']);
+        _y += convertNumeric(frameStyle['border-top-width']);
+        _y += convertNumeric(frameStyle['top']);
 
         // frameWrapper
-        _x += props.wrapper.offsetLeft;
-        _y += parseFloat(frameWrapperStyle['margin-top'].match(/\d+/));
-        _y += parseFloat(frameWrapperStyle['border-top-width'].match(/\d+/));
-        _y += parseFloat(frameWrapperStyle['top'].match(/\d+/));
+        _x += convertNumeric(props.wrapper.offsetLeft);
+        _y += convertNumeric(frameWrapperStyle['margin-top']);
+        _y += convertNumeric(frameWrapperStyle['border-top-width']);
+        _y += convertNumeric(frameWrapperStyle['top']);
 
         // In case Frame parent is not the frameWrapper
         if (frameParentStyle) {
-            _x += props.frame.parentNode.offsetLeft;
-            _y += parseFloat(frameParentStyle['margin-top'].match(/\d+/));
-            _y += parseFloat(frameParentStyle['border-top-width'].match(/\d+/));
-            _y += parseFloat(frameParentStyle['top'].match(/\d+/));
-            _y -= props.frame.parentNode.scrollTop;
+            _x += convertNumeric(props.frame.parentNode.offsetLeft);
+            _y += convertNumeric(frameParentStyle['margin-top']);
+            _y += convertNumeric(frameParentStyle['border-top-width']);
+            _y += convertNumeric(frameParentStyle['top']);
+            _y -= convertNumeric(props.frame.parentNode.scrollTop);
         }
 
         // Adjust the scrolled value
-        _y -= props.wrapper.parentElement.scrollTop;
-        _y -= props.wrapper.scrollTop;
+        _y -= convertNumeric(props.wrapper.parentElement.scrollTop);
+        _y -= convertNumeric(props.wrapper.scrollTop);
 
         Object.assign(result, {
             top: _y,
@@ -161,6 +174,11 @@ export default class Overlay extends React.Component {
         else {
             this.resetState();
         }
+    };
+
+    convertNumeric(value) {
+        const converted = parseFloat(value);
+        return !isNaN(converted) ? converted : 0;
     };
 
     resetState = () => {

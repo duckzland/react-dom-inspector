@@ -95,7 +95,7 @@ body {
   box-sizing: border-box;
   font-size: 14px;
   font-family: Arial, Helvetica, Verdana, sans-serif;
-
+  transition: all linear 0.3s;
   /**
     Styling Reset
     **/
@@ -404,6 +404,12 @@ body {
     svg {
       cursor: pointer;
     }
+  }
+
+  .stylizer-asterisks {
+    display: inline;
+    color: @ColorOrange;
+    margin-left: 2px;
   }
 
   [data-hover-title] {
@@ -781,7 +787,7 @@ body {
     min-height: 35px;
 
     > * {
-      padding: 8px 15px;
+      padding: 8px 0;
     }
 
     .stylizer-header-text {
@@ -805,7 +811,9 @@ body {
     svg {
       cursor: pointer;
       opacity: 0.8;
-      margin: 0 5px;
+      margin: 0;
+      width: 36px;
+      transition: all ease-in 0.3s;
 
       &:hover {
         opacity: 1;
@@ -820,6 +828,7 @@ body {
     display: flex;
     flex-direction: row;
     flex-grow: 1;
+    transition: all linear 0.3s;
 
     .stylizer-tabs {
       background: @TabsBackground;
@@ -949,6 +958,7 @@ body {
     flex-direction: column;
     flex-grow: 1;
     z-index: 9999;
+    transition: all linear 0.3s;
 
     &.minimize {
       max-width: 30px;
@@ -967,11 +977,13 @@ body {
       display: flex;
       flex-direction: row;
       min-height: 35px;
+      transition: all linear 0.3s;
 
       .stylizer-header-text {
         flex-grow: 1;
         font-size: 12px;
         line-height: 24px;
+        transition: none;
       }
 
       .stylizer-header-actions svg {
@@ -988,6 +1000,7 @@ body {
     .stylizer-content {
       padding: 15px;
       width: 100%;
+      transition: all linear 0.3s;
     }
 
     .stylizer-content-flex {
@@ -1053,13 +1066,13 @@ body {
         }
 
         &.changed {
-          background: lighten(@ColorOrange, 5%);
-          border-left: 3px solid darken(@ColorOrange, 5%) !important;
+          background: darken(@ColorBlue, 3%);
+          border-left: 3px solid darken(@ColorBlue, 6%) !important;
         }
 
         &.active {
-          background: lighten(@ColorGreen, 5%);
-          border-left: 3px solid darken(@ColorGreen, 5%) !important;
+          background: darken(@ColorGreen, 5%);
+          border-left: 3px solid darken(@ColorGreen, 10%) !important;
           color: @InspectorElementText !important;
         }
 
@@ -1512,6 +1525,7 @@ body {
   height: 100%;
   bottom: 0;
   left: 0;
+  transition: all ease-in-out 0.3s;
 
   #stylizer-frame-wrapper {
     right: auto;
@@ -1521,12 +1535,18 @@ body {
     bottom: 0;
     width: 100%;
     height: 100%;
+    transition: all ease-in-out 0.3s;
   }
 
   iframe {
     width: 100%;
     height: 100%;
     position: absolute;
+    transition: all ease-in-out 0.3s;
+  }
+
+  &:before {
+    transition: all ease-in-out 0.3s;
   }
 }
 @keyframes rotate {

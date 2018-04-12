@@ -17,20 +17,18 @@ import LayoutPanel from './Panels/Layout';
  */
 export default class Editor extends React.Component {
 
-    state = {
-        active: 'selector',
-        node: false
-    };
-
     styleElement = false;
 
     constructor(props) {
         super(props);
 
-        const { config, root, node, DOMHelper } = props;
+        const { config, root, node, DOMHelper, active } = props;
         
         this.styleElement = DOMHelper.styleSheet({ id: root.getStyleSourceID() }, 'style');
-        this.state.node = node;
+        this.state = {
+            node: node ? node : false,
+            active: active ? active : 'selector'
+        };
 
         if (config.get('imageLoader.loader') && config.get('imageLoader.fetch')) {
             (new ImageLoader(config.get('imageLoader.loader'), [])).fetch();
@@ -45,6 +43,7 @@ export default class Editor extends React.Component {
                                     .styleSheet({id: nextProps.root.getStyleSourceID()}, 'style');
             reset = true;
         }
+
         this.state.node = nextProps.node;
         this.getStyling(reset);
     };
@@ -57,7 +56,7 @@ export default class Editor extends React.Component {
 
         const { name, value } = e.target;
         const { styleElement } = this;
-        const { node } = this.state;
+        const { node, active } = this.state;
 
         for (var i = 0; i < styleElement.cssRules.length; i++) {
             if (styleElement.cssRules[i].selectorText === node.selector) {
@@ -68,11 +67,16 @@ export default class Editor extends React.Component {
 
         styleElement.insertRule(node.getStyling(), styleElement.cssRules.length);
 
+        if (!node.getTypes().has(active)) {
+            node.getTypes().add(active);
+            this.forceUpdate();
+        }
+
         return this;
     };
 
     onChangeTab = (tabKey) => {
-        this.setState({ active: tabKey });
+        this.setState({ active: tabKey, dirty: this.state.dirty });
     };
 
     render() {
@@ -179,7 +183,12 @@ export default class Editor extends React.Component {
                                     onClick: () => onChangeTab(TabKey)
                                 });
 
-                                return ( <div { ...selectorItemProps }>{ TabKey }</div> )
+                                return (
+                                    <div { ...selectorItemProps }>
+                                        { TabKey }
+                                        { node.getTypes().has(TabKey) && <span className="stylizer-asterisks">*</span> }
+                                    </div>
+                                )
                             }) }
                         </div>
                         { ActivePanel }
