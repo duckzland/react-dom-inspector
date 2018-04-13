@@ -134,6 +134,11 @@ export default class Layout extends BasePanel {
 
     generatePositionFields = () => {
         const { props, checkRules, fields } = this;
+
+        if (!checkRules('position', ['relative', 'absolute', 'fixed', 'sticky'])) {
+            return;
+        }
+
         const { polyglot } = props.mainRoot;
         const field = {
             key: 'position',
@@ -141,47 +146,44 @@ export default class Layout extends BasePanel {
             type: 'group',
             elements: []
         };
-        
-        // Only allow positioning for relative, absolute, fixed and sticky position
-        if (checkRules('position', ['relative', 'absolute', 'fixed', 'sticky'])) {
-            field.elements.push({
-                title: polyglot.t('Top'),
-                target: 'top',
-                type: 'element',
-                field: 'text',
-                default: '',
-                inline: false
-            });
 
-            field.elements.push({
-                title: polyglot.t('Left'),
-                target: 'left',
-                type: 'element',
-                field: 'text',
-                default: '',
-                inline: false
-            });
-            
-            field.elements.push({
-                title: polyglot.t('Right'),
-                target: 'right',
-                type: 'element',
-                field: 'text',
-                default: '',
-                inline: false
-            });
-            
-            field.elements.push({
-                title: polyglot.t('Bottom'),
-                target: 'bottom',
-                type: 'element',
-                field: 'text',
-                default: '',
-                inline: false
-            });
-        }
+        field.elements.push({
+            title: polyglot.t('Top'),
+            target: 'top',
+            type: 'element',
+            field: 'text',
+            default: '',
+            inline: false
+        });
 
-        field.elements.push(                    {
+        field.elements.push({
+            title: polyglot.t('Left'),
+            target: 'left',
+            type: 'element',
+            field: 'text',
+            default: '',
+            inline: false
+        });
+
+        field.elements.push({
+            title: polyglot.t('Right'),
+            target: 'right',
+            type: 'element',
+            field: 'text',
+            default: '',
+            inline: false
+        });
+
+        field.elements.push({
+            title: polyglot.t('Bottom'),
+            target: 'bottom',
+            type: 'element',
+            field: 'text',
+            default: '',
+            inline: false
+        });
+
+        field.elements.push({
             title: polyglot.t('Z-Index'),
             target: 'z-index',
             type: 'element',

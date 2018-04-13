@@ -13,7 +13,7 @@ export default class Store {
         domID: 'dom-inspector',
         sheetID: 'stylizer-source',
         stylizerAttribute: 'stylizer-uuid',
-        disallowNodeName: 'img|script|style|link'
+        disallowNodeName: 'script|style|link'
     };
 
     types = new Set();

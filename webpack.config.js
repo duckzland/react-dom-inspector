@@ -84,7 +84,6 @@ module.exports = {
             output: path.join(__dirname, 'dist', 'translations', 'english.json')
         }),
 
-        /**
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 warnings: false,
@@ -92,7 +91,7 @@ module.exports = {
             },
             comments: false,
             sourceMap: false
-        }),**/
+        }),
 
         new webpack.optimize.AggressiveMergingPlugin(),
 

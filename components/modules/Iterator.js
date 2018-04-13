@@ -17,7 +17,7 @@ export default class Iterator {
         domID: 'dom-inspector',
         sheetID: 'stylizer-source',
         stylizerAttribute: 'stylizer-uuid',
-        disallowNodeName: 'img|script|style|link'
+        disallowNodeName: 'script|style|link'
     };
 
     constructor(config) {

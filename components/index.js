@@ -437,7 +437,7 @@ export default class Inspector extends React.Component {
             e.preventDefault();
         }
 
-        if (node.nodeName.toLowerCase().match(new RegExp('(img|style|script|link)', 'g'))) {
+        if (node.nodeName.toLowerCase().match(new RegExp('(style|script|link)', 'g'))) {
             return true;
         }
 
@@ -454,7 +454,7 @@ export default class Inspector extends React.Component {
         const { retrieveOrBuildStorage, state } = this;
         let StoreObject;
 
-        if (node.nodeName.toLowerCase().match(new RegExp('(img|style|script|link|html|body)', 'g'))) {
+        if (node.nodeName.toLowerCase().match(new RegExp('(style|script|link|html|body)', 'g'))) {
             this.hoverCache = false;
             this.setState({overlay: false});
             return true;
