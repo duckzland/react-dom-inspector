@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>React DOM Panels</title>
+
+        <!--[if IE]>
+        <meta http-equiv='X-UA-Compatible' content="IE=edge,IE=9,IE=8,chrome=1">
+        <![endif]-->
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+
+        <style type="text/css">
+            /** CSS RESETS **/
+            a, abbr, acronym, address, applet, article, aside, audio, b, big, blockquote, body, canvas, caption, center, cite, code, dd, del, details, dfn, div, dl, dt, em, embed, fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, html, i, iframe, img, ins, kbd, label, legend, li, mark, menu, nav, object, ol, output, p, pre, q, ruby, s, samp, section, small, span, strike, strong, sub, summary, sup, table, tbody, td, tfoot, th, thead, time, tr, tt, u, ul, var, video {
+                margin: 0;
+                padding: 0;
+                border: 0;
+                font: inherit;
+                vertical-align: baseline;
+                box-sizing: border-box
+            }
+        </style>
+    </head>
+    <body>
+
+        <!-- The markup where the target HTML would be, the markup will be injected to Iframe -->
+        <div id="stylizer-viewmode-frame">
+            <div id="stylizer-frame-wrapper"></div>
+        </div>
+
+        <!-- The markup where the Inspector will be injected to -->
+        <div id="dom-inspector"></div>
+
+        <script>
+            var Element = document.getElementById('dom-inspector');
+            var CurrentHost = window.location.href;
+
+            // Emulating callback when onKill event triggered
+            function onKill() {
+                console.log('Killed Triggered');
+            }
+
+            // Emulating callback when onSave event triggered
+            function onSave(data) {
+                console.log('Save Triggered');
+                console.log(data);
+            }
+
+            // Emulating callback when onWipe event triggered
+            function onWipe(data) {
+                console.log('Wipe Triggered');
+                console.log(data);
+            }
+
+            // Emulating callback when onRevert event triggered
+            function onRevert(data) {
+                console.log('Revert Triggered');
+                console.log(data);
+            }
+
+            // Registering Callbacks as attribute, Note this is not the
+            // same as jQuery.data() use jQuery.attr() to register this!
+            Element.setAttribute('data-onkill', 'onKill');
+            Element.setAttribute('data-onsave', 'onSave');
+            Element.setAttribute('data-onwipe', 'onWipe');
+            Element.setAttribute('data-onrevert', 'onRevert');
+
+            // Main Configuration JSON
+            Element.setAttribute('data-config', JSON.stringify({
+                domID: 'dom-inspector',
+                googleFontAPI: 'AIzaSyBGkmctzcaXne1HFbZKYz6iq9i6ROrVeaE',
+                pageSrc: 'site.html',
+                props: {
+                    panel: {},
+                    element: {}
+                },
+                navigator: {
+                    props: {
+                        panel: {},
+                        element: {},
+                        items: {},
+                        header: {},
+                        headerText: {},
+                        headerAction: {},
+                        hamburgerIcon: {}
+                    },
+                    show: true,
+                    maxDepth: 2,
+                    startingDepth: 2
+                },
+                startup: {
+                    vertical:false,
+                    advanced: false,
+                    size: 'desktop',
+                    minimize: false
+                },
+                advancedEditor: {
+                    props: {
+                        panel: {},
+                        element: {},
+                        headerText: {},
+                        headerAction: {},
+                        hamburgerIcon: {},
+                        headerIconLabel: {},
+                        panelWrapper: {},
+                        codeMirror: {}
+                    }
+                },
+                editor: {
+                    props: {
+                        panel: {},
+                        advancedPanel: {},
+                        element: {},
+                        header: {},
+                        headerText: {},
+                        headerAction: {},
+                        hamburgerIcon: {},
+                        hamburgerIconLabel: {},
+                        tabsWrapper: {},
+                        panelTabs: {},
+                        empty: {},
+                        panelElement: {},
+                        selectorItem: {}
+                    },
+                    tabPrefix: 'stylizer-tab-'
+                },
+                controlBar: {
+                    props: {
+                        panel: {},
+                        header: {},
+                        headerText: {},
+                        headerAction: {},
+                        headerViewMode: {},
+                        headerRotate: {},
+                        layoutIcon: {},
+                        hoverIcon: {},
+                        revertIcon: {},
+                        deleteIcon: {},
+                        saveIcon: {},
+                        closeIcon: {},
+                        desktopIcon: {},
+                        tabletIcon: {},
+                        mobileIcon: {},
+                        advancedIcon: {},
+                        rotateIcon: {},
+                        layoutIconLabel: {},
+                        hoverIconLabel: {},
+                        revertIconLabel: {},
+                        deleteIconLabel: {},
+                        saveIconLabel: {},
+                        closeIconLabel: {},
+                        desktopIconLabel: {},
+                        tabletIconLabel: {},
+                        mobileIconLabel: {},
+                        advancedIconLabel: {},
+                        rotateIconLabel: {}
+                    }
+                },
+                overlay: {
+                    props: {
+                        panel: {},
+                        box: {},
+                        margin: {},
+                        padding: {},
+                        content: {}
+                    }
+                },
+                message: {
+                    props: {
+                        panel: {},
+                        element: {},
+                        icon: {}
+                    }
+                },
+                loader: {
+                    props: {
+                        panel: {}
+                    }
+                },
+                panels: {
+                    props: {
+                        fields: {},
+                        labels: {},
+                        inputs: {},
+                        errors: {},
+                        selectOptionsEmpty: {},
+                        selectOptions: {},
+                        groupElement: {},
+                        groupHeading: {},
+                        groupWrapper: {},
+                        tabs: {},
+                        leftSpace: {},
+                        centerSpace: {},
+                        rightSpace: {},
+                        scrollArea: {}
+                    },
+                    group: {
+                        empty: null,
+                    },
+                    selector: {
+                        props: {
+                            tab: {},
+                            selector: {},
+                            label: {},
+                            input: {},
+                            error: {},
+                            badge: {},
+                            badges: {},
+                            badgeItem: {},
+                            badgeIcon: {}
+
+                        },
+                        error: true
+                    }
+                },
+                fields: {
+                    backgroundImage: {
+                        props: {
+                            main: {},
+                            gradientPicker: {},
+                            imagePicker: {},
+                            gradientIcon: {},
+                            imageIcon: {}
+                        }
+                    },
+                    boxShadow: {
+                        props: {
+                            main: {},
+                            label: {},
+                            wrapper: {},
+                            color: {},
+                            hshadow: {},
+                            vshadow: {},
+                            blur: {},
+                            spread: {},
+                            inset: {}
+                        }
+                    }
+                },
+                elements: {
+                    imagePicker: {
+                        props: {
+                            main: {},
+                            element: {},
+                            error: {},
+                            progress: {},
+                            box: {},
+                            searchInput: {},
+                            uploadElement: {},
+                            uploadInput: {},
+                            scrollArea: {},
+                            scrollAreaContent: {},
+                            thumbnail: {},
+                            thumbnailClose: {},
+                            closeIcon: {},
+                            thumbnailImage: {}
+                        }
+                    },
+                    colorPicker: {
+                        props: {
+                            chrome: {},
+                            main: {},
+                            input: {},
+                            spanPicker: {},
+                            spanPickerContent: {},
+                            spanCloser: {},
+                            spanEraser: {},
+                            closeIcon: {},
+                            trashIcon: {}
+                        }
+                    },
+                    fontPicker: {
+                        props: {
+                            main: {},
+                            input: {},
+                            dropdownMenu: {},
+                            autoComplete: {},
+                            empty: {},
+                            option: {}
+                        }
+                    },
+                    gradientPicker: {
+                        props: {
+                            chrome: {},
+                            main: {},
+                            canvas: {},
+                            modeLabel: {},
+                            label: {},
+                            wrapper: {},
+                            repeat: {},
+                            mode: {},
+                            rotate: {},
+                            shape: {},
+                            size: {},
+                            offset: {},
+                            handleElement: {},
+                            handle: {},
+                            handleCloser: {},
+                            handleColor: {}
+                        }
+                    }
+                },
+                imageLoader: {
+                    fetch: true,
+                    loader: {
+                        upload: {
+                            url: CurrentHost + "upload.php"
+                        },
+                        fetch: {
+                            url: CurrentHost + "fetch.php"
+                        },
+                        remove: {
+                            url: CurrentHost + "remove.php"
+                        }
+                    },
+                    library: [
+                        { id: 1, filename: "image1.jpg", url: CurrentHost + "images/image1.jpg", thumb: false },
+                        { id: 2, filename: "image2.jpg", url: CurrentHost + "images/image2.jpg", thumb: false },
+                        { id: 3, filename: "image3.jpg", url: CurrentHost + "images/image3.jpg", thumb: false },
+                        { id: 4, filename: "image4.jpg", url: CurrentHost + "images/image4.jpg", thumb: false },
+                        { id: 5, filename: "image5.jpg", url: CurrentHost + "images/image5.jpg", thumb: false },
+                        { id: 6, filename: "image6.jpg", url: CurrentHost + "images/image6.jpg", thumb: false },
+                        { id: 7, filename: "image7.jpg", url: CurrentHost + "images/image7.jpg", thumb: false },
+                        { id: 8, filename: "image8.jpg", url: CurrentHost + "images/image8.jpg", thumb: false },
+                        { id: 9, filename: "image9.jpg", url: CurrentHost + "images/image9.jpg", thumb: false },
+                        { id: 10, filename: "image10.jpg", url: CurrentHost + "images/image10.jpg", thumb: false }
+                    ]
+                },
+                language: {
+                    "100": "100",
+                    "200": "200",
+                    "300": "300",
+                    "400": "400",
+                    "500": "500",
+                    "600": "600",
+                    "700": "700",
+                    "800": "800",
+                    "900": "900",
+                    "Change the inspector orientation": "Change the inspector orientation",
+                    "Enable mouse hover DOM selector": "Enable mouse hover DOM selector",
+                    "Reset unsaved changes": "Reset unsaved changes",
+                    "Delete both saved and unsaved changes": "Delete both saved and unsaved changes",
+                    "Save changes": "Save changes",
+                    "Close Editor": "Close Editor",
+                    "Change to desktop view mode": "Change to desktop view mode",
+                    "Change to tablet view mode": "Change to tablet view mode",
+                    "Change to mobile view mode": "Change to mobile view mode",
+                    "Switch Editor Mode to advanced mode": "Switch Editor Mode to advanced mode",
+                    "Switch Editor Mode to normal mode": "Switch Editor Mode to normal mode",
+                    "Victheme Stylizer": "Victheme Stylizer",
+                    "Navigator": "Navigator",
+                    "Minimize Navigator": "Minimize Navigator",
+                    "Minimize Editor": "Minimize Editor",
+                    "Editor": "Editor",
+                    "No Element Selected": "No Element Selected",
+                    "Advanced Editor": "Advanced Editor",
+                    "Font": "Font",
+                    "color": "color",
+                    "size": "size",
+                    "style": "style",
+                    "weight": "weight",
+                    "family": "family",
+                    "variant": "variant",
+                    "Normal": "Normal",
+                    "Small caps": "Small caps",
+                    "Text Shadow": "Text Shadow",
+                    "Letters": "Letters",
+                    "line height": "line height",
+                    "vertical align": "vertical align",
+                    "Baseline": "Baseline",
+                    "Sub": "Sub",
+                    "Super": "Super",
+                    "Top": "Top",
+                    "Text top": "Text top",
+                    "Middle": "Middle",
+                    "Bottom": "Bottom",
+                    "Text bottom": "Text bottom",
+                    "indent": "indent",
+                    "letter spacing": "letter spacing",
+                    "Text": "Text",
+                    "align": "align",
+                    "Left": "Left",
+                    "Right": "Right",
+                    "Center": "Center",
+                    "Justify": "Justify",
+                    "transform": "transform",
+                    "None": "None",
+                    "Capitalize": "Capitalize",
+                    "Uppercase": "Uppercase",
+                    "Lowercase": "Lowercase",
+                    "decoration": "decoration",
+                    "Underline": "Underline",
+                    "Overline": "Overline",
+                    "Line through": "Line through",
+                    "overflow": "overflow",
+                    "Clip": "Clip",
+                    "Ellipsis": "Ellipsis",
+                    "Words": "Words",
+                    "word spacing": "word spacing",
+                    "wrap": "wrap",
+                    "Break word": "Break word",
+                    "break": "break",
+                    "white space": "white space",
+                    "No Wrap": "No Wrap",
+                    "Pre": "Pre",
+                    "Pre Line": "Pre Line",
+                    "Pre Wrap": "Pre Wrap",
+                    "Hidden": "Hidden",
+                    "Dotted": "Dotted",
+                    "Dashed": "Dashed",
+                    "Solid": "Solid",
+                    "Double": "Double",
+                    "Groove": "Groove",
+                    "Ridge": "Ridge",
+                    "Inset": "Inset",
+                    "Outset": "Outset",
+                    "Border": "Border",
+                    "width": "width",
+                    "Border Top": "Border Top",
+                    "Border Left": "Border Left",
+                    "Border Right": "Border Right",
+                    "Border Bottom": "Border Bottom",
+                    "Border Radius": "Border Radius",
+                    "radius": "radius",
+                    "top left": "top left",
+                    "top right": "top right",
+                    "bottom left": "bottom left",
+                    "bottom right": "bottom right",
+                    "Outline": "Outline",
+                    "offset": "offset",
+                    "Layout": "Layout",
+                    "Display": "Display",
+                    "Block": "Block",
+                    "Flex": "Flex",
+                    "Inline": "Inline",
+                    "Inline Block": "Inline Block",
+                    "Inline Flex": "Inline Flex",
+                    "Inline Table": "Inline Table",
+                    "List Item": "List Item",
+                    "Table": "Table",
+                    "Table Caption": "Table Caption",
+                    "Table Cell": "Table Cell",
+                    "Table Column": "Table Column",
+                    "Table Column Group": "Table Column Group",
+                    "Table Footer Group": "Table Footer Group",
+                    "Table Header Group": "Table Header Group",
+                    "Table Row": "Table Row",
+                    "Table Row Group": "Table Row Group",
+                    "Position": "Position",
+                    "Static": "Static",
+                    "Absolute": "Absolute",
+                    "Fixed": "Fixed",
+                    "Relative": "Relative",
+                    "Sticky": "Sticky",
+                    "Float": "Float",
+                    "Overflow": "Overflow",
+                    "Visible": "Visible",
+                    "Auto": "Auto",
+                    "Box Sizing": "Box Sizing",
+                    "Content Box": "Content Box",
+                    "Border Box": "Border Box",
+                    "Z-Index": "Z-Index",
+                    "Basis": "Basis",
+                    "Grow": "Grow",
+                    "Shrink": "Shrink",
+                    "Order": "Order",
+                    "Direction": "Direction",
+                    "Row": "Row",
+                    "Row Reverse": "Row Reverse",
+                    "Column": "Column",
+                    "Column Reverse": "Column Reverse",
+                    "Wrap": "Wrap",
+                    "Wrap Reverse": "Wrap Reverse",
+                    "Flex Alignment": "Flex Alignment",
+                    "Content": "Content",
+                    "Stretch": "Stretch",
+                    "Flex Start": "Flex Start",
+                    "Flex End": "Flex End",
+                    "Space Between": "Space Between",
+                    "Space Around": "Space Around",
+                    "Items": "Items",
+                    "Self": "Self",
+                    "Justify Content": "Justify Content",
+                    "Selector": "Selector",
+                    "Invalid CSS selector": "Invalid CSS selector",
+                    "Width": "Width",
+                    "Min Width": "Min Width",
+                    "Max Width": "Max Width",
+                    "Height": "Height",
+                    "Min Height": "Min Height",
+                    "Max Height": "Max Height",
+                    "Padding": "Padding",
+                    "top": "top",
+                    "left": "left",
+                    "right": "right",
+                    "bottom": "bottom",
+                    "Margin": "Margin",
+                    "Background": "Background",
+                    "image": "image",
+                    "position": "position",
+                    "repeat": "repeat",
+                    "Repeat All": "Repeat All",
+                    "Horizontally": "Horizontally",
+                    "Vertically": "Vertically",
+                    "Don\\'t Repeat": "Don\\'t Repeat",
+                    "Background Adjustment": "Background Adjustment",
+                    "attachment": "attachment",
+                    "Scroll": "Scroll",
+                    "Local": "Local",
+                    "clip": "clip",
+                    "Padding Box": "Padding Box",
+                    "origin": "origin",
+                    "Visibility": "Visibility",
+                    "opacity": "opacity",
+                    "display": "display",
+                    "visibility": "visibility",
+                    "Collapse": "Collapse",
+                    "Initial": "Initial",
+                    "Inherit": "Inherit",
+                    "Box Shadow": "Box Shadow",
+                    "Create Gradient": "Create Gradient",
+                    "Select Image": "Select Image",
+                    "Color": "Color",
+                    "H-Shadow": "H-Shadow",
+                    "V-Shadow": "V-Shadow",
+                    "Blur": "Blur",
+                    "Spread": "Spread",
+                    "No Inset": "No Inset",
+                    "Search image by filename...": "Search image by filename...",
+                    "Upload": "Upload",
+                    "No Image found": "No Image found",
+                    "Repeat": "Repeat",
+                    "No Repeat": "No Repeat",
+                    "Mode": "Mode",
+                    "Linear": "Linear",
+                    "Radial": "Radial",
+                    "Angle": "Angle",
+                    "Shape": "Shape",
+                    "Circle": "Circle",
+                    "Ellipse": "Ellipse",
+                    "Closest Side": "Closest Side",
+                    "Closest Corner": "Closest Corner",
+                    "Farthest Side": "Farthest Side",
+                    "Farthest Corner": "Farthest Corner",
+                    "Custom Size": "Custom Size",
+                    "Georgia": "Georgia",
+                    "Palatino Linotype": "Palatino Linotype",
+                    "Book Antiqua": "Book Antiqua",
+                    "Palatino": "Palatino",
+                    "Times New Roman": "Times New Roman",
+                    "Times": "Times",
+                    "Arial": "Arial",
+                    "Helvetica": "Helvetica",
+                    "Arial Black": "Arial Black",
+                    "Gadget": "Gadget",
+                    "Comic Sans MS": "Comic Sans MS",
+                    "cursive": "cursive",
+                    "Impact": "Impact",
+                    "Charcoal": "Charcoal",
+                    "Lucida Sans Unicode": "Lucida Sans Unicode",
+                    "Lucida Grande": "Lucida Grande",
+                    "Tahoma": "Tahoma",
+                    "Geneva": "Geneva",
+                    "Trebuchet MS": "Trebuchet MS",
+                    "Verdana": "Verdana",
+                    "Courier New": "Courier New",
+                    "Courier": "Courier",
+                    "Lucida Console": "Lucida Console",
+                    "Monaco": "Monaco",
+                    "Italic": "Italic",
+                    "Oblique": "Oblique",
+                    "Loading ...": "Loading ..."
+                }
+            }));
+
+
+        </script>
+
+        <!-- Loading the minified stylesheet for the Inspector Element -->
+        <link href="assets/css/style.min.css" rel="stylesheet" type="text/css" />
+
+        <!-- Loading the Compiled Inspector javascript -->
+        <script src="assets/js/react-dom-inspector.min.js"></script>
+
+    </body>
+</html>
