@@ -2,7 +2,7 @@
 
 Javascript for crafting custom CSS by emulating Google Chrome Dev Bar tools
 
-[[https://github.com/duckzland/react-dominspector/blob/master/docs/screenshots/mobile.png|alt=Mobile Mode]]
+[https://github.com/duckzland/react-dominspector/blob/master/docs/screenshots/mobile.png|alt=Mobile Mode]
 
 ### Installing
 
