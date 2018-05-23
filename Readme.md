@@ -11,7 +11,7 @@ View the script in action : [ Live Demo ](https://duckzland.github.io/react-dom-
 
 ## Installing
 
-### Create the markup for the stylizer iframe
+Create the markup for the stylizer iframe
 
 ```html
 <!-- The markup where the target HTML would be, the markup will be injected to Iframe -->
@@ -21,14 +21,14 @@ View the script in action : [ Live Demo ](https://duckzland.github.io/react-dom-
 ```
 
 
-### Create the markup for the stylizer inspector element
+Create the markup for the stylizer inspector element
 
 ```html
 <div id="dom-inspector"></div>
 ```
 
 
-### Create the javascript for starting the script, at the minimum we will need these options, for more advanced usage, please see the docs/index.html
+Create the javascript for starting the script, at the minimum we will need these options, for more advanced usage, please see the docs/index.html
 
 ```javascript
 <script>
@@ -116,7 +116,7 @@ View the script in action : [ Live Demo ](https://duckzland.github.io/react-dom-
 </script>
 ```
 
-### Loading the Javascript and CSS assets
+Loading the Javascript and CSS assets
 
 ```html
 <!-- Loading the minified stylesheet for the Inspector Element -->
