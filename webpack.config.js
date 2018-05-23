@@ -49,10 +49,10 @@ module.exports = {
     },
     watchOptions: {
         ignored: [
-            path.resolve(__dirname, 'examples/assets'),
-            path.resolve(__dirname, 'examples/assets/*/*'),
-            path.resolve(__dirname, 'examples/assets/js/react-dom-inspector.min.js'),
-            path.resolve(__dirname, 'examples/assets/css/style.min.css'),
+            path.resolve(__dirname, 'docs/assets'),
+            path.resolve(__dirname, 'docs/assets/*/*'),
+            path.resolve(__dirname, 'docs/assets/js/react-dom-inspector.min.js'),
+            path.resolve(__dirname, 'docs/assets/css/style.min.css'),
             path.resolve(__dirname, 'node_modules')
         ]
     },
@@ -96,9 +96,9 @@ module.exports = {
         new webpack.optimize.AggressiveMergingPlugin(),
 
         new CopyWebpackPlugin([
-            {from: 'dist/js/react-dom-inspector.min.js', to: 'examples/assets/js/react-dom-inspector.min.js'},
-            {from: 'dist/js/react-dom-inspector.min.js.map', to: 'examples/assets/js/react-dom-inspector.min.js.map'},
-            {from: 'dist/css/style.min.css', to: 'examples/assets/css/style.min.css'}
+            {from: 'dist/js/react-dom-inspector.min.js', to: 'docs/assets/js/react-dom-inspector.min.js'},
+            {from: 'dist/js/react-dom-inspector.min.js.map', to: 'docs/assets/js/react-dom-inspector.min.js.map'},
+            {from: 'dist/css/style.min.css', to: 'docs/assets/css/style.min.css'}
         ])
     ],
     devtool: 'cheap-module-source-map'

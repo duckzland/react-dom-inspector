@@ -2,13 +2,15 @@
 
 Javascript for crafting custom CSS by emulating Google Chrome Dev Bar tools
 
+[ Demo ](https://duckzland.github.io/react-dom-inspector/){: .btn}
+
 ![Alt text](docs/screenshots/mobile.png?raw=true "Mobile mode")
 
 ### Installing
 
 Create the markup for the stylizer iframe
 
-```
+```html
 <!-- The markup where the target HTML would be, the markup will be injected to Iframe -->
 <div id="stylizer-viewmode-frame">
     <div id="stylizer-frame-wrapper"></div>
@@ -18,15 +20,15 @@ Create the markup for the stylizer iframe
 
 Create the markup for the stylizer inspector element
 
-```
+```html
 <div id="dom-inspector"></div>
 ```
 
 
 Create the javascript for starting the script, at the minimum we will
-need these options, for more advanced usage, please see the example/index.html
+need these options, for more advanced usage, please see the docs/index.html
 
-```
+```javascript
 <script>
     // Registering the element
     var Element = document.getElementById('dom-inspector');
@@ -113,7 +115,7 @@ need these options, for more advanced usage, please see the example/index.html
 ```
 
 Loading the Javascript and CSS assets
-```
+```html
 <!-- Loading the minified stylesheet for the Inspector Element -->
 <link href="assets/css/style.min.css" rel="stylesheet" type="text/css" />
 
