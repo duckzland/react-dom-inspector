@@ -2,9 +2,10 @@
 
 Javascript for crafting custom CSS by emulating Google Chrome Dev Bar tools
 
-[ Demo ](https://duckzland.github.io/react-dom-inspector/){: .btn}
-
 ![Alt text](docs/screenshots/mobile.png?raw=true "Mobile mode")
+
+### Live Demo
+View the script in action : [ Live Demo ](https://duckzland.github.io/react-dom-inspector/)
 
 ### Installing
 
