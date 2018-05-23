@@ -1,11 +1,8 @@
-# Project Title
+# React DOM Inspector
 
 Javascript for crafting custom CSS by emulating Google Chrome Dev Bar tools
 
 ### Installing
-
-Example of how to including the javascript and css assets can be found in the example folder under index.html
-
 
 Create the markup for the stylizer iframe
 
@@ -16,14 +13,17 @@ Create the markup for the stylizer iframe
 </div>
 ```
 
+
 Create the markup for the stylizer inspector element
 
 ```
 <div id="dom-inspector"></div>
 ```
 
+
 Create the javascript for starting the script, at the minimum we will
 need these options, for more advanced usage, please see the example/index.html
+
 ```
 <script>
     // Registering the element
