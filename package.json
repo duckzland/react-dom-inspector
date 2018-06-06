@@ -1,6 +1,6 @@
 {
   "name": "@jxdev/react-dom-inspector",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Package for creating DOM Navigator with Form for changing the element style.",
   "main": "index.js",
   "directories": {
