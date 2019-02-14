@@ -55,7 +55,7 @@
     "svg-url-loader": "^2.3.1",
     "transform-runtime": "0.0.0",
     "webpack": "^3.8.1",
-    "webpack-dev-server": "^2.9.4",
+    "webpack-dev-server": ">=3.1.11",
     "webpack-extract-translation-keys-plugin": "^3.0.0",
     "webpack-extract-translation-keys-regex-plugin": "^1.0.1"
   },
